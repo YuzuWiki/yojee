@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"os"
 
+	_ "github.com/joho/godotenv/autoload"
+
 	"github.com/like9th/yojee/yojee/service/pixiv/config"
 	"github.com/tidwall/gjson"
 )
@@ -80,5 +82,6 @@ func init() {
 	}
 
 	Default.SetPHPSESSID(os.Getenv(config.PIXIV_PHPSESSID))
+	//Default.SetPHPSESSID("32835219_mdQuhYhlkAr4tFNbIyXzuZHv4jmT4JwS")
 	Default.SetDefaultHeader("User-Agent", DefaultUserAent)
 }
