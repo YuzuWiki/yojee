@@ -20,13 +20,13 @@ const (
 type FollowingAPI struct{}
 
 type IllustDTO struct {
-	ID              string      `json:"id"`
+	ID              int32       `json:"id"`
 	Title           string      `json:"title"`
 	IllustType      int         `json:"illustType"`
 	URL             string      `json:"url"`
 	Description     string      `json:"description"`
 	Tags            []string    `json:"tags"`
-	UserID          string      `json:"userId"`
+	UserID          int32       `json:"userId"`
 	UserName        string      `json:"userName"`
 	Width           int         `json:"width"`
 	Height          int         `json:"height"`
@@ -41,7 +41,7 @@ type IllustDTO struct {
 }
 
 type UserDTO struct {
-	UserID          string      `json:"userId"`
+	UserID          int32       `json:"userId"`
 	UserName        string      `json:"userName"`
 	ProfileImageURL string      `json:"profileImageUrl"`
 	UserComment     string      `json:"userComment"`
@@ -101,13 +101,10 @@ func (f FollowingAPI) find(ctx context.Context, uid int32, rest string, limit in
 	return &data.Body, nil
 }
 
-func (f FollowingAPI) FindShow(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error)  {
+func (f FollowingAPI) FindShow(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error) {
 	return f.find(ctx, uid, StatusShow, limit, offset)
 }
 
-func (f FollowingAPI) FindHide(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error)  {
+func (f FollowingAPI) FindHide(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error) {
 	return f.find(ctx, uid, StatusHide, limit, offset)
 }
-
-
-
