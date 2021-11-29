@@ -14,6 +14,7 @@ import (
 
 const (
 	StatusShow = "show"
+	StatusHide = "hide"
 )
 
 type FollowingAPI struct{}
@@ -103,4 +104,10 @@ func (f FollowingAPI) find(ctx context.Context, uid int32, rest string, limit in
 func (f FollowingAPI) FindShow(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error)  {
 	return f.find(ctx, uid, StatusShow, limit, offset)
 }
+
+func (f FollowingAPI) FindHide(ctx context.Context, uid int32, limit int, offset int) (flowing *FollowingDTO, err error)  {
+	return f.find(ctx, uid, StatusHide, limit, offset)
+}
+
+
 
