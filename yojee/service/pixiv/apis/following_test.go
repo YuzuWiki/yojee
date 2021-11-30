@@ -1,4 +1,4 @@
-package artwork
+package apis
 
 import (
 	"context"

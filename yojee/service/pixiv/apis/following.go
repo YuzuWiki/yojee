@@ -1,4 +1,4 @@
-package artwork
+package apis
 
 import (
 	"context"
@@ -12,21 +12,16 @@ import (
 	"time"
 )
 
-const (
-	StatusShow = "show"
-	StatusHide = "hide"
-)
-
 type FollowingAPI struct{}
 
 type IllustDTO struct {
-	ID              int32       `json:"id"`
+	ID              string       `json:"id"`
 	Title           string      `json:"title"`
 	IllustType      int         `json:"illustType"`
 	URL             string      `json:"url"`
 	Description     string      `json:"description"`
 	Tags            []string    `json:"tags"`
-	UserID          int32       `json:"userId"`
+	UserID          string      `json:"userId"`
 	UserName        string      `json:"userName"`
 	Width           int         `json:"width"`
 	Height          int         `json:"height"`
@@ -41,7 +36,7 @@ type IllustDTO struct {
 }
 
 type UserDTO struct {
-	UserID          int32       `json:"userId"`
+	UserID          string       `json:"userId"`
 	UserName        string      `json:"userName"`
 	ProfileImageURL string      `json:"profileImageUrl"`
 	UserComment     string      `json:"userComment"`
