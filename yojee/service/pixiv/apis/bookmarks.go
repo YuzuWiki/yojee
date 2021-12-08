@@ -12,35 +12,35 @@ import (
 	"time"
 )
 
-type BookmarkAPI struct {}
+type BookmarkAPI struct{}
 
 type WorkDTO struct {
-	ID string `json:"id"`
-	Title string `json:"title"`
-	Sl int `json:"sl"`
-	URL string `json:"url"`
-	Description string `json:"description"`
-	UserID string `json:"userId"`
-	UserName string `json:"userName"`
-	Width int `json:"width"`
-	Height int `json:"height"`
-	PageCount int `json:"pageCount"`
-	IsBookmarkable bool `json:"isBookmarkable"`
-	Alt string `json:"alt"`
-	CreateDate time.Time `json:"createDate"`
-	UpdateDate time.Time `json:"updateDate"`
+	ID             string    `json:"id"`
+	Title          string    `json:"title"`
+	Sl             int       `json:"sl"`
+	URL            string    `json:"url"`
+	Description    string    `json:"description"`
+	UserID         string    `json:"userId"`
+	UserName       string    `json:"userName"`
+	Width          int       `json:"width"`
+	Height         int       `json:"height"`
+	PageCount      int       `json:"pageCount"`
+	IsBookmarkable bool      `json:"isBookmarkable"`
+	Alt            string    `json:"alt"`
+	CreateDate     time.Time `json:"createDate"`
+	UpdateDate     time.Time `json:"updateDate"`
 }
 type BookmarkDTO struct {
 	Works []WorkDTO `json:"works"`
-	Total int `json:"total"`
+	Total int       `json:"total"`
 }
 
-func (api BookmarkAPI)path(uid int32) string  {
+func (api BookmarkAPI) path(uid int32) string {
 	return fmt.Sprintf("ajax/user/%d/illusts/bookmarks", uid)
 }
 
-func (api BookmarkAPI) find(ctx context.Context, uid int32, tag string, offset int, limit int, rest string) (*BookmarkDTO, error){
-	c  := client.For(ctx)
+func (api BookmarkAPI) find(ctx context.Context, uid int32, tag string, offset int, limit int, rest string) (*BookmarkDTO, error) {
+	c := client.For(ctx)
 
 	query := netUrl.Values{}
 	query.Set("tag", tag)
@@ -61,8 +61,8 @@ func (api BookmarkAPI) find(ctx context.Context, uid int32, tag string, offset i
 	}
 
 	data := struct {
-		Error bool         `json:"error"`
-		Body  BookmarkDTO  `json:"body"`
+		Error bool        `json:"error"`
+		Body  BookmarkDTO `json:"body"`
 	}{}
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, err
@@ -73,10 +73,10 @@ func (api BookmarkAPI) find(ctx context.Context, uid int32, tag string, offset i
 	}
 	return &data.Body, nil
 }
-func (api BookmarkAPI) FindShow(ctx context.Context, uid int32, tag string, offset int, limit int) (*BookmarkDTO, error){
+func (api BookmarkAPI) FindShow(ctx context.Context, uid int32, tag string, offset int, limit int) (*BookmarkDTO, error) {
 	return api.find(ctx, uid, tag, offset, limit, StatusShow)
 }
 
-func (api BookmarkAPI) FindHide(ctx context.Context, uid int32, tag string, offset int, limit int) (*BookmarkDTO, error){
+func (api BookmarkAPI) FindHide(ctx context.Context, uid int32, tag string, offset int, limit int) (*BookmarkDTO, error) {
 	return api.find(ctx, uid, tag, offset, limit, StatusHide)
 }

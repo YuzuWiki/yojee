@@ -15,7 +15,7 @@ import (
 type FollowingAPI struct{}
 
 type IllustDTO struct {
-	ID              string       `json:"id"`
+	ID              string      `json:"id"`
 	Title           string      `json:"title"`
 	IllustType      int         `json:"illustType"`
 	URL             string      `json:"url"`
@@ -36,7 +36,7 @@ type IllustDTO struct {
 }
 
 type UserDTO struct {
-	UserID          string       `json:"userId"`
+	UserID          string      `json:"userId"`
 	UserName        string      `json:"userName"`
 	ProfileImageURL string      `json:"profileImageUrl"`
 	UserComment     string      `json:"userComment"`

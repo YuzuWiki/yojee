@@ -4,4 +4,3 @@ const (
 	StatusShow = "show"
 	StatusHide = "hide"
 )
-

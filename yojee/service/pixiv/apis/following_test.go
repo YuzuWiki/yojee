@@ -16,14 +16,6 @@ func TestFollowingAPI_FindShow(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotEmpty(t, data.Users)
-
-	//for i := range data.Users {
-	//	user := data.Users[i]
-	//	for j := range user.Illusts {
-	//		illust := user.Illusts[j]
-	//		t.Log(fmt.Sprintf("id = %s, tags = %v", illust.ID, illust.Tags))
-	//	}
-	//}
 }
 
 func TestFollowingAPI_FindHide(t *testing.T) {
