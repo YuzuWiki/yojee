@@ -3,7 +3,6 @@ package following
 import (
 	"context"
 	"encoding/json"
-
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
