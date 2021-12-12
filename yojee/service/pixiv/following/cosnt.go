@@ -18,6 +18,8 @@ const (
 	/*
 		filter 条件
 	*/
-	ModAll = "all"
-	ModR18 = "r18"
+	ModAll     = "all"
+	ModR18     = "r18"
+	StatusShow = "show"
+	StatusHide = "hide"
 )

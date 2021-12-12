@@ -19,29 +19,23 @@ type tagDTO struct {
 }
 
 type illustDTO struct {
-	ID                      string                 `json:"id"`
-	Title                   string                 `json:"title"`
-	IllustType              int                    `json:"illustType"`
-	XRestrict               int                    `json:"xRestrict"`
-	Restrict                int                    `json:"restrict"`
-	Sl                      int                    `json:"sl"`
-	URL                     string                 `json:"url"`
-	Description             string                 `json:"description"`
-	Tags                    []string               `json:"tags"`
-	UserID                  string                 `json:"userId"`
-	UserName                string                 `json:"userName"`
-	Width                   int                    `json:"width"`
-	Height                  int                    `json:"height"`
-	PageCount               int                    `json:"pageCount"`
-	IsBookmarkable          bool                   `json:"isBookmarkable"`
-	Alt                     string                 `json:"alt"`
-	TitleCaptionTranslation map[string]interface{} `json:"titleCaptionTranslation"`
-	CreateDate              time.Time              `json:"createDate"`
-	UpdateDate              time.Time              `json:"updateDate"`
-	IsUnlisted              bool                   `json:"isUnlisted"`
-	IsMasked                bool                   `json:"isMasked"`
-	Urls                    map[string]string      `json:"urls"`
-	ProfileImageURL         string                 `json:"profileImageUrl"`
+	ID              string    `json:"id"`
+	Title           string    `json:"title"`
+	IllustType      int       `json:"illustType"`
+	URL             string    `json:"url"`
+	Description     string    `json:"description"`
+	Tags            []string  `json:"tags"`
+	UserID          string    `json:"userId"`
+	UserName        string    `json:"userName"`
+	Width           int       `json:"width"`
+	Height          int       `json:"height"`
+	PageCount       int       `json:"pageCount"`
+	IsBookmarkable  bool      `json:"isBookmarkable"`
+	Alt             string    `json:"alt"`
+	CreateDate      time.Time `json:"createDate"`
+	UpdateDate      time.Time `json:"updateDate"`
+	IsUnlisted      bool      `json:"isUnlisted"`
+	ProfileImageURL string    `json:"profileImageUrl"`
 }
 
 type novelDTO struct {
@@ -165,4 +159,22 @@ type WatchListDTO struct {
 	IllustSeries   []illustSeriesDTO `json:"illustSeries"`
 	NovelSeries    []novelSeriesDTO  `json:"novelSeries"`
 	Users          []userDTO         `json:"users"`
+}
+
+type followUserDTO struct {
+	UserID          int64       `json:"userId,string"`
+	UserName        string      `json:"userName"`
+	ProfileImageURL string      `json:"profileImageUrl"`
+	UserComment     string      `json:"userComment"`
+	Following       bool        `json:"following"`
+	Followed        bool        `json:"followed"`
+	IsBlocking      bool        `json:"isBlocking"`
+	IsMypixiv       bool        `json:"isMypixiv"`
+	Illusts         []illustDTO `json:"illusts"`
+	AcceptRequest   bool        `json:"acceptRequest"`
+}
+
+type FollowDTO struct {
+	Total int             `json:"total"`
+	Users []followUserDTO `json:"users"`
 }
