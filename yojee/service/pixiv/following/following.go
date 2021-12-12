@@ -21,7 +21,7 @@ func (api FollowAPI) get(ctx context.Context, uid int32, rest string, limit int,
 		return nil, err
 	}
 
-	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user", uid, "following"), query)
+	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user", uid, "/following"), query)
 	if err != nil {
 		return nil, err
 	}

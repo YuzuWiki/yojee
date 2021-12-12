@@ -18,20 +18,27 @@ func Path(prefix string, paths ...interface{}) string {
 	return path(prefix, paths...)
 }
 
+func trimString(s string, sep string) string {
+	if len(s) == 0 || len(sep) == 0 {
+		return s
+	}
+
+	s = strings.TrimPrefix(s, sep)
+	s = strings.TrimSuffix(s, sep)
+	return s
+}
+
 func path(prefix string, paths ...interface{}) string {
 	sep := "/"
-	if !strings.HasPrefix(prefix, sep) {
-		prefix = sep + prefix
-	}
+	prefix = trimString(prefix, sep)
 
 	elems := []string{prefix}
 	for i := range paths {
-
 		switch reflect.TypeOf(paths[i]).Kind() {
 		case reflect.Int8, reflect.Int32, reflect.Int64, reflect.Int:
 			elems = append(elems, fmt.Sprintf("%d", paths[i]))
 		case reflect.String:
-			elems = append(elems, paths[i].(string))
+			elems = append(elems, trimString(paths[i].(string), sep))
 		default:
 			log.Printf("Warning: Unsupported path = %v", paths[i])
 		}
