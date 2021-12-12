@@ -7,9 +7,9 @@ import (
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
-type LastAPI struct{}
+type FollowLastAPI struct{}
 
-func (api LastAPI) FollowLatestIllust(ctx context.Context, mold string, mode string, page int) (*FollowLatestDTO, error) {
+func (api FollowLastAPI) get(ctx context.Context, mold string, mode string, page int) (*FollowLatestDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"p":    page,
 		"mode": mode,
@@ -30,4 +30,12 @@ func (api LastAPI) FollowLatestIllust(ctx context.Context, mold string, mode str
 	}
 
 	return &data, nil
+}
+
+func (api FollowLastAPI) Illust(ctx context.Context, mode string, page int) (*FollowLatestDTO, error) {
+	return api.get(ctx, Mold_Illust, mode, page)
+}
+
+func (api FollowLastAPI) Novel(ctx context.Context, mode string, page int) (*FollowLatestDTO, error) {
+	return api.get(ctx, Mold_Novel, mode, page)
 }

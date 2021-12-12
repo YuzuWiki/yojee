@@ -7,15 +7,15 @@ import (
 )
 
 func TestLastAPI_FollowLatestIllust(t *testing.T) {
-	api := LastAPI{}
+	api := FollowLastAPI{}
 
 	// test illust
-	data, err := api.FollowLatestIllust(context.TODO(), Mold_Illust, ModAll, 1)
+	data, err := api.Illust(context.TODO(), ModAll, 1)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data.Thumbnails.Illust)
 
 	//  test  novel
-	data, err = api.FollowLatestIllust(context.TODO(), Mold_Novel, ModAll, 1)
+	data, err = api.Novel(context.TODO(), ModAll, 1)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data.Thumbnails.Novel)
 
