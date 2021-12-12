@@ -6,6 +6,13 @@ import (
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
+/*
+FollowLastAPI
+已关注用户的作品:
+		mod all && r18
+	漫画: https://www.pixiv.net/ajax/follow_latest/illust?p=1&mode=all&lang=zh
+	小说: https://www.pixiv.net/ajax/follow_latest/novel?p=1&mode=all&lang=zh
+*/
 type FollowLastAPI struct{}
 
 func (api FollowLastAPI) get(ctx context.Context, mold string, mode string, page int) (*FollowLatestDTO, error) {

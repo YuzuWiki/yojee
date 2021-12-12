@@ -6,6 +6,12 @@ import (
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
+/*
+WatchListAPI
+追更列表中的作品:
+	漫画: https://www.pixiv.net/ajax/watch_list/manga?p=1&lang=zh
+	小说: https://www.pixiv.net/ajax/watch_list/novel?p=1&new=1&lang=zh
+*/
 type WatchListAPI struct{}
 
 func (api WatchListAPI) get(ctx context.Context, mold string, page int) (*WatchListDTO, error) {
