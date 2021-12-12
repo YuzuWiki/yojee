@@ -48,6 +48,7 @@ func Get(ctx context.Context, url string, query *netUrl.Values) ([]byte, error) 
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

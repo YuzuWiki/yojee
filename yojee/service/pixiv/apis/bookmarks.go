@@ -54,6 +54,7 @@ func (api BookmarkAPI) find(ctx context.Context, uid int32, tag string, offset i
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
