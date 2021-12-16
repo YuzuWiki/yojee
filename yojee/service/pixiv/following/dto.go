@@ -132,17 +132,16 @@ type illustSeriesDTO struct {
 type tagTranslationDTO map[string]tagDTO
 
 func (dto *tagTranslationDTO) UnmarshalJSON(body []byte) error {
-	// NOTE: 处理该字段无数据时为 数组
 	if len(body) < 5 {
 		return nil
 	}
 
-	data := &tagTranslationDTO{}
-	if err := json.Unmarshal(body, data); err != nil {
+	data := map[string]tagDTO{}
+	if err := json.Unmarshal(body, &data); err != nil {
 		return err
 	}
 
-	dto = data
+	*dto = data
 	return nil
 }
 
