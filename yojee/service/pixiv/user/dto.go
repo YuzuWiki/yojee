@@ -86,7 +86,7 @@ func (dto *MangaMapDTO) UnmarshalJSON(body []byte) error {
 
 type ProfileAllDTO struct {
 	Illusts       IllustMapDTO     `json:"illusts"`
-	Manga         MangaMapDTO         `json:"manga"`
+	Manga         MangaMapDTO      `json:"manga"`
 	Pickup        []pickupDTO      `json:"pickup"`
 	BookmarkCount bookmarkCountDTO `json:"bookmark_count"`
 }
@@ -234,4 +234,14 @@ type ProfileTopDTO struct {
 	Manga     mangaMapDTO  `json:"manga"`
 	Novels    novelMapDTO  `json:"novels"`
 	ExtraData extraDataDTO `json:"extra_data"`
+}
+
+/*
+ExtraDTO
+	https://www.pixiv.net/ajax/user/extra?lang=zh
+ */
+type ExtraDTO struct {
+	Following    int32 `json:"following"`
+	Followers    int32 `json:"followers"`
+	MyPixivCount int32 `json:"mypixivCount"`
 }
