@@ -239,9 +239,25 @@ type ProfileTopDTO struct {
 /*
 ExtraDTO
 	https://www.pixiv.net/ajax/user/extra?lang=zh
- */
+*/
 type ExtraDTO struct {
 	Following    int32 `json:"following"`
 	Followers    int32 `json:"followers"`
 	MyPixivCount int32 `json:"mypixivCount"`
+}
+
+/*
+TagsDTO
+	https://www.pixiv.net/ajax/user/32835219/illusts/bookmark/tags?lang=zh
+*/
+type bookMarkTagDTO struct {
+	Tag string `json:"tag"`
+	Cnt int32  `json:"cnt"`
+}
+
+type BookMarkTagsDTO struct {
+	Private             []bookMarkTagDTO `json:"private"`
+	Public              []bookMarkTagDTO `json:"public"`
+	TooManyBookmark     bool             `json:"tooManyBookmark"`
+	TooManyBookmarkTags bool             `json:"tooManyBookmarkTags"`
 }

@@ -21,3 +21,12 @@ func TestBookMarkAPI_FindHide(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data.Works)
 }
+
+func TestBookMarkAPI_Tags(t *testing.T) {
+	api := BookMarkAPI{}
+	data, err := api.GetIllustTags(context.TODO(), 32835219)
+
+	assert.NoError(t, err)
+	assert.NotEmpty(t, data.Public)
+	assert.NotEmpty(t, data.Private)
+}

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
@@ -39,4 +40,18 @@ func (api BookMarkAPI) FindShow(ctx context.Context, uid int64, tag string, offs
 
 func (api BookMarkAPI) FindHide(ctx context.Context, uid int64, tag string, offset int, limit int) (*BookmarkDTO, error) {
 	return api.get(ctx, uid, tag, offset, limit, StatusHide)
+}
+
+func (api BookMarkAPI) GetIllustTags(ctx context.Context, uid int64) (*BookMarkTagsDTO, error) {
+	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user", uid, "/illusts/bookmark/tags"), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	data := BookMarkTagsDTO{}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }

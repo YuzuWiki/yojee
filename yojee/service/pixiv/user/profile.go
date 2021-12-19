@@ -12,9 +12,9 @@ import (
 tag标签: https://www.pixiv.net/ajax/user/20376220/illusts/bookmark/tags?lang=zh
 */
 
-type ProfileAPI struct {}
+type ProfileAPI struct{}
 
-func (api ProfileAPI) All(ctx context.Context,  userID int) (*ProfileAllDTO, error) {
+func (api ProfileAPI) All(ctx context.Context, userID int) (*ProfileAllDTO, error) {
 	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user/", userID, "/profile", ModAll), nil)
 	if err != nil {
 		return nil, err
@@ -28,8 +28,7 @@ func (api ProfileAPI) All(ctx context.Context,  userID int) (*ProfileAllDTO, err
 	return &data, err
 }
 
-
-func (api ProfileAPI) Top(ctx context.Context,  userID int) (*ProfileTopDTO, error) {
+func (api ProfileAPI) Top(ctx context.Context, userID int) (*ProfileTopDTO, error) {
 	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user/", userID, "/profile", ModTop), nil)
 	if err != nil {
 		return nil, err
@@ -42,4 +41,3 @@ func (api ProfileAPI) Top(ctx context.Context,  userID int) (*ProfileTopDTO, err
 
 	return &data, err
 }
-

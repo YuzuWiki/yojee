@@ -6,9 +6,9 @@ import (
 	"github.com/like9th/yojee/yojee/service/pixiv"
 )
 
-type SelfAPI struct{}
+type UsersAPI struct{}
 
-func (api *SelfAPI) Extra(ctx context.Context) (*ExtraDTO, error) {
+func (api *UsersAPI) Extra(ctx context.Context) (*ExtraDTO, error) {
 	body, err := pixiv.Get(ctx, pixiv.Path("/ajax/user", "extra"), nil)
 	if err != nil {
 		return nil, err
