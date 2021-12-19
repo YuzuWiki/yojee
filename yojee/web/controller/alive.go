@@ -1,11 +1,7 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
-
-	"github.com/like9th/yojee/yojee/interfaces"
 )
 
 type AliveController struct {
@@ -14,8 +10,8 @@ type AliveController struct {
 
 func (ctrl *AliveController) Alive(ctx *gin.Context)  {
 	ctx.JSON(200, gin.H{
-		"error":  interfaces.Logger.GetLevel(),
-		"errmsg": fmt.Sprintf("logger level",),
+		"error":  0,
+		"errmsg": "success",
 		"records": map[string]interface{}{},
 	})
 }

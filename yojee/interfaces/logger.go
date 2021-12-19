@@ -1,9 +1,11 @@
 package interfaces
 
 import (
-	"os"
-
+	"fmt"
 	"github.com/rs/zerolog"
+	"os"
+	"strings"
+	"time"
 )
 
 var Logger *zerolog.Logger = nil
@@ -13,10 +15,19 @@ func InitLogger() *zerolog.Logger {
 		if Logger != nil {
 			return
 		}
+		output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat:  time.RFC3339}
+		output.FormatLevel = func(i interface{}) string {
+			return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
+		}
+		output.FormatFieldName = func(i interface{}) string {
+			return fmt.Sprintf("%s:", i)
+		}
+		output.FormatFieldValue = func(i interface{}) string {
+			return strings.ToUpper(fmt.Sprintf("%s", i))
+		}
 
-		//*Logger = zerolog.New(os.Stderr)
-		Logger = &zerolog.Logger{}
-		Logger.Output(os.Stdin)
+		logger := zerolog.New(output).With().Timestamp().Logger()
+		Logger = &logger
 	})
 	return Logger
 }

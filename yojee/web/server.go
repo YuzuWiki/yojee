@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/like9th/yojee/yojee/interfaces"
 	"github.com/rs/zerolog"
-	"strconv"
 	"sync"
 )
 
@@ -27,11 +26,9 @@ func (svr *Server) setupPProf() *Server {
 
 func (svr *Server) setupLogger(logger *zerolog.Logger) *Server {
 	svr.Use(func(ctx *gin.Context) {
-			path := ctx.Request.URL.Path
-
 			ctx.Next()
 
-			logger.Info().Str("status", strconv.Itoa(ctx.Writer.Status()), ).Str("path", path)
+			logger.Info().Msg(fmt.Sprintf("%s :%s", ctx.Request.URL.Path, ctx.Request.Method))
 	})
 	return svr
 }
