@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
-	"github.com/like9th/yojee/yojee/interfaces"
+	"github.com/like9th/yojee/yojee/global"
 	"github.com/rs/zerolog"
 	"sync"
 )
@@ -48,10 +48,10 @@ func (svr *Server) shutdown() error  {
 	svr.mu.Lock()
 	defer svr.mu.Unlock()
 
-	interfaces.Logger.Info().Msg("HTTP server shutdown: ....")
+	global.Logger.Info().Msg("HTTP server shutdown: ....")
 	svr.isRun = false
 	// do something
-	interfaces.Logger.Info().Msg("HTTP server shutdown: success")
+	global.Logger.Info().Msg("HTTP server shutdown: success")
 	return nil
 }
 
@@ -61,30 +61,30 @@ func (svr *Server) Shutdown() error {
 
 func (svr *Server) Run() error  {
 	if svr.IsRun(){
-		interfaces.Logger.Error().Msg("HTTP server run: fail, server is run")
+		global.Logger.Error().Msg("HTTP server run: fail, server is run")
 		return nil
 	}
 
 	svr.mu.Lock()
 	defer svr.mu.Unlock()
 
-	interfaces.Logger.Info().Msg("HTTP server run: ...")
+	global.Logger.Info().Msg("HTTP server run: ...")
 	svr.isRun = true
 
-	svr.setupLogger(interfaces.Logger)
+	svr.setupLogger(global.Logger)
 	svr.RegisterRoutes()
 	if err := svr.Engine.Run(fmt.Sprintf(":%d", svr.listenPort)); err != nil {
-		interfaces.Logger.Err(err).Msg("HTTP server run: fail")
+		global.Logger.Err(err).Msg("HTTP server run: fail")
 		return err
 	}
 
-	interfaces.Logger.Info().Msg("HTTP server run: success")
+	global.Logger.Info().Msg("HTTP server run: success")
 	return nil
 }
 
 
 func NewServer(listenPort int) *Server {
-	interfaces.InitLogger()
+	global.InitLogger()
 	svr := &Server{
 		Engine:     gin.New(),
 		isRun:      false,
