@@ -5,7 +5,6 @@ import (
 	"github.com/rs/zerolog"
 	"os"
 	"strings"
-	"time"
 )
 
 var Logger *zerolog.Logger = nil
@@ -15,7 +14,12 @@ func InitLogger() *zerolog.Logger {
 		if Logger != nil {
 			return
 		}
-		output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat:  time.RFC3339}
+		zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
+
+		output := zerolog.ConsoleWriter{Out: os.Stdout}
+		output.FormatTimestamp = func(i interface{}) string {
+			return strings.ToUpper(fmt.Sprintf("[ %s ]", i))
+		}
 		output.FormatLevel = func(i interface{}) string {
 			return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
 		}
