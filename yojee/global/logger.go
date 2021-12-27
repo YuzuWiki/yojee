@@ -10,10 +10,7 @@ import (
 var Logger *zerolog.Logger = nil
 
 func InitLogger() *zerolog.Logger {
-	once.Do(func() {
-		if Logger != nil {
-			return
-		}
+	if Logger == nil {
 		zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
 
 		output := zerolog.ConsoleWriter{Out: os.Stdout}
@@ -32,10 +29,11 @@ func InitLogger() *zerolog.Logger {
 
 		logger := zerolog.New(output).With().Timestamp().Logger()
 		Logger = &logger
-	})
+	}
+
 	return Logger
 }
 
-func  CloseLogger() error {
+func CloseLogger() error {
 	return nil
 }
