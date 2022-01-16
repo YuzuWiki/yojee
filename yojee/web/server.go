@@ -29,8 +29,7 @@ func (svr *Server) setupPProf() *Server {
 func (svr *Server) setupLogger(logger *zerolog.Logger) *Server {
 	svr.Use(func(ctx *gin.Context) {
 			ctx.Next()
-
-			logger.Info().Msg(fmt.Sprintf("%s :%s", ctx.Request.URL.Path, ctx.Request.Method))
+			logger.Info().Msg(fmt.Sprintf("[%s] %s", ctx.Request.Method, ctx.Request.URL.Path))
 	})
 	return svr
 }
