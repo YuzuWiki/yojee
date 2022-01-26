@@ -16,6 +16,7 @@ type PixivIllustMod struct {
 	BookmarkCount int64      `gorm:"type:bigint;default:0;column:bookmark_count" json:"bookmark_count"`
 	CreateDate    *time.Time `gorm:"type:timestamp;column:create_date" json:"create_date"`
 }
+
 type PixivMangaMod struct {
 	BaseMod
 

@@ -10,8 +10,7 @@ type AliveController struct {
 
 func (ctrl *AliveController) Alive(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{
-		"error":   0,
-		"errmsg":  "success",
-		"records": map[string]interface{}{},
+		"error":  0,
+		"errmsg": "success",
 	})
 }
