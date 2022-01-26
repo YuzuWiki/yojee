@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS pixiv_follow
     INDEX idx_followed (pid, followed_pid)
 ) CHARACTER SET utf8;
 
+
 CREATE TABLE IF NOT EXISTS pixiv_tag
 (
     # 日语tag标签(多语言暂不可靠)
@@ -39,9 +40,9 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
-    tag_name   TEXT NOT NULL COMMENT 'tage name, jp',
+    name   TEXT NOT NULL COMMENT 'tage name, jp',
 
-    INDEX idx_tag (tag_name(10))
+    INDEX idx_tag (name(10))
 ) CHARACTER SET utf8;
 
 
