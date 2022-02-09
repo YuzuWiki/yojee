@@ -15,7 +15,7 @@ type PixivUserMod struct {
 	Followers int    `gorm:"type:int;default:0;column:followers;'粉丝数量'" json:"followers"`
 }
 
-type PixivFollow struct {
+type PixivFollowMod struct {
 	BaseMod
 
 	PID         int64      `gorm:"type:bigint;column:pid" json:"pid"`

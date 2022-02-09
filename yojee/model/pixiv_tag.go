@@ -12,12 +12,14 @@ type PixivIllustTagMod struct {
 	IllustId int64 `gorm:"type:bigint;column:illust_id" json:"illust_id"`
 	TagId    int64 `gorm:"type:bigint;column:tag_id" json:"tag_id"`
 }
+
 type PixivMangaTagMod struct {
 	BaseMod
 
 	MangaId int64 `gorm:"type:bigint;column:manga_id" json:"manga_id"`
 	TagId   int64 `gorm:"type:bigint;column:tag_id" json:"tag_id"`
 }
+
 type PixivNovelTagMod struct {
 	BaseMod
 
