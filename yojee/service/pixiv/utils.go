@@ -83,25 +83,25 @@ func Get(ctx context.Context, url string, query *netUrl.Values) ([]byte, error) 
 
 func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
 	query := netUrl.Values{}
-	for setK := range values {
-		var setV string
+	for k := range values {
+		var v string
 
-		switch reflect.TypeOf(values[setK]).Kind() {
+		switch reflect.TypeOf(values[k]).Kind() {
 		case reflect.String:
-			setV = values[setK].(string)
-		case reflect.Int8, reflect.Int32, reflect.Int64, reflect.Int:
-			setV = fmt.Sprintf("%d", values[setK])
+			v = values[k].(string)
+		case reflect.Int, reflect.Int8, reflect.Int32, reflect.Int64:
+			v = fmt.Sprintf("%d", values[k])
 		case reflect.Slice:
-			_setV, err := json.Marshal(values[setK])
+			_setV, err := json.Marshal(values[k])
 			if err != nil {
 				return nil, err
 			}
-			setV = string(_setV)
+			v = string(_setV)
 		default:
-			return nil, errors.New(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[setK]).String()))
+			return nil, errors.New(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[k]).String()))
 		}
 
-		query.Set(setK, setV)
+		query.Set(k, v)
 	}
 	return &query, nil
 }
