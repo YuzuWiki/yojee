@@ -1,21 +1,15 @@
 package client
 
-import (
-	"net/http"
-	"path"
+// session: unit -> PHPSESSID
+var (
+	Session = make(map[string]*Client)
 )
 
-type Session struct {
-	http.Client
+func NewSession(phpSessid string) *Client {
+	_, isOk := Session[phpSessid]
+	if !isOk {
+		Session[phpSessid] = NewClient(phpSessid)
+	}
 
-	// session host
-	Host string
+	return Session[phpSessid]
 }
-
-func (s *Session) endpointURL(subPath string) string {
-	return path.Join(s.Host, subPath)
-}
-
-func (s *Session) Get() {}
-
-func (s *Session) Post() {}
