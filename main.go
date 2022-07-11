@@ -20,12 +20,14 @@ type DNSBody struct {
 func lookupDNS(hostname string) (isOK bool, ip string) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://1.1.1.1/dns-query?name=%s", hostname), nil)
 	if err != nil {
+		fmt.Println(fmt.Sprintf("Error = %V", err))
 		return
 	}
 	req.Header.Set("Accept", "application/dns-json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
+		fmt.Println(fmt.Sprintf("Error = %V", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -33,11 +35,14 @@ func lookupDNS(hostname string) (isOK bool, ip string) {
 	if resp.StatusCode == 200 {
 		data, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
+			fmt.Println(fmt.Sprintf("Error = %V", err))
 			return
 		}
+		fmt.Println(fmt.Sprintf("data = %s", data))
 
 		ret := DNSBody{}
 		if err := json.Unmarshal(data, &ret); err != nil {
+			fmt.Println(data)
 			return
 		}
 
@@ -47,11 +52,15 @@ func lookupDNS(hostname string) (isOK bool, ip string) {
 				return true, ans.Data
 			}
 		}
+	} else {
+
+		fmt.Println(fmt.Sprintf("code = %d, text = %s", resp.StatusCode, "???"))
+
 	}
 	return
 }
-
 func main() {
-	isOk, ip := lookupDNS("github.com")
-	fmt.Println(isOk, ip)
+	isOK, ip := lookupDNS("www.pixiv.com")
+	fmt.Println(isOK, ip)
+	fmt.Println("====== done ======1")
 }
