@@ -1,6 +1,6 @@
 package client
 
-// session: unit -> PHPSESSID
+// Session session: unit -> PHPSESSID
 var (
 	Session = make(map[string]*Client)
 )
