@@ -44,13 +44,13 @@ func LookUpDNS(host string) (err error, ip string) {
 		return errors.New(fmt.Sprintf("lookup dns fail, StatusCode is %d", response.StatusCode)), ""
 	}
 
-	data, err := ioutil.ReadAll(request.Body)
+	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
 
 	body := dNsBody{}
-	if err := json.Unmarshal(data, &body); err != nil {
+	if err = json.Unmarshal(data, &body); err != nil {
 		return
 	}
 

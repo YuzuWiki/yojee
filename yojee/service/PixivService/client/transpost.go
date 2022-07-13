@@ -50,8 +50,8 @@ func (t *Transport) byPassSNI(req *http.Request) (resp *http.Response, err error
 		t.mu.Lock()
 		if byPassSNITransport == nil {
 			byPassSNITransport = &http.Transport{
-				Proxy:          http.ProxyFromEnvironment,
-				DialTLSContext: DialTLSContext,
+				Proxy: http.ProxyFromEnvironment,
+				//DialTLSContext: DialTLSContext,  #  TODO: remote error: tls: handshake failure
 			}
 		}
 		t.mu.Unlock()
@@ -62,7 +62,7 @@ func (t *Transport) byPassSNI(req *http.Request) (resp *http.Response, err error
 func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error) {
 	switch req.Host {
 	case PIXIV_HOST, PXIMG_HOST:
-		return byPassSNITransport.RoundTrip(req)
+		return t.byPassSNI(req)
 	default:
 		// return http.DefaultTransport.RoundTrip(req)
 		return t.Transport.RoundTrip(req)
