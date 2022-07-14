@@ -1,86 +1,87 @@
 package client
 
 import (
+	"golang.org/x/net/http/httpproxy"
+	"net"
 	"net/http"
+	"net/url"
 	"sync"
+	"time"
 )
 
 var (
-	// byPassSNI
-	byPassSNITransport *http.Transport
+	DefaultTransport http.RoundTripper
 )
-
-type BeforeHook = func(req *http.Request) error
-
-type AfterHook = func(resp *http.Response) error
 
 type Transport struct {
 	http.Transport
 
-	// hook
-	beforeHooks []BeforeHook
-	afterHooks  []AfterHook
+	// 代理设置
+	proxy    func(*http.Request) (*url.URL, error)
+	ProxyURl string
 
 	// mutex
 	mu sync.Mutex
 }
 
-func (t *Transport) beforeRequest(req *http.Request) error {
-	for _, before := range t.beforeHooks {
-		if err := before(req); err != nil {
-			_ = req.Body.Close()
-			return err
-		}
+func (t *Transport) proxyFromUrl(req *http.Request) (*url.URL, error) {
+	cnf := &httpproxy.Config{
+		HTTPProxy:  t.ProxyURl,
+		HTTPSProxy: t.ProxyURl,
+		NoProxy:    "",
+		CGI:        false,
 	}
-	return nil
+	return cnf.ProxyFunc()(req.URL)
 }
 
-func (t *Transport) afterRequest(resp *http.Response) error {
-	for _, after := range t.afterHooks {
-		if err := after(resp); err != nil {
-			_ = resp.Body.Close()
-			return err
-		}
+func (t *Transport) SetProxy(url string) {
+	if len(url) == 0 || t.ProxyURl == url {
+		return
 	}
-	return nil
+
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.ProxyURl = url
+
+	if t.Proxy == nil {
+		t.Proxy = t.proxyFromUrl
+	}
 }
 
-func (t *Transport) byPassSNI(req *http.Request) (resp *http.Response, err error) {
-	if byPassSNITransport == nil {
-		t.mu.Lock()
-		if byPassSNITransport == nil {
-			byPassSNITransport = &http.Transport{
-				Proxy: http.ProxyFromEnvironment,
-				//DialTLSContext: DialTLSContext,  #  TODO: remote error: tls: handshake failure
-			}
-		}
-		t.mu.Unlock()
-	}
-	return byPassSNITransport.RoundTrip(req)
+func (t *Transport) UnSetProxy() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	t.ProxyURl = ""
+	t.Proxy = nil
 }
 
 func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error) {
-	switch req.Host {
-	case PIXIV_HOST, PXIMG_HOST:
-		return t.byPassSNI(req)
-	default:
-		// return http.DefaultTransport.RoundTrip(req)
-		return t.Transport.RoundTrip(req)
+	if len(t.ProxyURl) == 0 {
+		return DefaultTransport.RoundTrip(req)
+	}
+	return t.RoundTrip(req)
+}
+
+func NewTransport() *Transport {
+	return &Transport{
+		proxy:    nil,
+		ProxyURl: "",
 	}
 }
 
-func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
-	if err := t.beforeRequest(req); err != nil {
-		return nil, err
+func init() {
+	dialer := &net.Dialer{
+		Timeout:   30 * time.Second,
+		KeepAlive: 30 * time.Second,
 	}
 
-	resp, err = t.roundTrip(req)
-	if err != nil {
-		return nil, err
+	DefaultTransport = &http.Transport{
+		DialContext:           dialer.DialContext,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       60 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
 	}
-
-	if err := t.afterRequest(resp); err != nil {
-		return nil, err
-	}
-	return resp, nil
 }

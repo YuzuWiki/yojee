@@ -98,7 +98,6 @@ func DialTLSContext(ctx context.Context, network, addr string) (net.Conn, error)
 		&tls.Config{
 			InsecureSkipVerify: true,
 			VerifyPeerCertificate: func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
-
 				roots := x509.NewCertPool()
 				for _, rawCert := range rawCerts {
 					c, err := x509.ParseCertificate(rawCert)
@@ -120,11 +119,9 @@ func DialTLSContext(ctx context.Context, network, addr string) (net.Conn, error)
 				}
 
 				if _, err := cert.Verify(opts); err != nil {
-					panic("Failed to verify certificate: " + err.Error())
 					return err
 				}
 				return nil
-
 			},
 		})
 }
