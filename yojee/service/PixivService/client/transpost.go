@@ -10,14 +10,13 @@ import (
 )
 
 var (
-	DefaultTransport http.RoundTripper
+	defaultTransport http.RoundTripper
 )
 
 type Transport struct {
 	http.Transport
 
 	// 代理设置
-	proxy    func(*http.Request) (*url.URL, error)
 	ProxyURl string
 
 	// mutex
@@ -58,14 +57,13 @@ func (t *Transport) UnSetProxy() {
 
 func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error) {
 	if len(t.ProxyURl) == 0 {
-		return DefaultTransport.RoundTrip(req)
+		return defaultTransport.RoundTrip(req)
 	}
 	return t.RoundTrip(req)
 }
 
 func NewTransport() *Transport {
 	return &Transport{
-		proxy:    nil,
 		ProxyURl: "",
 	}
 }
@@ -73,10 +71,10 @@ func NewTransport() *Transport {
 func init() {
 	dialer := &net.Dialer{
 		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
+		KeepAlive: 0,
 	}
 
-	DefaultTransport = &http.Transport{
+	defaultTransport = &http.Transport{
 		DialContext:           dialer.DialContext,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
