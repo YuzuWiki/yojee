@@ -1,12 +1,13 @@
 package client
 
 import (
-	"golang.org/x/net/http/httpproxy"
 	"net"
 	"net/http"
 	"net/url"
 	"sync"
 	"time"
+
+	"golang.org/x/net/http/httpproxy"
 )
 
 var (
@@ -14,6 +15,7 @@ var (
 )
 
 type Transport struct {
+	// TODO: 路由分发
 	http.Transport
 
 	// 代理设置

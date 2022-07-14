@@ -6,21 +6,21 @@ import (
 	"net/url"
 )
 
-func (c *Client) ensureJar() {
-	if c.Jar == nil {
-		c.Jar, _ = cookiejar.New(nil)
+func (r *Requests) ensureJar() {
+	if r.Jar == nil {
+		r.Jar, _ = cookiejar.New(nil)
 	}
 }
 
-func (c *Client) SetPHPSESSID(v string) {
-	c.ensureJar()
+func (r *Requests) SetPHPSESSID(v string) {
+	r.ensureJar()
 
-	u, err := url.Parse(c.endpointURL(""))
+	u, err := url.Parse(r.endpointURL(""))
 	if err != nil {
 		panic(err)
 	}
 
-	c.Jar.SetCookies(
+	r.Jar.SetCookies(
 		u,
 		[]*http.Cookie{
 			{
