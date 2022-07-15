@@ -67,13 +67,18 @@ func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error
 func NewTransport() *Transport {
 	return &Transport{
 		ProxyURl: "",
+		mu:       sync.Mutex{},
+
+		Transport: http.Transport{
+			DisableKeepAlives: true,
+		},
 	}
 }
 
 func init() {
 	dialer := &net.Dialer{
 		Timeout:   30 * time.Second,
-		KeepAlive: 0,
+		KeepAlive: 30 * time.Second,
 	}
 
 	defaultTransport = &http.Transport{
