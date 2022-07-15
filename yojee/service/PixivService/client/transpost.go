@@ -35,17 +35,17 @@ func (t *Transport) proxyFromUrl(req *http.Request) (*url.URL, error) {
 	return cnf.ProxyFunc()(req.URL)
 }
 
-func (t *Transport) SetProxy(url string) {
-	if len(url) == 0 || t.ProxyURl == url {
+func (t *Transport) SetProxy(proxyUrl string) {
+	if len(proxyUrl) == 0 || t.ProxyURl == proxyUrl {
 		return
 	}
 
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	t.ProxyURl = url
+	t.ProxyURl = proxyUrl
 
 	if t.Proxy == nil {
-		t.Proxy = t.proxyFromUrl
+		t.Transport.Proxy = t.proxyFromUrl
 	}
 }
 
@@ -61,7 +61,11 @@ func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error
 	if len(t.ProxyURl) == 0 {
 		return defaultTransport.RoundTrip(req)
 	}
-	return t.RoundTrip(req)
+	return t.Transport.RoundTrip(req)
+}
+
+func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
+	return t.roundTrip(req)
 }
 
 func NewTransport() *Transport {
