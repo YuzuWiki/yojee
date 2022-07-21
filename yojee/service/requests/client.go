@@ -20,7 +20,7 @@ type Client struct {
 	AfterHooks  []AfterHook
 }
 
-func NewClient() *Client  {
+func NewClient() *Client {
 	return &Client{
 		Client:      http.Client{
 			Transport: defaultTransport,

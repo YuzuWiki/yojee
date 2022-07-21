@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/like9th/yojee/yojee/service/requests"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/like9th/yojee/yojee/service/PixivService/requests"
 )
 
 func getEnvAny(names ...string) string {
