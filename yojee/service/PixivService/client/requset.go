@@ -3,6 +3,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 )
@@ -28,7 +29,7 @@ func encodeURL(u string, data *Query) (string, error) {
 
 func encodeBody(params *Params) (*bytes.Buffer, error) {
 	if params == nil {
-		return nil, nil
+		return nil, errors.New("params is nil")
 	}
 
 	body, err := json.Marshal(params)
@@ -39,39 +40,49 @@ func encodeBody(params *Params) (*bytes.Buffer, error) {
 }
 
 func newRequest(u, method string, query *Query, params *Params) (*http.Request, error) {
-	u, err := encodeURL(u, query)
+	var (
+		req *http.Request
+		err error
+	)
+
+	u, err = encodeURL(u, query)
 	if err != nil {
 		return nil, err
 	}
 
 	body, err := encodeBody(params)
-	if err != nil {
-		return nil, err
+	if err == nil {
+		req, err = http.NewRequest(method, u, body)
+	} else {
+		req, err = http.NewRequest(method, u, nil)
 	}
 
-	req, err := http.NewRequest(method, u, body)
 	if err != nil {
 		return nil, err
+	} else {
+		return req, nil
 	}
-	return req, nil
 }
 
 func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) error {
-	for idx := range hooks {
-		if err := hooks[idx](body); err != nil {
-			return err
+	if hooks != nil {
+		for idx := range hooks {
+			if err := hooks[idx](body); err != nil {
+				return err
+			}
 		}
 	}
+
 	return nil
 }
 
-func (c *Client) do(u, method string, query *Query, params *Params) (*http.Response, error) {
+func (c *Client) do(method, u string, query *Query, params *Params) (*http.Response, error) {
 	req, err := newRequest(method, u, query, params)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := doHooks(c.beforeHooks, req); err != nil {
+	if err := doHooks(c.BeforeHooks, req); err != nil {
 		return nil, err
 	}
 

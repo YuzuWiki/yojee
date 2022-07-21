@@ -13,6 +13,6 @@ type Client struct {
 	http.Client
 
 	// 钩子函数..
-	beforeHooks []BeforeHook
+	BeforeHooks []BeforeHook
 	AfterHooks  []AfterHook
 }

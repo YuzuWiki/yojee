@@ -14,8 +14,8 @@ func (c *Client) SetHeader(options ...HeaderOption) {
 		return
 	}
 
-	c.beforeHooks = append(
-		c.beforeHooks,
+	c.BeforeHooks = append(
+		c.BeforeHooks,
 		func(req *http.Request) error {
 			for idx := range options {
 				option := options[idx]
