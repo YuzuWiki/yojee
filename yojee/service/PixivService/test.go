@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/like9th/yojee/yojee/service/PixivService/client"
+	"github.com/like9th/yojee/yojee/service/PixivService/requests"
 )
 
 func getEnvAny(names ...string) string {
@@ -29,7 +29,7 @@ func TestRequest() error {
 		return err
 	}
 
-	transport := &client.Transport{}
+	transport := &requests.Transport{}
 	transport.SetProxy(getEnvAny("HTTP_PROXY", "http_proxy"))
 
 	fmt.Println("begin: ", time.Now().UTC())
