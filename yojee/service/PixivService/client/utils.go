@@ -12,6 +12,10 @@ import (
 	"net/http"
 )
 
+var (
+	dnsQueryAPI = "https://1.1.1.1/dns-query?name="
+)
+
 // LookUpDNS by 1.1.1.1
 type dNsBody struct {
 	Status int `json:"status"`
