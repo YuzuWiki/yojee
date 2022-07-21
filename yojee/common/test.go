@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/like9th/yojee/yojee/service/requests"
+	"github.com/like9th/yojee/yojee/common/requests"
 	"net/http"
 	"os"
 	"time"
