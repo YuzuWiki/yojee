@@ -38,16 +38,7 @@ func encodeBody(params *Params) (*bytes.Buffer, error) {
 	return bytes.NewBuffer(body), nil
 }
 
-func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) error {
-	for idx := range hooks {
-		if err := hooks[idx](body); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (c *Client) do(u, method string, query *Query, params *Params) (*http.Response, error) {
+func newRequest(u, method string, query *Query, params *Params) (*http.Request, error) {
 	u, err := encodeURL(u, query)
 	if err != nil {
 		return nil, err
@@ -59,6 +50,23 @@ func (c *Client) do(u, method string, query *Query, params *Params) (*http.Respo
 	}
 
 	req, err := http.NewRequest(method, u, body)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) error {
+	for idx := range hooks {
+		if err := hooks[idx](body); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *Client) do(u, method string, query *Query, params *Params) (*http.Response, error) {
+	req, err := newRequest(method, u, query, params)
 	if err != nil {
 		return nil, err
 	}
