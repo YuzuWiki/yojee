@@ -79,6 +79,21 @@ func NewTransport() *Transport {
 	}
 }
 
+func (c *Client) SetProxy(proxy string) {
+	if c.Transport == nil {
+		c.Transport = NewTransport()
+		c.Client.Transport = c.Transport
+	}
+
+	c.Transport.SetProxy(proxy)
+}
+
+func (c *Client) UnSetProxy() {
+	if c.Transport != nil {
+		c.Transport.UnSetProxy()
+	}
+}
+
 func init() {
 	dialer := &net.Dialer{
 		Timeout:   30 * time.Second,

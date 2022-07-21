@@ -20,17 +20,13 @@ type Client struct {
 	AfterHooks  []AfterHook
 }
 
-func (c *Client) SetProxy(proxy string) {
-	if c.Transport == nil {
-		c.Transport = NewTransport()
-		c.Client.Transport = c.Transport
-	}
-
-	c.Transport.SetProxy(proxy)
-}
-
-func (c *Client) UnSetProxy() {
-	if c.Transport != nil {
-		c.Transport.UnSetProxy()
+func NewClient() *Client  {
+	return &Client{
+		Client:      http.Client{
+			Transport: defaultTransport,
+		},
+		Transport:   nil,
+		BeforeHooks: []BeforeHook{},
+		AfterHooks:  []AfterHook{},
 	}
 }
