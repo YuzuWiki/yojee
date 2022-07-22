@@ -8,6 +8,11 @@ const (
 	RecommenderAPI    = "/rpc/recommender.php"              // ?type=illust&sample_illusts=auto&num_recommendations=100&page=discovery&mode=all
 	RecommendUsersAPI = "/rpc/index.php"                    // mode=get_recommend_users_and_works_by_user_ids&user_ids=[xxx, xxx]&user_num=30&work_num=5
 	ArtworksAPI       = "/artworks/{id}"
-	IllustAPI         = "ajax/illust/{id}/pages"
+	IllustAPI         = "/ajax/illust/{id}/pages"
 	ProfileAPI        = "/ajax/user/{id}/profile/all"
 )
+
+// GenerateApi returns pixiv's api
+func GenerateApi(api string) string {
+	return "https://" + PixivHost + api
+}
