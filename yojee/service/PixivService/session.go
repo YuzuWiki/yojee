@@ -32,6 +32,10 @@ func newClient(phpSessid string) *requests.Client {
 		requests.HeaderOption{
 			Key:   "User-Agent",
 			Value: UserAgent,
+		},
+		requests.HeaderOption{
+			Key:   "referer",
+			Value: "https://" + PixivHost,
 		})
 
 	// set cookie
