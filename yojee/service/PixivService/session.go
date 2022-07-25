@@ -72,6 +72,10 @@ func (s *Session) Get(phpSessid string) ClientInterface {
 	return client
 }
 
+func (s *Session) Delete(phpSessid string) {
+	delete(s.pool, phpSessid)
+}
+
 func NewSession() *Session {
 	return &Session{pool: map[string]ClientInterface{}}
 }
