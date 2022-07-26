@@ -1,4 +1,4 @@
-package main
+package pixivService
 
 const (
 	PixivDomain = ".pixiv.net"

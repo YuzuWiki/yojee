@@ -1,4 +1,4 @@
-package main
+package pixivService
 
 import (
 	"github.com/like9th/yojee/yojee/common/requests"
@@ -63,7 +63,7 @@ type Session struct {
 	m sync.Mutex
 }
 
-func (s *Session) Get(phpSessid string) ClientInterface {
+func (s *Session) Get(phpSessid string) RequestInterface {
 	client, isOk := s.pool[phpSessid]
 	if !isOk {
 		s.m.Lock()

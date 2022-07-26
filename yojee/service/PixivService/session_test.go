@@ -1,4 +1,4 @@
-package main
+package pixivService
 
 import (
 	"github.com/stretchr/testify/assert"

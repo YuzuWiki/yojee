@@ -1,4 +1,4 @@
-package main
+package pixivService
 
 import (
 	"encoding/json"
@@ -35,7 +35,6 @@ func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
 	}
 	return &query, nil
 }
-
 
 func strip(s string, sep string) string {
 	if len(s) == 0 || len(sep) == 0 {
