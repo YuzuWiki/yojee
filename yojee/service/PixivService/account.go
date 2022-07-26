@@ -6,14 +6,14 @@ import (
 )
 
 type Account struct {
-	phpSessid string
+	sessionId string // phpsessid
 
 	uid    int64
 	client ClientInterface
 }
 
-func (a Account) getUid() (int64, error)  {
-	resp, err := a.client.Get("https://"+PixivHost, nil, nil)
+func (a Account) getUid(client RequestInterface) (int64, error) {
+	resp, err := client.Get("https://"+PixivHost, nil, nil)
 	if err != nil {
 		return 0, err
 	}
@@ -26,10 +26,9 @@ func (a Account) getUid() (int64, error)  {
 	return strconv.ParseInt(uid, 10, 64)
 }
 
-
 func (a *Account) Uid() (int64, error) {
 	if a.uid == 0 {
-		uid, err := a.getUid()
+		uid, err := a.getUid(a.client)
 		if err != nil {
 			return 0, err
 		}
@@ -38,6 +37,3 @@ func (a *Account) Uid() (int64, error) {
 	}
 	return a.uid, nil
 }
-
-
-

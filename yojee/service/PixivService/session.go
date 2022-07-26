@@ -8,14 +8,18 @@ import (
 
 var Sessions *Session
 
-type ClientInterface interface {
-	SetProxy(string)
-	UnSetProxy()
-
+type RequestInterface interface {
 	Get(string, *requests.Query, *requests.Params) (*http.Response, error)
 	Post(string, *requests.Query, *requests.Params) (*http.Response, error)
 	Put(string, *requests.Query, *requests.Params) (*http.Response, error)
 	Delete(string, *requests.Query, *requests.Params) (*http.Response, error)
+}
+
+type ClientInterface interface {
+	RequestInterface
+
+	SetProxy(string)
+	UnSetProxy()
 }
 
 func newClient(phpSessid string) *requests.Client {
