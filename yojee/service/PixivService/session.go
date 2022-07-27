@@ -22,7 +22,7 @@ type ClientInterface interface {
 	UnSetProxy()
 }
 
-func newClient(phpSessid string) *requests.Client {
+func newClient(sessionID string) *requests.Client {
 	// new client
 	c := requests.Client{
 		Client:      http.Client{},
@@ -47,7 +47,7 @@ func newClient(phpSessid string) *requests.Client {
 		PixivHost,
 		&http.Cookie{
 			Name:   Phpsessid,
-			Value:  phpSessid,
+			Value:  sessionID,
 			Path:   "/",
 			Domain: PixivDomain,
 		},
@@ -63,21 +63,21 @@ type Session struct {
 	m sync.Mutex
 }
 
-func (s *Session) Get(phpSessid string) RequestInterface {
-	client, isOk := s.pool[phpSessid]
+func (s *Session) Get(sessionID string) RequestInterface {
+	client, isOk := s.pool[sessionID]
 	if !isOk {
 		s.m.Lock()
-		if _, isOk := s.pool[phpSessid]; !isOk {
-			client = newClient(phpSessid)
-			s.pool[phpSessid] = client
+		if _, isOk := s.pool[sessionID]; !isOk {
+			client = newClient(sessionID)
+			s.pool[sessionID] = client
 		}
 		s.m.Unlock()
 	}
 	return client
 }
 
-func (s *Session) Delete(phpSessid string) {
-	delete(s.pool, phpSessid)
+func (s *Session) Delete(sessionID string) {
+	delete(s.pool, sessionID)
 }
 
 func NewSession() *Session {
