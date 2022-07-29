@@ -251,3 +251,13 @@ type ProfileTopDTO struct {
 	Novels    novelMapDTO  `json:"novels"`
 	ExtraData extraDataDTO `json:"extra_data"`
 }
+
+/*
+ExtraDTO
+	https://www.pixiv.net/ajax/user/extra?lang=zh
+*/
+type ExtraDTO struct {
+	Following    int32 `json:"following"`
+	Followers    int32 `json:"followers"`
+	MyPixivCount int32 `json:"mypixivCount"`
+}
