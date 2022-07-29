@@ -1,4 +1,4 @@
-package user
+package apis
 
 import (
 	"encoding/json"
@@ -260,4 +260,47 @@ type ExtraDTO struct {
 	Following    int32 `json:"following"`
 	Followers    int32 `json:"followers"`
 	MyPixivCount int32 `json:"mypixivCount"`
+}
+
+/*
+
+ */
+type pageDTO struct {
+	Ids  []int32       `json:"ids"`
+	Tags []interface{} `json:"tags"`
+}
+
+type tagDTO struct {
+	En     string `json:"en"`
+	Ko     string `json:"ko"`
+	Zh     string `json:"zh"`
+	ZhTw   string `json:"zh_tw"`
+	Romaji string `json:"romaji"`
+}
+
+type tagTranslationDTO map[string]tagDTO
+
+func (dto *tagTranslationDTO) UnmarshalJSON(body []byte) error {
+	if len(body) < 5 {
+		return nil
+	}
+
+	data := map[string]tagDTO{}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return err
+	}
+
+	*dto = data
+	return nil
+}
+
+type thumbnailDTO struct {
+	Illust []illustDTO `json:"illust"`
+	Novel  []novelDTO  `json:"novel"`
+}
+
+type FollowLatestDTO struct {
+	Page           pageDTO           `json:"page"`
+	TagTranslation tagTranslationDTO `json:"tagTranslation"`
+	Thumbnails     thumbnailDTO      `json:"thumbnails"`
 }
