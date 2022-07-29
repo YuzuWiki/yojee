@@ -4,10 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	netUrl "net/url"
 	"reflect"
 	"strings"
+
+	"github.com/like9th/yojee/yojee/common/requests"
 )
 
 // NewQuery return get params
@@ -62,4 +66,34 @@ func Path(paths ...interface{}) string {
 
 	}
 	return strings.Join(elems, sep)
+}
+
+// Request return http.body && error
+func Request(ctx ContextVar, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	method = strings.ToUpper(method)
+	var fn func(string, *requests.Query, *requests.Params) (*http.Response, error)
+
+	client := ctx.Client()
+	switch method {
+	case http.MethodGet:
+		fn = client.Get
+	case http.MethodPost:
+		fn = client.Post
+	case http.MethodPut:
+		fn = client.Put
+	case http.MethodDelete:
+		fn = client.Delete
+	default:
+		return nil, errors.New("UnSupport method: " + method)
+	}
+
+	resp, err := fn(u, query, params)
+	if err != nil {
+		return nil, err
+	}
+
+	body := resp.Body
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(body)
 }
