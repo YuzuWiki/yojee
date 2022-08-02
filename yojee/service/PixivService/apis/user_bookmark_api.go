@@ -14,7 +14,7 @@ func (api BookMarkAPI) FindShow(ctx pixivService.ContextVar, uid int64, tag stri
 		"tag":    tag,
 		"limit":  limit,
 		"offset": offset,
-		"rest":   pixivService.Show,
+		"rest":   Show,
 		"lang":   "zh",
 	})
 	if err != nil {
@@ -39,7 +39,7 @@ func (api BookMarkAPI) FindHide(ctx pixivService.ContextVar, uid int64, tag stri
 		"tag":    tag,
 		"limit":  limit,
 		"offset": offset,
-		"rest":   pixivService.Hide,
+		"rest":   Hide,
 		"lang":   "zh",
 	})
 	if err != nil {

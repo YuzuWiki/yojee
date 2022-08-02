@@ -263,8 +263,8 @@ type ExtraDTO struct {
 }
 
 /*
-
- */
+	follow last
+*/
 type pageDTO struct {
 	Ids  []int32       `json:"ids"`
 	Tags []interface{} `json:"tags"`
@@ -303,4 +303,25 @@ type FollowLatestDTO struct {
 	Page           pageDTO           `json:"page"`
 	TagTranslation tagTranslationDTO `json:"tagTranslation"`
 	Thumbnails     thumbnailDTO      `json:"thumbnails"`
+}
+
+/*
+	following
+*/
+type followUserDTO struct {
+	UserID          int64       `json:"userId,string"`
+	UserName        string      `json:"userName"`
+	ProfileImageURL string      `json:"profileImageUrl"`
+	UserComment     string      `json:"userComment"`
+	Following       bool        `json:"following"`
+	Followed        bool        `json:"followed"`
+	IsBlocking      bool        `json:"isBlocking"`
+	IsMypixiv       bool        `json:"isMypixiv"`
+	Illusts         []illustDTO `json:"illusts"`
+	AcceptRequest   bool        `json:"acceptRequest"`
+}
+
+type FollowDTO struct {
+	Total int             `json:"total"`
+	Users []followUserDTO `json:"users"`
 }

@@ -10,7 +10,7 @@ import (
 type ProfileAPI struct{}
 
 func (api ProfileAPI) All(ctx pixivService.ContextVar, uid int64) (*ProfileAllDTO, error) {
-	data, err := pixivService.Request(ctx, http.MethodGet, pixivService.Path("/ajax/user/", uid, "/profile", pixivService.All), nil, nil)
+	data, err := pixivService.Request(ctx, http.MethodGet, pixivService.Path("/ajax/user/", uid, "/profile", All), nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (api ProfileAPI) All(ctx pixivService.ContextVar, uid int64) (*ProfileAllDT
 }
 
 func (api ProfileAPI) Top(ctx pixivService.ContextVar, uid int64) (*ProfileTopDTO, error) {
-	data, err := pixivService.Request(ctx, http.MethodGet, pixivService.Path("/ajax/user/", uid, "/profile", pixivService.Top), nil, nil)
+	data, err := pixivService.Request(ctx, http.MethodGet, pixivService.Path("/ajax/user/", uid, "/profile", Top), nil, nil)
 	if err != nil {
 		return nil, err
 	}
