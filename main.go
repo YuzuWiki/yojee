@@ -1,4 +1,4 @@
-package yojee
+package main
 
 import (
 	"github.com/joho/godotenv"

@@ -13,7 +13,7 @@ type ContextVar struct {
 	uid       int64
 }
 
-func (v ContextVar) getUid(client RequestInterface) (int64, error) {
+func getUid(client RequestInterface) (int64, error) {
 	resp, err := client.Get("https://"+PixivHost, nil, nil)
 	if err != nil {
 		return 0, err
@@ -38,7 +38,7 @@ func (v *ContextVar) PhpSessID() string {
 func (v *ContextVar) Uid() (int64, error) {
 	if v.uid == 0 {
 
-		uid, err := v.getUid(v.Client())
+		uid, err := getUid(v.Client())
 		if err != nil {
 			return 0, err
 		}

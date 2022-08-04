@@ -2,6 +2,7 @@ package pixiv
 
 import (
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/YuzuWiki/yojee/common/requests"
@@ -55,16 +56,20 @@ func newClient(sessionID string) *requests.Client {
 	); err != nil {
 		panic(err.Error())
 	}
+
+	if proxyURL := os.Getenv("PROXY_URL"); len(proxyURL) > 0 {
+		c.SetProxy(proxyURL)
+	}
 	return &c
 }
 
 type Session struct {
-	pool map[string]ClientInterface
+	pool map[string]RequestInterface
 
 	m sync.Mutex
 }
 
-func (s *Session) Get(sessionID string) ClientInterface {
+func (s *Session) Get(sessionID string) RequestInterface {
 	client, isOk := s.pool[sessionID]
 	if !isOk {
 		s.m.Lock()
@@ -82,7 +87,7 @@ func (s *Session) Delete(sessionID string) {
 }
 
 func NewSession() *Session {
-	return &Session{pool: map[string]ClientInterface{}}
+	return &Session{pool: map[string]RequestInterface{}}
 }
 
 func init() {
