@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sync"
 
-	"yojee/common/requests"
+	"github.com/YuzuWiki/yojee/common/requests"
 )
 
 var Sessions *Session

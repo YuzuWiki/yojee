@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"strings"
 
-	"yojee/common/requests"
+	"github.com/YuzuWiki/yojee/common/requests"
 )
 
 // NewQuery return get params

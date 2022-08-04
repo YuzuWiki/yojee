@@ -1,7 +1,7 @@
 package web
 
 import (
-	"yojee/web/controller"
+	"github.com/YuzuWiki/yojee/web/controller"
 )
 
 func (svr *Server) RegisterRoutes() {

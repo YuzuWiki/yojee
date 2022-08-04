@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"yojee/service/pixiv"
+	"github.com/YuzuWiki/yojee/service/pixiv"
 )
 
 type ProfileAPI struct{}

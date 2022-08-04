@@ -1,4 +1,4 @@
-module yojee
+module github.com/YuzuWiki/yojee
 
 go 1.18
 

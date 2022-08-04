@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 
-	"yojee/global"
+	"github.com/YuzuWiki/yojee/global"
 )
 
 type Server struct {
