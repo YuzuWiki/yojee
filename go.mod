@@ -1,4 +1,4 @@
-module github.com/like9th/yojee
+module yojee
 
 go 1.18
 
