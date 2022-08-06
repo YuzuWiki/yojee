@@ -68,6 +68,10 @@ func (svr *Server) Run() error {
 	svr.mu.Lock()
 	defer svr.mu.Unlock()
 
+	if err := svr.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+		return err
+	}
+
 	global.Logger.Info().Msg("HTTP server run: ...")
 	svr.isRun = true
 
@@ -82,13 +86,16 @@ func (svr *Server) Run() error {
 	return nil
 }
 
-func NewServer(listenPort int) *Server {
-	global.InitLogger()
+func Start(listenPort int) {
 	svr := &Server{
 		Engine:     gin.New(),
 		isRun:      false,
 		listenPort: listenPort,
 		mu:         sync.Mutex{},
 	}
-	return svr
+
+	if err := svr.Run(); err != nil {
+		panic("web service error")
+	}
+	return
 }
