@@ -58,12 +58,12 @@ CREATE TABLE IF NOT EXISTS pixiv_illust
     pid            BIGINT    NOT NULL COMMENT 'pixiv user id',
 
     # 作品信息
-    illust_id      BIGINT    NOT NULL COMMENT 'pixiv illustId',
-    title          TEXT      DEFAULT '' COMMENT 'pixiv title',
-    description    TEXT      DEFAULT '' COMMENT 'pixiv illust desc',
-    view_count     BIGINT    DEFAULT 0 comment '浏览数量',
-    like_count     BIGINT    DEFAULT 0 comment '喜欢数',
-    bookmark_count BIGINT    DEFAULT 0 comment '收藏欢数',
+    illust_id      BIGINT    NOT NULL  COMMENT 'pixiv illustId',
+    title          TEXT                COMMENT 'pixiv title',
+    description    TEXT                COMMENT 'pixiv illust desc',
+    view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
+    like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
+    bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
     create_date    TIMESTAMP NOT NULL COMMENT '创建时间',
 
     INDEX idx_illust (pid, illust_id)
@@ -83,12 +83,12 @@ CREATE TABLE IF NOT EXISTS pixiv_manga
 
     # 作品信息
     manga_id       BIGINT    NOT NULL COMMENT 'pixiv mangaID',
-    title          TEXT      DEFAULT '' COMMENT 'pixiv title',
-    description    TEXT      DEFAULT '' COMMENT 'pixiv manga desc',
-    page_count     INT       DEFAULT 1 comment '漫画作品页数',
-    view_count     BIGINT    DEFAULT 0 comment '浏览数量',
-    like_count     BIGINT    DEFAULT 0 comment '喜欢数',
-    bookmark_count BIGINT    DEFAULT 0 comment '收藏欢数',
+    title          TEXT               COMMENT 'pixiv title',
+    description    TEXT               COMMENT 'pixiv manga desc',
+    page_count     INT       DEFAULT 0 COMMENT '漫画作品页数',
+    view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
+    like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
+    bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
     create_date    TIMESTAMP NOT NULL COMMENT '创建时间',
 
     INDEX idx_illust (pid, manga_id)
@@ -108,8 +108,8 @@ CREATE TABLE IF NOT EXISTS pixiv_novel
 
     # 作品信息
     novel_id         BIGINT    NOT NULL COMMENT 'pixiv mangaID',
-    title            TEXT      DEFAULT '' COMMENT 'pixiv title',
-    description      TEXT      DEFAULT '' COMMENT 'pixiv novel caption',
+    title            TEXT               COMMENT 'pixiv title',
+    description      TEXT               COMMENT 'pixiv novel caption',
     chapter_count    INT       DEFAULT 0 COMMENT '章节数量, total',
     wordage_count    BIGINT    DEFAULT 0 COMMENT '字数, publishedTotalCharacterCount',
     create_date      TIMESTAMP NOT NULL COMMENT '创建时间',

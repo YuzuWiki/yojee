@@ -1,21 +1,33 @@
 package controller
 
 import (
-	"sync"
-
-	"github.com/rs/zerolog"
+	"github.com/gin-gonic/gin"
 )
 
 type baseController struct {
-	_log *zerolog.Logger
-	once sync.Once
 }
 
-func (ctrl *baseController) log() *zerolog.Logger {
-	ctrl.once.Do(func() {
-		if ctrl._log == nil {
-			*ctrl._log = zerolog.Logger{}
+// Success return body
+func success(data ...any) gin.H {
+	if len(data) == 0 {
+		return gin.H{
+			"errcode": 0,
+			"errmsg":  "success",
 		}
-	})
-	return ctrl._log
+	} else {
+		return gin.H{
+			"errcode": 0,
+			"errmsg":  "success",
+			"data":    data[0],
+		}
+	}
+
+}
+
+// fail return body
+func fail(code int, errMsg string) gin.H {
+	return gin.H{
+		"errcode": code,
+		"err_msg": errMsg,
+	}
 }

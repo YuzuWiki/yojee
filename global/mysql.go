@@ -1,7 +1,6 @@
 package global
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
@@ -9,7 +8,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var dB *gorm.DB
+var db *gorm.DB
 
 func url() string {
 	return fmt.Sprintf(
@@ -23,26 +22,26 @@ func url() string {
 }
 
 func InitDB() *gorm.DB {
-	if dB == nil {
-		db, err := gorm.Open("mysql", url())
+	if db == nil {
+		_db, err := gorm.Open("mysql", url())
 		if err != nil {
 			panic(fmt.Sprintf("MySQL: init db fail ... url=%s", url()))
 		}
-		dB = db
+		db = _db
 	}
-	return dB
+	return db
 }
 
-func NewDB() *sql.DB {
-	return dB.DB()
+func NewDB() *gorm.DB {
+	return db
 }
 
 func CloseDB() error {
-	if dB == nil {
+	if db == nil {
 		return nil
 	}
 
-	if err := dB.Close(); err != nil {
+	if err := db.Close(); err != nil {
 		panic("MySQL: close db fail ...")
 	}
 
