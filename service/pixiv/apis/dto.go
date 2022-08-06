@@ -325,3 +325,22 @@ type FollowDTO struct {
 	Total int             `json:"total"`
 	Users []followUserDTO `json:"users"`
 }
+
+//
+
+type UserInfoDTO struct {
+	UserID     int64  `json:"userId,string"`
+	Name       string `json:"name"`
+	Avatar     string `json:"imageBig"`
+	IsFollowed bool   `json:"isFollowed"`
+	Following  int    `json:"following"`
+	Region     struct {
+		Name         string `json:"name"`
+		Region       string `json:"region"`
+		PrivacyLevel string `json:"privacyLevel"`
+	} `json:"region"`
+	Gender struct {
+		Name         string `json:"name"`
+		PrivacyLevel string `json:"privacyLevel"`
+	} `json:"gender"`
+}
