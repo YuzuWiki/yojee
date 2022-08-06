@@ -9,7 +9,7 @@ import (
 
 type FollowAPI struct{}
 
-func followLast(ctx pixiv.ContextVar, mode string, page int) (*FollowLatestDTO, error) {
+func followLast(ctx pixiv.Context, mode string, page int) (*FollowLatestDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"p":    page,
 		"mode": mode,
@@ -31,15 +31,15 @@ func followLast(ctx pixiv.ContextVar, mode string, page int) (*FollowLatestDTO, 
 	return body, nil
 }
 
-func (api FollowAPI) Illusts(ctx pixiv.ContextVar, page int) (*FollowLatestDTO, error) {
+func (api FollowAPI) Illusts(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Illust, page)
 }
 
-func (api FollowAPI) Novel(ctx pixiv.ContextVar, page int) (*FollowLatestDTO, error) {
+func (api FollowAPI) Novel(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Novel, page)
 }
 
-func following(ctx pixiv.ContextVar, uid int32, rest string, limit int, offset int) (*FollowDTO, error) {
+func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int) (*FollowDTO, error) {
 	// 添加参数
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"offset": offset,
@@ -65,9 +65,9 @@ func following(ctx pixiv.ContextVar, uid int32, rest string, limit int, offset i
 	return &body, nil
 }
 
-func (api FollowAPI) FollowingShow(ctx pixiv.ContextVar, uid int32, limit int, offset int) (*FollowDTO, error) {
+func (api FollowAPI) FollowingShow(ctx pixiv.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
 	return following(ctx, uid, Show, limit, offset)
 }
-func (api FollowAPI) FollowingHide(ctx pixiv.ContextVar, uid int32, limit int, offset int) (*FollowDTO, error) {
+func (api FollowAPI) FollowingHide(ctx pixiv.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
 	return following(ctx, uid, Hide, limit, offset)
 }

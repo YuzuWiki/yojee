@@ -69,7 +69,7 @@ func Path(paths ...interface{}) string {
 }
 
 // Request return http.body && error
-func Request(ctx ContextVar, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
 	method = strings.ToUpper(method)
 	var fn func(string, *requests.Query, *requests.Params) (*http.Response, error)
 

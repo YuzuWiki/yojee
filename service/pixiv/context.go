@@ -1,18 +1,19 @@
 package pixiv
 
 import (
-	_context "context"
 	"errors"
 	"strconv"
+	"time"
 )
 
-type ContextVar struct {
-	_context.Context
-
+type Context struct {
 	sessionID string
 	uid       int64
+
+	values map[string]string
 }
 
+// getUid try return pixiv uid (if phpsessid is effective)
 func getUid(client RequestInterface) (int64, error) {
 	resp, err := client.Get("https://"+PixivHost, nil, nil)
 	if err != nil {
@@ -27,23 +28,49 @@ func getUid(client RequestInterface) (int64, error) {
 	return strconv.ParseInt(uidStr, 10, 64)
 }
 
-func (v *ContextVar) Client() RequestInterface {
-	return Sessions.Get(v.sessionID)
+// Client return a pixiv client by phpsessid
+func (ctx *Context) Client() RequestInterface {
+	return Sessions.Get(ctx.sessionID)
 }
 
-func (v *ContextVar) PhpSessID() string {
-	return v.sessionID
+// PhpSessID return phpsessid
+func (ctx *Context) PhpSessID() string {
+	return ctx.sessionID
 }
 
-func (v *ContextVar) Uid() (int64, error) {
-	if v.uid == 0 {
+// Uid return pixiv uid (if phpsessid is effective)
+func (ctx *Context) Uid() (int64, error) {
+	if ctx.uid == 0 {
 
-		uid, err := getUid(v.Client())
+		uid, err := getUid(ctx.Client())
 		if err != nil {
 			return 0, err
 		}
 
-		v.uid = uid
+		ctx.uid = uid
 	}
-	return v.uid, nil
+	return ctx.uid, nil
+}
+
+// DeadLine always returns that there is no deadline (ok==false)
+func (ctx *Context) DeadLine() (deadline time.Time, ok bool) {
+	return
+}
+
+// Done always returns nil (chan which will wait forever),
+func (ctx *Context) Done() <-chan struct{} {
+	return nil
+}
+
+// Err always returns nil
+func (ctx *Context) Err() error {
+	return nil
+}
+
+// Value always return
+func (ctx *Context) Value(key string) string {
+	if value, isOk := ctx.values[key]; isOk {
+		return value
+	}
+	return ""
 }

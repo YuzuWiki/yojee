@@ -9,7 +9,7 @@ import (
 
 type InfoAPI struct{}
 
-func (api InfoAPI) Extra(ctx pixiv.ContextVar) (*ExtraDTO, error) {
+func (api InfoAPI) Extra(ctx pixiv.Context) (*ExtraDTO, error) {
 	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", "extra"), nil, nil)
 	if err != nil {
 		return nil, err
