@@ -32,7 +32,7 @@ func InitDB() *gorm.DB {
 	return db
 }
 
-func NewDB() *gorm.DB {
+func DB() *gorm.DB {
 	return db
 }
 

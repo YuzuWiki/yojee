@@ -4,17 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	pixiv2 "github.com/YuzuWiki/yojee/module/pixiv"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
-
-	"github.com/YuzuWiki/yojee/service/pixiv"
 )
 
 type InfoAPI struct{}
 
-func (api InfoAPI) Extra(ctx pixiv.Context) (*ExtraDTO, error) {
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", "extra"), nil, nil)
+func (api InfoAPI) Extra(ctx pixiv2.Context) (*ExtraDTO, error) {
+	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/ajax/user", "extra"), nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -26,13 +25,13 @@ func (api InfoAPI) Extra(ctx pixiv.Context) (*ExtraDTO, error) {
 	return body, nil
 }
 
-func (api InfoAPI) Info(ctx pixiv.Context, uuid int64) (*UserInfoDTO, error) {
-	query, err := pixiv.NewQuery(map[string]interface{}{"lang": "en",})
+func (api InfoAPI) Info(ctx pixiv2.Context, uuid int64) (*UserInfoDTO, error) {
+	query, err := pixiv2.NewQuery(map[string]interface{}{"lang": "en"})
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/users", uuid), query, nil)
+	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/users", uuid), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +49,7 @@ func (api InfoAPI) Info(ctx pixiv.Context, uuid int64) (*UserInfoDTO, error) {
 	})
 
 	if userInfo.UserID == 0 {
-		return nil, errors.New("Not Found UserInfo")
+		return nil, errors.New("not Found UserInfo")
 	}
 	return userInfo, nil
 }
