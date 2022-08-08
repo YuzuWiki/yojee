@@ -335,8 +335,7 @@ type UserInfoDTO struct {
 	IsFollowed bool   `json:"isFollowed"`
 	Following  int    `json:"following"`
 	Region     struct {
-		Name         string `json:"name"`
-		Region       string `json:"region"`
+		Name         string `json:"region"`
 		PrivacyLevel string `json:"privacyLevel"`
 	} `json:"region"`
 	Gender struct {
