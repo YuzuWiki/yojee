@@ -38,8 +38,8 @@ func (ctx *Context) PhpSessID() string {
 	return ctx.sessionID
 }
 
-// Uuid return pixiv uid (if phpsessid is effective)
-func (ctx *Context) Uuid() (int64, error) {
+// Pid return pixiv uid (if phpsessid is effective)
+func (ctx *Context) Pid() (int64, error) {
 	if ctx.uid == 0 {
 
 		uid, err := getUid(ctx.Client())
@@ -75,8 +75,8 @@ func (ctx *Context) Value(key string) string {
 	return ""
 }
 
-func NewContext(sessid string) *Context {
-	return &Context{
+func NewContext(sessid string) Context {
+	return Context{
 		sessionID: sessid,
 	}
 }

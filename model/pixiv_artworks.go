@@ -5,8 +5,7 @@ import "time"
 type PixivIllustMod struct {
 	BaseMod
 
-	UUID string `gorm:"type:varchar(128)" json:"uuid"`
-	PID  int64  `gorm:"type:bigint;column:pid" json:"pid"`
+	PID int64 `gorm:"type:bigint;column:pid" json:"pid"`
 
 	IllustId      int64      `gorm:"type:bigint;column:illust_id" json:"illust_id"`
 	Title         string     `gorm:"type:text;column:title" json:"title"`
@@ -17,11 +16,14 @@ type PixivIllustMod struct {
 	CreateDate    *time.Time `gorm:"type:timestamp;column:create_date" json:"create_date"`
 }
 
+func (PixivIllustMod) TableName() string {
+	return "pixiv_illust"
+}
+
 type PixivMangaMod struct {
 	BaseMod
 
-	UUID string `gorm:"type:varchar(128)" json:"uuid"`
-	PID  int64  `gorm:"type:bigint;column:pid" json:"pid"`
+	PID int64 `gorm:"type:bigint;column:pid" json:"pid"`
 
 	MangaId       int64      `gorm:"type:bigint;column:manga_id" json:"manga_id"`
 	Title         string     `gorm:"type:text;column:title" json:"title"`
@@ -33,11 +35,14 @@ type PixivMangaMod struct {
 	CreateDate    *time.Time `gorm:"type:timestamp;column:create_date" json:"create_date"`
 }
 
+func (PixivMangaMod) TableName() string {
+	return "pixiv_manga"
+}
+
 type PixivNovelMod struct {
 	BaseMod
 
-	UUID string `gorm:"type:varchar(128)" json:"uuid"`
-	PID  int64  `gorm:"type:bigint;column:pid" json:"pid"`
+	PID int64 `gorm:"type:bigint;column:pid" json:"pid"`
 
 	NovelId        int64      `gorm:"type:bigint;column:novel_id" json:"novel_id"`
 	Title          string     `gorm:"type:text;column:title" json:"title"`
@@ -46,4 +51,8 @@ type PixivNovelMod struct {
 	WordageCount   int        `gorm:"type:int;default:0;column:wordage_count" json:"wordage_count"`
 	CreateDate     *time.Time `gorm:"type:timestamp;column:create_date" json:"create_date"`
 	LastUpdateDate *time.Time `gorm:"type:timestamp;column:last_update_date" json:"last_update_date"`
+}
+
+func (PixivNovelMod) TableName() string {
+	return "pixiv_novel"
 }

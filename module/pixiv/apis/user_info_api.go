@@ -25,13 +25,13 @@ func (api InfoAPI) Extra(ctx pixiv2.Context) (*ExtraDTO, error) {
 	return body, nil
 }
 
-func (api InfoAPI) Info(ctx pixiv2.Context, uuid int64) (*UserInfoDTO, error) {
+func (api InfoAPI) Info(ctx pixiv2.Context, pid int64) (*UserInfoDTO, error) {
 	query, err := pixiv2.NewQuery(map[string]interface{}{"lang": "en"})
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/users", uuid), query, nil)
+	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/users", pid), query, nil)
 	if err != nil {
 		return nil, err
 	}
