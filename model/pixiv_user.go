@@ -12,7 +12,6 @@ type PixivUserMod struct {
 	Gender string `gorm:"type:varchar(16);column:gender" json:"gender"`
 
 	Following int32 `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
-	Followers int32 `gorm:"type:int;default:0;column:followers;'粉丝数量'" json:"followers"`
 }
 
 func (PixivUserMod) TableName() string {

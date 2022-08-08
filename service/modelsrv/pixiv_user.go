@@ -1,4 +1,4 @@
-package model
+package modelsrv
 
 import (
 	"errors"
@@ -18,7 +18,7 @@ func (srv *PixivUser) findUser(db *gorm.DB, pid int64) (*model.PixivUserMod, err
 
 	var user model.PixivUserMod
 	if db.Raw(
-		"SELECT * FROM yojee.pixiv_user WHERE pid = ? AND is_deleted=0 LIMIT 1;", pid,
+		"SELECT * FROM pixiv_user WHERE pid = ? AND is_deleted=false LIMIT 1;", pid,
 	).Scan(&user).RecordNotFound() {
 		return &user, nil
 	}
@@ -30,9 +30,9 @@ func (srv *PixivUser) FindUser(pid int64) (*model.PixivUserMod, error) {
 }
 
 // InsertUser will insert user data
-func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO, extra apis.ExtraDTO) error {
+func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO) error {
 	// 删除原有记录
-	if err := tx.Exec("UPDATE pixiv_user SET is_deleted = 1 WHERE pid=? AND is_deleted=0 LIMIT 1;").Error; err != nil {
+	if err := tx.Exec("UPDATE pixiv_user SET is_deleted=true WHERE pid=? AND is_deleted=false LIMIT 1;").Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -43,8 +43,7 @@ func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO, extra apis.
 		Avatar:    info.Avatar,
 		Region:    info.Region.Name,
 		Gender:    info.Gender.Name,
-		Following: extra.Following,
-		Followers: extra.Followers,
+		Following: info.Following,
 	}).Error; err != nil {
 		tx.Rollback()
 		return err
@@ -57,7 +56,7 @@ func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO, extra apis.
 	return nil
 }
 
-func (srv *PixivUser) InsertUser(info apis.UserInfoDTO, extra apis.ExtraDTO) error {
+func (srv *PixivUser) InsertUser(info apis.UserInfoDTO) error {
 	db := global.DB()
 
 	user, err := srv.findUser(db, info.UserID)
@@ -69,11 +68,10 @@ func (srv *PixivUser) InsertUser(info apis.UserInfoDTO, extra apis.ExtraDTO) err
 		user.Avatar == info.Avatar &&
 		user.Gender == info.Gender.Name &&
 		user.Region == info.Region.Name &&
-		user.Following == extra.Following &&
-		user.Followers == extra.Followers {
+		user.Following == info.Following {
 		// 若无更新， 则pass
 		return nil
 	}
 
-	return srv.insertUser(db.Begin(), info, extra)
+	return srv.insertUser(db.Begin(), info)
 }

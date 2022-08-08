@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS pixiv_user
     region     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user region',
     gender     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user gender',
     following  INT          DEFAULT 0   COMMENT '关注数量',
-    followers  INT          DEFAULT 0   COMMENT '粉丝数量',
 
     INDEX idx_pid (pid)
 ) CHARACTER SET utf8;

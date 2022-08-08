@@ -333,7 +333,7 @@ type UserInfoDTO struct {
 	Name       string `json:"name"`
 	Avatar     string `json:"imageBig"`
 	IsFollowed bool   `json:"isFollowed"`
-	Following  int    `json:"following"`
+	Following  int32  `json:"following"`
 	Region     struct {
 		Name         string `json:"region"`
 		PrivacyLevel string `json:"privacyLevel"`

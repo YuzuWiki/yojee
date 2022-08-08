@@ -5,7 +5,7 @@ import "time"
 type PixivIllustMod struct {
 	BaseMod
 
-	PID int64 `gorm:"type:bigint;column:pid" json:"pid"`
+	Pid int64 `gorm:"type:bigint;column:pid" json:"pid"`
 
 	IllustId      int64      `gorm:"type:bigint;column:illust_id" json:"illust_id"`
 	Title         string     `gorm:"type:text;column:title" json:"title"`

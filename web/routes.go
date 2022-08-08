@@ -9,4 +9,6 @@ func (svr *Server) RegisterRoutes() {
 	alive := controller.AliveController{}
 	svr.GET("/alive", alive.Alive)
 
+	pixiv := controller.PixivController{}
+	svr.GET("/pixiv/user/Sync", pixiv.Sync)
 }
