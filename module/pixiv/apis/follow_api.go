@@ -64,9 +64,9 @@ func following(ctx pixiv2.Context, uid int32, rest string, limit int, offset int
 	return &body, nil
 }
 
-func (api FollowAPI) FollowingShow(ctx pixiv2.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
-	return following(ctx, uid, Show, limit, offset)
-}
-func (api FollowAPI) FollowingHide(ctx pixiv2.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
+func (api FollowAPI) FollowingUsers(ctx pixiv2.Context, uid int32, limit int, offset int, isShow bool) (*FollowDTO, error) {
+	if isShow {
+		return following(ctx, uid, Show, limit, offset)
+	}
 	return following(ctx, uid, Hide, limit, offset)
 }

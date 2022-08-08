@@ -117,41 +117,58 @@ CREATE TABLE IF NOT EXISTS pixiv_novel
     INDEX idx_illust (pid, novel_id)
 ) CHARACTER SET utf8;
 
+#
+# CREATE TABLE IF  NOT EXISTS pixiv_illust_tag (
+#     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
+#
+#     illust_id       BIGINT      NOT NULL COMMENT 'pixiv illustId',
+#     tag_id          BIGINT      NOT NULL COMMENT 'tag id',
+#
+#     INDEX idx_illust_tag (illust_id, tag_id)
+# ) CHARACTER SET utf8;
+#
+#
+# CREATE TABLE IF  NOT EXISTS pixiv_manga_tag (
+#     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
+#
+#     manga_id        BIGINT      NOT NULL    COMMENT 'pixiv mangaId',
+#     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
+#
+#     INDEX idx_illust_tag (manga_id, tag_id)
+# ) CHARACTER SET utf8;
+#
+#
+# CREATE TABLE IF  NOT EXISTS pixiv_novel_tag (
+#     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
+#
+#     novel_id        BIGINT      NOT NULL    COMMENT 'pixiv novel id',
+#     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
+#
+#     INDEX idx_illust_tag (novel_id, tag_id)
+# ) CHARACTER SET utf8;
 
-CREATE TABLE IF  NOT EXISTS pixiv_illust_tag (
+
+
+CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
 
-    illust_id       BIGINT      NOT NULL COMMENT 'pixiv illustId',
-    tag_id          BIGINT      NOT NULL COMMENT 'tag id',
+    art_id          BIGINT      NOT NULL    COMMENT 'artwork id',
+    art_type        VARCHAR(64) NOT NULL    COMMENT 'artwork type',
 
-    INDEX idx_illust_tag (illust_id, tag_id)
-) CHARACTER SET utf8;
-
-
-CREATE TABLE IF  NOT EXISTS pixiv_manga_tag (
-    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
-
-    manga_id        BIGINT      NOT NULL    COMMENT 'pixiv mangaId',
     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
 
-    INDEX idx_illust_tag (manga_id, tag_id)
-) CHARACTER SET utf8;
-
-
-CREATE TABLE IF  NOT EXISTS pixiv_novel_tag (
-    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
-
-    novel_id        BIGINT      NOT NULL    COMMENT 'pixiv novel id',
-    tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
-
-    INDEX idx_illust_tag (novel_id, tag_id)
+    INDEX idx_art_tag (art_type, tag_id, art_id),
+    INDEX idx_art (art_type, art_id)
 ) CHARACTER SET utf8;
