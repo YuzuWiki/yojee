@@ -4,6 +4,7 @@ func init() {
 	InitLogger()
 
 	Logger.Debug().Msg("global init.....")
+	initRedis()
 	InitDB()
 	InitCron()
 
