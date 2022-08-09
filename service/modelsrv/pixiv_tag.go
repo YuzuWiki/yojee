@@ -2,64 +2,49 @@ package modelsrv
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
 )
+
+const _CacheTagPrefix = "pixiv:tag:cache:"
 
 type PixivTags struct{}
 
-func (PixivTags) FindByArtId(category string, artId int64) (*[]model.PixivTagMod, error) {
-	if category != apis.Illust && category != apis.Manga && category != apis.Novel {
-		return nil, fmt.Errorf("category(%s) not support", category)
-	}
 
-	db := global.DB()
-
-	var tags []model.PixivTagMod
-	if err := db.Exec(`
-		SELECT
-			tag.id          AS id,
-			tag.name        AS name,
-			tag.created_at  AS created_at,
-			tag.updated_at  AS updated_at,
-			tag.is_deleted  AS is_deleted
-		FROM pixiv_tag 			AS tag
-		JOIN pixiv_artwork_tag  AS pag
-			ON tag.id=pag.tag_id AND pag.is_deleted=false
-		WHERE pag.art_type=? AND pag.art_id=?;`, category, artId,
-	).Scan(&tags).Error; err != nil {
-		return nil, err
-	}
-
-	return &tags, nil
-}
-
-func (PixivTags) FindByName(name string) (*[]model.PixivTagMod, error) {
+func (PixivTags) FindID(name string) (uint64, error) {
 	if len(name) == 0 {
-		return nil, fmt.Errorf("miss tag name")
+		return 0, fmt.Errorf("miss tag name")
 	}
 
-	db := global.DB()
-
-	var tags []model.PixivTagMod
-	if err := db.Exec(`SELECT * FROM pixiv_tag WHERE name=? AND is_deleted=false;`, name).Scan(&tags).Error; err != nil {
-		return nil, err
+	if tagId, err := global.RDB().Get(_CacheTagPrefix + name).Result(); err == nil {
+		return strconv.ParseUint(tagId, 10, 0)
 	}
 
-	return &tags, nil
+	var tag model.PixivTagMod
+	if err := global.DB().Exec(`SELECT * FROM pixiv_tag WHERE name=? AND is_deleted=false LIMIT 1;`, name).Scan(&tag).Error; err != nil {
+		return 0, err
+	}
+
+	global.RDB().Set(_CacheTagPrefix+tag.Name, tag.ID, 5*60*time.Second)
+	return tag.ID, nil
 }
 
-func (PixivTags) InsertTags(names ...string) int {
+func (PixivTags) Insert(names ...string) int {
 	var cnt int
-	db := global.DB()
+	db, rdb := global.DB(), global.RDB()
 	for _, name := range names {
-		if err := db.Create(model.PixivTagMod{Name: name}).Error; err != nil {
+		row := model.PixivTagMod{Name: name}
+		if err := db.Create(&row).Error; err != nil {
 			global.Logger.Warn().Msg(fmt.Sprintf("insert (%s) error,  %s", name, err.Error()))
 		} else {
 			cnt++
 		}
+
+		// set 缓存
+		rdb.Set(_CacheTagPrefix+row.Name, row.ID, 5*60*time.Second)
 	}
 	return cnt
 }

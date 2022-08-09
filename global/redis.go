@@ -23,6 +23,13 @@ func initRedis() {
 	})
 }
 
-func RedisDB() *redis.Client {
+func RDB() *redis.Client {
 	return rdb
+}
+
+func CloseRDB() error {
+	if rdb != nil {
+		return rdb.Close()
+	}
+	return nil
 }
