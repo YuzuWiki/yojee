@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS pixiv_user
     gender     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user gender',
     following  INT          DEFAULT 0   COMMENT '关注数量',
 
-    INDEX idx_pid (pid)
+    UNIQUE INDEX idx_pid (pid)
 ) CHARACTER SET utf8;
 
 
@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
-    name   TEXT NOT NULL COMMENT 'tage name, jp',
+    name   VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
 
-    INDEX idx_tag (name(10))
+    UNIQUE INDEX id_tag (name)
 ) CHARACTER SET utf8;
 
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS pixiv_illust
     bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
     create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
 
-    INDEX idx_illust (pid, illust_id)
+    UNIQUE INDEX idx_illust (pid, illust_id)
 ) CHARACTER SET utf8;
 
 
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS pixiv_manga
     bookmark_count BIGINT    DEFAULT 0  COMMENT '收藏欢数',
     create_date    TIMESTAMP NOT NULL   COMMENT '创建时间',
 
-    INDEX idx_illust (pid, manga_id)
+    UNIQUE INDEX idx_illust (pid, manga_id)
 ) CHARACTER SET utf8;
 
 
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS pixiv_novel
     create_date      TIMESTAMP NOT NULL     COMMENT '创建时间',
     last_update_date TIMESTAMP NOT NULL     COMMENT '最近更新时间',
 
-    INDEX idx_illust (pid, novel_id)
+    UNIQUE INDEX idx_illust (pid, novel_id)
 ) CHARACTER SET utf8;
 
 #
@@ -169,6 +169,6 @@ CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
 
     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
 
-    INDEX idx_art_tag (art_type, tag_id, art_id),
-    INDEX idx_art (art_type, art_id)
+    INDEX idx_art (art_type, art_id),
+    UNIQUE INDEX idx_art_tag (art_type, tag_id, art_id)
 ) CHARACTER SET utf8;
