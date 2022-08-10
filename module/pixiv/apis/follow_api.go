@@ -2,14 +2,15 @@ package apis
 
 import (
 	"encoding/json"
-	pixiv2 "github.com/YuzuWiki/yojee/module/pixiv"
 	"net/http"
+
+	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
 type FollowAPI struct{}
 
-func followLast(ctx pixiv2.Context, mode string, page int) (*FollowLatestDTO, error) {
-	query, err := pixiv2.NewQuery(map[string]interface{}{
+func followLast(ctx pixiv.Context, mode string, page int) (*FollowLatestDTO, error) {
+	query, err := pixiv.NewQuery(map[string]interface{}{
 		"p":    page,
 		"mode": mode,
 		"lang": "zh",
@@ -18,7 +19,7 @@ func followLast(ctx pixiv2.Context, mode string, page int) (*FollowLatestDTO, er
 		return nil, err
 	}
 
-	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/ajax/follow_latest", mode), query, nil)
+	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/follow_latest", mode), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -30,17 +31,17 @@ func followLast(ctx pixiv2.Context, mode string, page int) (*FollowLatestDTO, er
 	return body, nil
 }
 
-func (api FollowAPI) Illusts(ctx pixiv2.Context, page int) (*FollowLatestDTO, error) {
+func (api FollowAPI) Illusts(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Illust, page)
 }
 
-func (api FollowAPI) Novel(ctx pixiv2.Context, page int) (*FollowLatestDTO, error) {
+func (api FollowAPI) Novel(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Novel, page)
 }
 
-func following(ctx pixiv2.Context, uid int32, rest string, limit int, offset int) (*FollowDTO, error) {
+func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int) (*FollowDTO, error) {
 	// 添加参数
-	query, err := pixiv2.NewQuery(map[string]interface{}{
+	query, err := pixiv.NewQuery(map[string]interface{}{
 		"offset": offset,
 		"limit":  limit,
 		"rest":   rest,
@@ -51,7 +52,7 @@ func following(ctx pixiv2.Context, uid int32, rest string, limit int, offset int
 		return nil, err
 	}
 
-	data, err := pixiv2.Request(ctx, http.MethodGet, pixiv2.Path("/ajax/user", uid, "/following"), query, nil)
+	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/following"), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,7 @@ func following(ctx pixiv2.Context, uid int32, rest string, limit int, offset int
 	return &body, nil
 }
 
-func (api FollowAPI) FollowingUsers(ctx pixiv2.Context, uid int32, limit int, offset int, isShow bool) (*FollowDTO, error) {
+func (api FollowAPI) FollowingUsers(ctx pixiv.Context, uid int32, limit int, offset int, isShow bool) (*FollowDTO, error) {
 	if isShow {
 		return following(ctx, uid, Show, limit, offset)
 	}
