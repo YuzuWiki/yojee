@@ -54,3 +54,7 @@ func (api InfoAPI) Info(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 	}
 	return userInfo, nil
 }
+
+func (api InfoAPI) Artwork(ctx pixiv.Context, pid int64) (*ProfileAllDTO, error) {
+	return profileInfo(ctx, pid)
+}

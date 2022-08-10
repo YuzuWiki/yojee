@@ -45,19 +45,6 @@ type BookMarkTagsDTO struct {
 ProfileAllDTO
 	profile all
 */
-type pickupDTO struct {
-	Types       string   `json:"types"`
-	Id          int64    `json:"id,string"`
-	Tags        []string `json:"tags"`
-	UserId      int64    `json:"userId,string"`
-	UserName    string   `json:"userName"`
-	Alt         string   `json:"alt"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Url         string   `json:"url"`
-	ContentUrl  string   `json:"contentUrl"`
-}
-
 type countDTO struct {
 	Illust int `json:"illust"`
 	Novel  int `json:"novel"`
@@ -100,10 +87,26 @@ func (dto *MangaMapDTO) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
+type NovelMapDTO map[string]struct{}
+
+func (dto *NovelMapDTO) UnmarshalJSON(body []byte) error {
+	if len(body) < 5 {
+		return nil
+	}
+
+	data := map[string]struct{}{}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return err
+	}
+
+	*dto = data
+	return nil
+}
+
 type ProfileAllDTO struct {
 	Illusts       IllustMapDTO     `json:"illusts"`
 	Manga         MangaMapDTO      `json:"manga"`
-	Pickup        []pickupDTO      `json:"pickup"`
+	Novel         NovelMapDTO      `json:"novels"`
 	BookmarkCount bookmarkCountDTO `json:"bookmark_count"`
 }
 

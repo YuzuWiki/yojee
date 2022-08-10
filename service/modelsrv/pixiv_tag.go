@@ -13,7 +13,6 @@ const _CacheTagPrefix = "pixiv:tag:cache:"
 
 type PixivTags struct{}
 
-
 func (PixivTags) FindID(name string) (uint64, error) {
 	if len(name) == 0 {
 		return 0, fmt.Errorf("miss tag name")

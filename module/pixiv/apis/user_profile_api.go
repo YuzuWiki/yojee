@@ -9,8 +9,9 @@ import (
 
 type ProfileAPI struct{}
 
-func (api ProfileAPI) All(ctx pixiv.Context, uid int64) (*ProfileAllDTO, error) {
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user/", uid, "/profile", All), nil, nil)
+// profileInfo return user's  profile (all)
+func profileInfo(ctx pixiv.Context, pid int64) (*ProfileAllDTO, error) {
+	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user/", pid, "/profile", All), nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -22,8 +23,12 @@ func (api ProfileAPI) All(ctx pixiv.Context, uid int64) (*ProfileAllDTO, error) 
 	return body, err
 }
 
-func (api ProfileAPI) Top(ctx pixiv.Context, uid int64) (*ProfileTopDTO, error) {
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user/", uid, "/profile", Top), nil, nil)
+func (api ProfileAPI) All(ctx pixiv.Context, pid int64) (*ProfileAllDTO, error) {
+	return profileInfo(ctx, pid)
+}
+
+func (api ProfileAPI) Top(ctx pixiv.Context, pid int64) (*ProfileTopDTO, error) {
+	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user/", pid, "/profile", Top), nil, nil)
 	if err != nil {
 		return nil, err
 	}
