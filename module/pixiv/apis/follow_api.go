@@ -31,11 +31,11 @@ func followLast(ctx pixiv.Context, mode string, page int) (*FollowLatestDTO, err
 	return body, nil
 }
 
-func (api FollowAPI) Illusts(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
+func (FollowAPI) Illusts(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Illust, page)
 }
 
-func (api FollowAPI) Novel(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
+func (FollowAPI) Novel(ctx pixiv.Context, page int) (*FollowLatestDTO, error) {
 	return followLast(ctx, Novel, page)
 }
 
@@ -66,6 +66,6 @@ func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int)
 }
 
 // Following return ShowFollowing User
-func (api FollowAPI) Following(ctx pixiv.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
+func (FollowAPI) Following(ctx pixiv.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
 	return following(ctx, uid, Show, limit, offset)
 }

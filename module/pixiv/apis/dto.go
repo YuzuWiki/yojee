@@ -17,8 +17,8 @@ type workDTO struct {
 	PageCount      int       `json:"pageCount"`
 	IsBookmarkable bool      `json:"isBookmarkable"`
 	Alt            string    `json:"alt"`
-	CreateDate     time.Time `json:"createDate"`
-	UpdateDate     time.Time `json:"updateDate"`
+	CreateDate     time.Time `json:"createDate,string"`
+	UpdateDate     time.Time `json:"updateDate,string"`
 }
 type BookmarkDTO struct {
 	Works []workDTO `json:"works"`
@@ -329,8 +329,6 @@ type FollowDTO struct {
 	Users []followUserDTO `json:"users"`
 }
 
-//
-
 type UserInfoDTO struct {
 	UserID     int64  `json:"userId,string"`
 	Name       string `json:"name"`
@@ -345,4 +343,24 @@ type UserInfoDTO struct {
 		Name         string `json:"name"`
 		PrivacyLevel string `json:"privacyLevel"`
 	} `json:"gender"`
+}
+
+// ArtworkIllustDTO Artwork - Illust info
+// https://www.pixiv.net/ajax/illust/90735220?lang=jp
+type ArtworkIllustDTO struct {
+	Id            int64     `json:"id,string"`
+	Title         string    `json:"title"`
+	Description   string    `json:"description"`
+	LikeCount     int64     `json:"likeCount"`
+	BookmarkCount int64     `json:"bookmarkCount"`
+	ViewCount     int64     `json:"viewCount"`
+	CreateDate    time.Time `json:"createDate,string"`
+	UpdateDate    time.Time `json:"updateDate,string"`
+
+	Tags struct {
+		Tags []struct {
+			Tag    string `json:"tag"`
+			Romaji string `json:"romaji"`
+		} `json:"tags"`
+	} `json:"tags"`
 }

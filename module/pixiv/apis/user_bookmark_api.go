@@ -9,7 +9,7 @@ import (
 
 type BookMarkAPI struct{}
 
-func (api BookMarkAPI) FindShow(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookmarkDTO, error) {
+func (BookMarkAPI) FindShow(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookmarkDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"tag":    tag,
 		"limit":  limit,
@@ -34,7 +34,7 @@ func (api BookMarkAPI) FindShow(ctx pixiv.Context, uid int64, tag string, offset
 	return body, nil
 }
 
-func (api BookMarkAPI) FindHide(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookmarkDTO, error) {
+func (BookMarkAPI) FindHide(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookmarkDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"tag":    tag,
 		"limit":  limit,
@@ -59,7 +59,7 @@ func (api BookMarkAPI) FindHide(ctx pixiv.Context, uid int64, tag string, offset
 	return body, nil
 }
 
-func (api BookMarkAPI) GetIllustTags(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookMarkTagsDTO, error) {
+func (BookMarkAPI) GetIllustTags(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookMarkTagsDTO, error) {
 	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmark/tags"), nil, nil)
 	if err != nil {
 		return nil, err
