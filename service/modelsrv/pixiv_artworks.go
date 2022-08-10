@@ -2,6 +2,7 @@ package modelsrv
 
 import (
 	"fmt"
+
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
 	"github.com/YuzuWiki/yojee/module/pixiv/apis"
@@ -39,7 +40,7 @@ func (PixivArtworks) FindNovels(pid int64) (*[]model.PixivNovelMod, error) {
 	return &mangas, nil
 }
 
-func (PixivArtworks) FindTags(category string, artId int64) (*[]model.PixivTagMod, error) {
+func findTags(category string, artId int64) (*[]model.PixivTagMod, error) {
 	if category != apis.Illust && category != apis.Manga && category != apis.Novel {
 		return nil, fmt.Errorf("category(%s) not support", category)
 	}
@@ -63,4 +64,25 @@ func (PixivArtworks) FindTags(category string, artId int64) (*[]model.PixivTagMo
 	}
 
 	return &tags, nil
+}
+
+func (PixivArtworks) FindIllustTags(artId int64) (*[]model.PixivTagMod, error) {
+	return findTags(apis.Illust, artId)
+}
+
+func (PixivArtworks) FindMangaTags(artId int64) (*[]model.PixivTagMod, error) {
+	return findTags(apis.Manga, artId)
+}
+
+func (PixivArtworks) FindNovelTags(artId int64) (*[]model.PixivTagMod, error) {
+	return findTags(apis.Novel, artId)
+}
+
+func (PixivArtworks) InsertIllust() {
+}
+
+func (PixivArtworks) InsertManga() {
+}
+
+func (PixivArtworks) InsertNovel() {
 }
