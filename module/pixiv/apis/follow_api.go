@@ -65,9 +65,7 @@ func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int)
 	return &body, nil
 }
 
-func (api FollowAPI) FollowingUsers(ctx pixiv.Context, uid int32, limit int, offset int, isShow bool) (*FollowDTO, error) {
-	if isShow {
-		return following(ctx, uid, Show, limit, offset)
-	}
-	return following(ctx, uid, Hide, limit, offset)
+// Following return ShowFollowing User
+func (api FollowAPI) Following(ctx pixiv.Context, uid int32, limit int, offset int) (*FollowDTO, error) {
+	return following(ctx, uid, Show, limit, offset)
 }
