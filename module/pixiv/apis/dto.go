@@ -345,13 +345,16 @@ type UserInfoDTO struct {
 	} `json:"gender"`
 }
 
-// ArtworkIllustDTO Artwork - Illust info
-// https://www.pixiv.net/ajax/illust/90735220?lang=jp
-type ArtworkIllustDTO struct {
+// ArtworkDTO Artwork
+// illust: https://www.pixiv.net/ajax/illust/90735220?lang=jp
+// manga: https://www.pixiv.net/ajax/illust/28819260
+// novel: https://www.pixiv.net/ajax/novel/18132849
+type ArtworkDTO struct {
 	Id            int64     `json:"id,string"`
 	UserId        int64     `json:"userId,string"`
 	Title         string    `json:"title"`
 	Description   string    `json:"description"`
+	PageCount     int64     `json:"pageCount,string"`
 	LikeCount     int64     `json:"likeCount"`
 	BookmarkCount int64     `json:"bookmarkCount"`
 	ViewCount     int64     `json:"viewCount"`
