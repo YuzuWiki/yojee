@@ -349,6 +349,7 @@ type UserInfoDTO struct {
 // https://www.pixiv.net/ajax/illust/90735220?lang=jp
 type ArtworkIllustDTO struct {
 	Id            int64     `json:"id,string"`
+	UserId        int64     `json:"userId,string"`
 	Title         string    `json:"title"`
 	Description   string    `json:"description"`
 	LikeCount     int64     `json:"likeCount"`

@@ -15,7 +15,7 @@ func (ArtworkAPI) Illust(ctx pixiv.Context, artId int64) (*ArtworkIllustDTO, err
 	if err != nil {
 		return nil, err
 	}
-	// https://www.pixiv.net/ajax/illust/90735220?lang=jp
+
 	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/illust", artId), query, nil)
 	if err != nil {
 		return nil, err

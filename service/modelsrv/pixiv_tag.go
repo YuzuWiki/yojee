@@ -37,7 +37,7 @@ func (PixivTags) Insert(names ...string) int {
 	for _, name := range names {
 		row := model.PixivTagMod{Name: name}
 		if err := db.Create(&row).Error; err != nil {
-			global.Logger.Warn().Msg(fmt.Sprintf("insert (%s) error,  %s", name, err.Error()))
+			global.Logger.Warn().Msg(fmt.Sprintf("insert tag(%s) error,  %s", name, err.Error()))
 		} else {
 			cnt++
 		}

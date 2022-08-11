@@ -78,11 +78,28 @@ func (PixivArtworks) FindNovelTags(artId int64) (*[]model.PixivTagMod, error) {
 	return findTags(apis.Novel, artId)
 }
 
-func (PixivArtworks) InsertIllust() {
+func (PixivArtworks) InsertIllust(data apis.ArtworkIllustDTO) (int64, error) {
+	row := model.PixivIllustMod{
+		Pid:           data.UserId,
+		IllustId:      data.Id,
+		Title:         data.Title,
+		Description:   data.Description,
+		ViewCount:     data.ViewCount,
+		LikeCount:     data.LikeCount,
+		BookmarkCount: data.BookmarkCount,
+		CreateDate:    &data.CreateDate,
+	}
+	if err := global.DB().FirstOrCreate(&row, model.PixivIllustMod{Pid: data.UserId, IllustId: data.Id}).Error; err != nil {
+		global.Logger.Error().Msg(fmt.Sprintf("insert illust(%d) error,  %s", data.Id, err.Error()))
+		return 0, err
+	}
+	return int64(row.ID), nil
 }
 
 func (PixivArtworks) InsertManga() {
+	//	TODO
 }
 
 func (PixivArtworks) InsertNovel() {
+	// TODO
 }
