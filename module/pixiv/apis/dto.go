@@ -364,7 +364,7 @@ type ArtworkDTO struct {
 
 	Tags struct {
 		Tags []struct {
-			Tag    string `json:"tag"`
+			Name   string `json:"tag"`
 			Romaji string `json:"romaji"`
 		} `json:"tags"`
 	} `json:"tags"`

@@ -3,7 +3,8 @@ package model
 type PixivTagMod struct {
 	BaseMod
 
-	Name string `gorm:"type:VARCHAR(512);column:name" json:"name"`
+	Name   string `gorm:"type:VARCHAR(512);column:name" json:"name"`
+	Romaji string `gorm:"type:VARCHAR(512);column:romaji" json:"romaji"`
 }
 
 func (PixivTagMod) TableName() string {

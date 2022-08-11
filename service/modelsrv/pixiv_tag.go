@@ -13,13 +13,13 @@ const _CacheTagPrefix = "pixiv:tag:cache:"
 
 type PixivTag struct{}
 
-func (PixivTag) FindID(name string) (uint64, error) {
+func (PixivTag) FindID(name string) (int64, error) {
 	if len(name) == 0 {
 		return 0, fmt.Errorf("miss tag name")
 	}
 
 	if tagId, err := global.RDB().Get(_CacheTagPrefix + name).Result(); err == nil {
-		return strconv.ParseUint(tagId, 10, 0)
+		return strconv.ParseInt(tagId, 10, 0)
 	}
 
 	var tag model.PixivTagMod
@@ -28,22 +28,21 @@ func (PixivTag) FindID(name string) (uint64, error) {
 	}
 
 	global.RDB().Set(_CacheTagPrefix+tag.Name, tag.ID, 5*60*time.Second)
-	return tag.ID, nil
+	return int64(tag.ID), nil
 }
 
-func (PixivTag) Insert(names ...string) int {
-	var cnt int
-	db, rdb := global.DB(), global.RDB()
-	for _, name := range names {
-		row := model.PixivTagMod{Name: name}
-		if err := db.Create(&row).Error; err != nil {
-			global.Logger.Warn().Msg(fmt.Sprintf("insert tag(%s) error,  %s", name, err.Error()))
-		} else {
-			cnt++
-		}
-
-		// set 缓存
-		rdb.Set(_CacheTagPrefix+row.Name, row.ID, 5*60*time.Second)
+func (PixivTag) Insert(name, romaji string) (int64, error) {
+	rdb := global.RDB()
+	if tagId, err := rdb.Get(_CacheTagPrefix + name).Result(); err == nil {
+		return strconv.ParseInt(tagId, 10, 0)
 	}
-	return cnt
+
+	row := model.PixivTagMod{Name: name}
+	if err := global.DB().FirstOrCreate(&row, &model.PixivTagMod{Name: name}).Error; err != nil {
+		return 0, err
+	}
+
+	// set 缓存
+	rdb.Set(_CacheTagPrefix+row.Name, row.ID, 5*60*time.Second)
+	return int64(row.ID), nil
 }

@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     name   VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
+    romaji VARCHAR(512) NOT NULL Comment 'tage romaji, jp',
 
     UNIQUE INDEX id_tag (name)
 ) CHARACTER SET utf8;
@@ -170,7 +171,7 @@ CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
 
     INDEX idx_art (art_type, art_id),
-    UNIQUE INDEX idx_art_tag (art_type, tag_id, art_id)
+    UNIQUE INDEX idx_art_tag (art_type, art_id, tag_id)
 ) CHARACTER SET utf8;
 
 

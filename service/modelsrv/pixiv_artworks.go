@@ -10,36 +10,17 @@ import (
 
 type PixivArtwork struct{}
 
-func find(pid int64, artType string) (*[]model.PixivArtworkMod, error) {
-	db := global.DB()
-
+func (PixivArtwork) Find(artType string, pid int64) (*[]model.PixivArtworkMod, error) {
 	var artworks []model.PixivArtworkMod
-	if err := db.Exec("SELECT * FROM pixiv_artwork WHERE pid=? AND art_type=? AND is_deleted=false;", pid, artType).Find(&artworks).Error; err != nil {
+	if err := global.DB().Exec("SELECT * FROM pixiv_artwork WHERE pid=? AND art_type=? AND is_deleted=false;", pid, artType).Find(&artworks).Error; err != nil {
 		return nil, err
 	}
 	return &artworks, nil
 }
-func (PixivArtwork) FindIllustrates(pid int64) (*[]model.PixivArtworkMod, error) {
-	return find(pid, apis.Illust)
-}
 
-func (PixivArtwork) FindMangas(pid int64) (*[]model.PixivArtworkMod, error) {
-	return find(pid, apis.Manga)
-}
-
-func (PixivArtwork) FindNovels(pid int64) (*[]model.PixivArtworkMod, error) {
-	return find(pid, apis.Novel)
-}
-
-func findTags(category string, artId int64) (*[]model.PixivTagMod, error) {
-	if category != apis.Illust && category != apis.Manga && category != apis.Novel {
-		return nil, fmt.Errorf("category(%s) not support", category)
-	}
-
-	db := global.DB()
-
+func (PixivArtwork) FindTags(artType string, artId int64) (*[]model.PixivTagMod, error) {
 	var tags []model.PixivTagMod
-	if err := db.Exec(`
+	if err := global.DB().Exec(`
 		SELECT
 			tag.id          AS id,
 			tag.name        AS name,
@@ -49,7 +30,7 @@ func findTags(category string, artId int64) (*[]model.PixivTagMod, error) {
 		FROM pixiv_tag 			AS tag
 		JOIN pixiv_artwork_tag  AS pag
 			ON tag.id=pag.tag_id AND pag.is_deleted=false
-		WHERE pag.art_type=? AND pag.art_id=?;`, category, artId,
+		WHERE pag.art_type=? AND pag.art_id=?;`, artType, artId,
 	).Scan(&tags).Error; err != nil {
 		return nil, err
 	}
@@ -57,19 +38,7 @@ func findTags(category string, artId int64) (*[]model.PixivTagMod, error) {
 	return &tags, nil
 }
 
-func (PixivArtwork) FindIllustTags(artId int64) (*[]model.PixivTagMod, error) {
-	return findTags(apis.Illust, artId)
-}
-
-func (PixivArtwork) FindMangaTags(artId int64) (*[]model.PixivTagMod, error) {
-	return findTags(apis.Manga, artId)
-}
-
-func (PixivArtwork) FindNovelTags(artId int64) (*[]model.PixivTagMod, error) {
-	return findTags(apis.Novel, artId)
-}
-
-func Insert(data apis.ArtworkDTO) (int64, error) {
+func (PixivArtwork) Insert(data apis.ArtworkDTO) (int64, error) {
 	row := model.PixivArtworkMod{
 		Pid:           data.Pid,
 		ArtId:         data.ArtId,
@@ -88,17 +57,15 @@ func Insert(data apis.ArtworkDTO) (int64, error) {
 	return int64(row.ID), nil
 }
 
-func (PixivArtwork) InsertIllust(data apis.ArtworkDTO) (int64, error) {
-	data.ArtType = apis.Illust
-	return Insert(data)
-}
-
-func (PixivArtwork) InsertManga(data apis.ArtworkDTO) (int64, error) {
-	data.ArtType = apis.Manga
-	return Insert(data)
-}
-
-func (PixivArtwork) InsertNovel(data apis.ArtworkDTO) (int64, error) {
-	data.ArtType = apis.Novel
-	return Insert(data)
+func (PixivArtwork) MarkTag(artType string, artId int64, tagId int64) error {
+	row := model.PixivArtworkTagMod{
+		ArtId:   artId,
+		ArtType: artType,
+		TagId:   tagId,
+	}
+	if err := global.DB().FirstOrCreate(&row, model.PixivArtworkTagMod{ArtId: artId, ArtType: artType, TagId: tagId}).Error; err != nil {
+		global.Logger.Error().Msg(err.Error())
+		return err
+	}
+	return nil
 }

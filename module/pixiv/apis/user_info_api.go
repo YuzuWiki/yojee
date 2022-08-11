@@ -13,20 +13,7 @@ import (
 
 type InfoAPI struct{}
 
-func (InfoAPI) Extra(ctx pixiv.Context) (*ExtraDTO, error) {
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", "extra"), nil, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	body := &ExtraDTO{}
-	if err := json.Unmarshal(data, body); err != nil {
-		return nil, err
-	}
-	return body, nil
-}
-
-func (InfoAPI) Info(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
+func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{"lang": "en"})
 	if err != nil {
 		return nil, err
