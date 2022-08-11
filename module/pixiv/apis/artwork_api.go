@@ -8,7 +8,7 @@ import (
 
 type ArtworkAPI struct{}
 
-func (ArtworkAPI) Illust(ctx pixiv.Context, artId int64) (*ArtworkIllustDTO, error) {
+func (ArtworkAPI) Illust(ctx pixiv.Context, artId int64) (*ArtworkDTO, error) {
 	query, err := pixiv.NewQuery(map[string]interface{}{
 		"lang": "jp",
 	})
@@ -21,7 +21,7 @@ func (ArtworkAPI) Illust(ctx pixiv.Context, artId int64) (*ArtworkIllustDTO, err
 		return nil, err
 	}
 
-	body := &ArtworkIllustDTO{}
+	body := &ArtworkDTO{}
 	if err := json.Unmarshal(data, body); err != nil {
 		return nil, err
 	}

@@ -10,34 +10,25 @@ import (
 
 type PixivArtworks struct{}
 
-func (PixivArtworks) FindIllustrates(pid int64) (*[]model.PixivIllustMod, error) {
+func find(pid int64, artType string) (*[]model.PixivArtworkMod, error) {
 	db := global.DB()
 
-	var illustrates []model.PixivIllustMod
-	if err := db.Exec("SELECT * FROM pixiv_illust WHERE is_deleted=false AND pid=?;", pid, false).Find(&illustrates).Error; err != nil {
+	var artworks []model.PixivArtworkMod
+	if err := db.Exec("SELECT * FROM pixiv_artwork WHERE pid=? AND art_type=? AND is_deleted=false;", pid, artType).Find(&artworks).Error; err != nil {
 		return nil, err
 	}
-	return &illustrates, nil
+	return &artworks, nil
+}
+func (PixivArtworks) FindIllustrates(pid int64) (*[]model.PixivArtworkMod, error) {
+	return find(pid, apis.Illust)
 }
 
-func (PixivArtworks) FindMangas(pid int64) (*[]model.PixivMangaMod, error) {
-	db := global.DB()
-
-	var mangas []model.PixivMangaMod
-	if err := db.Exec("SELECT * FROM pixiv_manga WHERE is_deleted=false AND pid=?;", pid, false).Find(&mangas).Error; err != nil {
-		return nil, err
-	}
-	return &mangas, nil
+func (PixivArtworks) FindMangas(pid int64) (*[]model.PixivArtworkMod, error) {
+	return find(pid, apis.Manga)
 }
 
-func (PixivArtworks) FindNovels(pid int64) (*[]model.PixivNovelMod, error) {
-	db := global.DB()
-
-	var mangas []model.PixivNovelMod
-	if err := db.Exec("SELECT * FROM pixiv_novel WHERE is_deleted=false AND pid=?;", pid, false).Find(&mangas).Error; err != nil {
-		return nil, err
-	}
-	return &mangas, nil
+func (PixivArtworks) FindNovels(pid int64) (*[]model.PixivArtworkMod, error) {
+	return find(pid, apis.Novel)
 }
 
 func findTags(category string, artId int64) (*[]model.PixivTagMod, error) {
@@ -78,10 +69,11 @@ func (PixivArtworks) FindNovelTags(artId int64) (*[]model.PixivTagMod, error) {
 	return findTags(apis.Novel, artId)
 }
 
-func (PixivArtworks) InsertIllust(data apis.ArtworkIllustDTO) (int64, error) {
-	row := model.PixivIllustMod{
+func insert(artType string, data apis.ArtworkDTO) (int64, error) {
+	row := model.PixivArtworkMod{
 		Pid:           data.UserId,
-		IllustId:      data.Id,
+		ArtId:         data.Id,
+		ArtType:       artType,
 		Title:         data.Title,
 		Description:   data.Description,
 		ViewCount:     data.ViewCount,
@@ -89,17 +81,21 @@ func (PixivArtworks) InsertIllust(data apis.ArtworkIllustDTO) (int64, error) {
 		BookmarkCount: data.BookmarkCount,
 		CreateDate:    &data.CreateDate,
 	}
-	if err := global.DB().FirstOrCreate(&row, model.PixivIllustMod{Pid: data.UserId, IllustId: data.Id}).Error; err != nil {
+	if err := global.DB().FirstOrCreate(&row, model.PixivArtworkMod{Pid: data.UserId, ArtType: artType, ArtId: data.Id}).Error; err != nil {
 		global.Logger.Error().Msg(fmt.Sprintf("insert illust(%d) error,  %s", data.Id, err.Error()))
 		return 0, err
 	}
 	return int64(row.ID), nil
 }
 
-func (PixivArtworks) InsertManga() {
-	//	TODO
+func (PixivArtworks) InsertIllust(data apis.ArtworkDTO) (int64, error) {
+	return insert(apis.Illust, data)
 }
 
-func (PixivArtworks) InsertNovel() {
-	// TODO
+func (PixivArtworks) InsertManga(data apis.ArtworkDTO) (int64, error) {
+	return insert(apis.Manga, data)
+}
+
+func (PixivArtworks) InsertNovel(data apis.ArtworkDTO) (int64, error) {
+	return insert(apis.Novel, data)
 }

@@ -45,77 +45,77 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
 ) CHARACTER SET utf8;
 
 
-CREATE TABLE IF NOT EXISTS pixiv_illust
-(
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted     BOOL      DEFAULT FALSE COMMENT '是否删除',
-
-    # 作者信息
-    uid            BIGINT    NOT NULL COMMENT 'pixiv_user.id',
-    pid            BIGINT    NOT NULL COMMENT 'pixiv user id',
-
-    # 作品信息
-    illust_id      BIGINT    NOT NULL  COMMENT 'pixiv illustId',
-    title          TEXT                COMMENT 'pixiv title',
-    description    TEXT                COMMENT 'pixiv illust desc',
-    view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
-    like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
-    bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
-    create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
-
-    UNIQUE INDEX idx_illust (pid, illust_id)
-) CHARACTER SET utf8;
-
-
-CREATE TABLE IF NOT EXISTS pixiv_manga
-(
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted     BOOL      DEFAULT FALSE COMMENT '是否删除',
-
-    # 作者信息
-    uid            BIGINT    NOT NULL   COMMENT 'pixiv_user.id',
-    pid            BIGINT    NOT NULL   COMMENT 'pixiv user id',
-
-    # 作品信息
-    manga_id       BIGINT    NOT NULL   COMMENT 'pixiv mangaID',
-    title          TEXT                 COMMENT 'pixiv title',
-    description    TEXT                 COMMENT 'pixiv manga desc',
-    page_count     INT       DEFAULT 0  COMMENT '漫画作品页数',
-    view_count     BIGINT    DEFAULT 0  COMMENT '浏览数量',
-    like_count     BIGINT    DEFAULT 0  COMMENT '喜欢数',
-    bookmark_count BIGINT    DEFAULT 0  COMMENT '收藏欢数',
-    create_date    TIMESTAMP NOT NULL   COMMENT '创建时间',
-
-    UNIQUE INDEX idx_illust (pid, manga_id)
-) CHARACTER SET utf8;
-
-
-CREATE TABLE IF NOT EXISTS pixiv_novel
-(
-    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted       BOOL      DEFAULT FALSE COMMENT '是否删除',
-
-    # 作者信息
-    uid              BIGINT    NOT NULL     COMMENT 'pixiv_user.id',
-    pid              BIGINT    NOT NULL     COMMENT 'pixiv user id',
-
-    # 作品信息
-    novel_id         BIGINT    NOT NULL     COMMENT 'pixiv mangaID',
-    title            TEXT                   COMMENT 'pixiv title',
-    description      TEXT                   COMMENT 'pixiv novel caption',
-    chapter_count    INT       DEFAULT 0    COMMENT '章节数量, total',
-    wordage_count    BIGINT    DEFAULT 0    COMMENT '字数, publishedTotalCharacterCount',
-    create_date      TIMESTAMP NOT NULL     COMMENT '创建时间',
-    last_update_date TIMESTAMP NOT NULL     COMMENT '最近更新时间',
-
-    UNIQUE INDEX idx_illust (pid, novel_id)
-) CHARACTER SET utf8;
+# CREATE TABLE IF NOT EXISTS pixiv_illust
+# (
+#     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted     BOOL      DEFAULT FALSE COMMENT '是否删除',
+#
+#     # 作者信息
+#     uid            BIGINT    NOT NULL COMMENT 'pixiv_user.id',
+#     pid            BIGINT    NOT NULL COMMENT 'pixiv user id',
+#
+#     # 作品信息
+#     illust_id      BIGINT    NOT NULL  COMMENT 'pixiv illustId',
+#     title          TEXT                COMMENT 'pixiv title',
+#     description    TEXT                COMMENT 'pixiv illust desc',
+#     view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
+#     like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
+#     bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
+#     create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
+#
+#     UNIQUE INDEX idx_illust (pid, illust_id)
+# ) CHARACTER SET utf8;
+#
+#
+# CREATE TABLE IF NOT EXISTS pixiv_manga
+# (
+#     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted     BOOL      DEFAULT FALSE COMMENT '是否删除',
+#
+#     # 作者信息
+#     uid            BIGINT    NOT NULL   COMMENT 'pixiv_user.id',
+#     pid            BIGINT    NOT NULL   COMMENT 'pixiv user id',
+#
+#     # 作品信息
+#     manga_id       BIGINT    NOT NULL   COMMENT 'pixiv mangaID',
+#     title          TEXT                 COMMENT 'pixiv title',
+#     description    TEXT                 COMMENT 'pixiv manga desc',
+#     page_count     INT       DEFAULT 0  COMMENT '漫画作品页数',
+#     view_count     BIGINT    DEFAULT 0  COMMENT '浏览数量',
+#     like_count     BIGINT    DEFAULT 0  COMMENT '喜欢数',
+#     bookmark_count BIGINT    DEFAULT 0  COMMENT '收藏欢数',
+#     create_date    TIMESTAMP NOT NULL   COMMENT '创建时间',
+#
+#     UNIQUE INDEX idx_illust (pid, manga_id)
+# ) CHARACTER SET utf8;
+#
+#
+# CREATE TABLE IF NOT EXISTS pixiv_novel
+# (
+#     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+#     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+#     is_deleted       BOOL      DEFAULT FALSE COMMENT '是否删除',
+#
+#     # 作者信息
+#     uid              BIGINT    NOT NULL     COMMENT 'pixiv_user.id',
+#     pid              BIGINT    NOT NULL     COMMENT 'pixiv user id',
+#
+#     # 作品信息
+#     novel_id         BIGINT    NOT NULL     COMMENT 'pixiv mangaID',
+#     title            TEXT                   COMMENT 'pixiv title',
+#     description      TEXT                   COMMENT 'pixiv novel caption',
+#     chapter_count    INT       DEFAULT 0    COMMENT '章节数量, total',
+#     wordage_count    BIGINT    DEFAULT 0    COMMENT '字数, publishedTotalCharacterCount',
+#     create_date      TIMESTAMP NOT NULL     COMMENT '创建时间',
+#     last_update_date TIMESTAMP NOT NULL     COMMENT '最近更新时间',
+#
+#     UNIQUE INDEX idx_illust (pid, novel_id)
+# ) CHARACTER SET utf8;
 
 #
 # CREATE TABLE IF  NOT EXISTS pixiv_illust_tag (
@@ -171,4 +171,28 @@ CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
 
     INDEX idx_art (art_type, art_id),
     UNIQUE INDEX idx_art_tag (art_type, tag_id, art_id)
+) CHARACTER SET utf8;
+
+
+CREATE TABLE IF NOT EXISTS pixiv_artwork
+(
+    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+    is_deleted     BOOL         DEFAULT FALSE COMMENT '是否删除',
+
+    # 作品信息
+    pid            BIGINT       NOT NULL COMMENT 'pixiv user id',
+    art_id         BIGINT       NOT NULL COMMENT 'pixiv art_id',
+    art_type       VARCHAR(64)  NOT NULL  COMMENT 'pixiv art_type',
+
+    title          TEXT                COMMENT 'pixiv title',
+    description    TEXT                COMMENT 'pixiv illust desc',
+    page_count     BIGINT    DEFAULT 0 COMMENT '页数',
+    view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
+    like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
+    bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
+    create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
+
+    UNIQUE INDEX idx_illust (pid, art_type, art_id)
 ) CHARACTER SET utf8;
