@@ -350,8 +350,9 @@ type UserInfoDTO struct {
 // manga: https://www.pixiv.net/ajax/illust/28819260
 // novel: https://www.pixiv.net/ajax/novel/18132849
 type ArtworkDTO struct {
-	Id            int64     `json:"id,string"`
-	UserId        int64     `json:"userId,string"`
+	ArtId         int64 `json:"id,string"`
+	ArtType       string
+	Pid           int64     `json:"userId,string"`
 	Title         string    `json:"title"`
 	Description   string    `json:"description"`
 	PageCount     int64     `json:"pageCount,string"`

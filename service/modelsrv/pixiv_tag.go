@@ -11,9 +11,9 @@ import (
 
 const _CacheTagPrefix = "pixiv:tag:cache:"
 
-type PixivTags struct{}
+type PixivTag struct{}
 
-func (PixivTags) FindID(name string) (uint64, error) {
+func (PixivTag) FindID(name string) (uint64, error) {
 	if len(name) == 0 {
 		return 0, fmt.Errorf("miss tag name")
 	}
@@ -31,7 +31,7 @@ func (PixivTags) FindID(name string) (uint64, error) {
 	return tag.ID, nil
 }
 
-func (PixivTags) Insert(names ...string) int {
+func (PixivTag) Insert(names ...string) int {
 	var cnt int
 	db, rdb := global.DB(), global.RDB()
 	for _, name := range names {
