@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"net/http"
-
 	"github.com/PuerkitoBio/goquery"
+	"github.com/YuzuWiki/yojee/global"
+	"net/http"
 
 	"github.com/YuzuWiki/yojee/module/pixiv"
 )
@@ -29,17 +29,30 @@ func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 		return nil, err
 	}
 
-	userInfo := &UserInfoDTO{}
+	user := &struct {
+		User map[string]UserInfoDTO `json:"user"`
+	}{}
 	document.Find("#meta-preload-data").Each(func(i int, selection *goquery.Selection) {
-		if err := json.Unmarshal([]byte(selection.Text()), userInfo); err != nil {
+		var text string
+		if _text, isExist := selection.Attr("content"); !isExist {
+
+			return
+		} else {
+			text = _text
+		}
+
+		if err := json.Unmarshal([]byte(text), user); err != nil {
+			global.Logger.Error().Err(err)
 			return
 		}
 	})
 
-	if userInfo.UserID == 0 {
-		return nil, errors.New("not Found UserInfo")
+	for _, info := range user.User {
+		if info.UserID > 0 {
+			return &info, nil
+		}
 	}
-	return userInfo, nil
+	return nil, errors.New("not Found UserInfo")
 }
 
 func (InfoAPI) Artwork(ctx pixiv.Context, pid int64) (*ProfileAllDTO, error) {

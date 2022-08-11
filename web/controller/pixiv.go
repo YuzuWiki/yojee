@@ -2,13 +2,12 @@ package controller
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
+	"github.com/YuzuWiki/yojee/service/pixivsrv"
 )
 
 type PixivController struct {
@@ -17,39 +16,25 @@ type PixivController struct {
 
 func (ctr *PixivController) Sync(ctx *gin.Context) {
 	phpsessid := ctx.Query("phpsessid")
-	if len(phpsessid) == 0 {
-		ctx.JSON(400, fail(400, "Miss ssesid"))
+
+	pid, err := strconv.ParseInt(ctx.Query("pid"), 10, 0)
+	if len(phpsessid) == 0 || err != nil {
+		ctx.JSON(400, fail(400, "Miss pid"))
 		return
 	}
+	psrv := pixivsrv.NewService(phpsessid, 4, 0)
 
-	go func(s string) {
-		pCtx := pixiv.NewContext(s)
-
-		pid, err := pCtx.Pid()
-		if err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("UserInfo Error: invalid phpsessid, %s", s))
-			return
+	go func() {
+		if err := psrv.SyncUser(pid); err != nil {
+			global.Logger.Err(err).Msg(fmt.Sprintf("[SyncUser] phpsessid=%s  pid=%d", phpsessid, pid))
 		}
+	}()
 
-		db := global.DB()
-
-		var user model.PixivUserMod
-		if !db.Raw(
-			"SELECT user.id AS id FROM pixiv_user AS user WHERE user.pid = ? LIMIT 1;", pid,
-		).Scan(&user).RecordNotFound() {
-			data, err := apis.InfoAPI{}.Info(pCtx, pid)
-			if err != nil {
-				global.Logger.Error().Msg(fmt.Sprintf(" UserInfo Error: (%s) error=%s", phpsessid, err.Error()))
-				return
-			}
-
+	go func() {
+		if err := psrv.SyncArtworks(pid); err != nil {
+			global.Logger.Err(err).Msg(fmt.Sprintf("[SyncArtworks] phpsessid=%s  pid=%d", phpsessid, pid))
 		}
-
-		// 获取账户信息
-
-		tx := db.Begin()
-
-	}(phpsessid)
+	}()
 
 	ctx.JSON(200, success())
 	return

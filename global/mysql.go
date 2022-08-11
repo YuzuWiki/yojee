@@ -12,7 +12,7 @@ var db *gorm.DB
 
 func url() string {
 	return fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s?charset=utf8",
+		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=true",
 		os.Getenv("MYSQL_USER"),
 		os.Getenv("MYSQL_PASSWORD"),
 		os.Getenv("MYSQL_HOST"),

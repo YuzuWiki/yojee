@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/YuzuWiki/yojee/global"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -73,6 +74,7 @@ func Request(ctx Context, method string, u string, query *requests.Query, params
 	method = strings.ToUpper(method)
 	var fn func(string, *requests.Query, *requests.Params) (*http.Response, error)
 
+	global.Logger.Info().Msg(fmt.Sprintf("ctx is %+v", ctx))
 	client := ctx.Client()
 	switch method {
 	case http.MethodGet:

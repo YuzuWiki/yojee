@@ -1,9 +1,6 @@
 package modelsrv
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 
 	"github.com/YuzuWiki/yojee/global"
@@ -17,12 +14,12 @@ type PixivUser struct{}
 func (srv *PixivUser) findUser(db *gorm.DB, pid int64) (*model.PixivUserMod, error) {
 
 	var user model.PixivUserMod
-	if db.Raw(
-		"SELECT * FROM pixiv_user WHERE pid = ? AND is_deleted=false LIMIT 1;", pid,
-	).Scan(&user).RecordNotFound() {
-		return &user, nil
+	if err := db.Raw(
+		"SELECT * FROM pixiv_user WHERE pid=? AND is_deleted=false LIMIT 1;", pid,
+	).Scan(&user).Error; err != nil {
+		return nil, err
 	}
-	return nil, errors.New(fmt.Sprintf("not found user, pid(%d)", pid))
+	return &user, nil
 }
 
 func (srv *PixivUser) FindUser(pid int64) (*model.PixivUserMod, error) {
@@ -32,7 +29,7 @@ func (srv *PixivUser) FindUser(pid int64) (*model.PixivUserMod, error) {
 // InsertUser will insert user data
 func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO) error {
 	// 删除原有记录
-	if err := tx.Exec("UPDATE pixiv_user SET is_deleted=true WHERE pid=? AND is_deleted=false LIMIT 1;").Error; err != nil {
+	if err := tx.Raw("UPDATE pixiv_user SET is_deleted=true WHERE pid=? AND is_deleted=false LIMIT 1;").Error; err != nil {
 		tx.Rollback()
 		return err
 	}

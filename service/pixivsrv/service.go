@@ -118,3 +118,7 @@ func (srv *Service) SyncArtworks(pid int64) error {
 	}
 	return nil
 }
+
+func (srv *Service) Wait() error {
+	return srv.taskGroup.Wait()
+}
