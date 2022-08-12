@@ -22,7 +22,7 @@ func (ctr *PixivController) Sync(ctx *gin.Context) {
 		ctx.JSON(400, fail(400, "Miss pid"))
 		return
 	}
-	psrv := pixivsrv.NewService(phpsessid, 4, 0)
+	psrv := pixivsrv.NewService(phpsessid, 6, 10)
 
 	go func() {
 		if err := psrv.SyncUser(pid); err != nil {

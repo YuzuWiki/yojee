@@ -32,13 +32,18 @@ func (PixivTag) FindID(name string) (int64, error) {
 }
 
 func (PixivTag) Insert(name, romaji string) (int64, error) {
-	rdb := global.RDB()
+	rdb, db := global.RDB(), global.DB()
 	if tagId, err := rdb.Get(_CacheTagPrefix + name).Result(); err == nil {
 		return strconv.ParseInt(tagId, 10, 0)
 	}
 
-	row := model.PixivTagMod{Name: name}
-	if err := global.DB().FirstOrCreate(&row, &model.PixivTagMod{Name: name}).Error; err != nil {
+	row := model.PixivTagMod{Name: name, Romaji: romaji}
+	err := db.Create(&row).Error
+	if err != nil && !global.IsDuplicateEntry(err) {
+		return 0, err
+	}
+
+	if err := db.First(&row, &model.PixivTagMod{Name: name}).Error; err != nil {
 		return 0, err
 	}
 

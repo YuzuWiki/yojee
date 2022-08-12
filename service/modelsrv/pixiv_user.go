@@ -1,7 +1,7 @@
 package modelsrv
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
@@ -12,7 +12,6 @@ type PixivUser struct{}
 
 // FindUser return data from database
 func (srv *PixivUser) findUser(db *gorm.DB, pid int64) (*model.PixivUserMod, error) {
-
 	var user model.PixivUserMod
 	if err := db.Raw(
 		"SELECT * FROM pixiv_user WHERE pid=? AND is_deleted=false LIMIT 1;", pid,
@@ -54,8 +53,9 @@ func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO) error {
 }
 
 func (srv *PixivUser) InsertUser(info apis.UserInfoDTO) error {
-	db := global.DB()
-	user, _ := srv.findUser(db, info.UserID)
+	tx := global.DB().Begin()
+
+	user, _ := srv.findUser(tx, info.UserID)
 	if user != nil && user.Name == info.Name &&
 		user.Avatar == info.Avatar &&
 		user.Gender == info.Gender.Name &&
@@ -65,5 +65,5 @@ func (srv *PixivUser) InsertUser(info apis.UserInfoDTO) error {
 		return nil
 	}
 
-	return srv.insertUser(db.Begin(), info)
+	return srv.insertUser(tx, info)
 }

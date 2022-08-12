@@ -3,10 +3,8 @@ package pixivsrv
 import (
 	"fmt"
 	"strconv"
-	"sync"
 
-	"github.com/neilotoole/errgroup"
-	"golang.org/x/net/context"
+	"github.com/panjf2000/ants"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/module/pixiv"
@@ -17,11 +15,8 @@ import (
 type Service struct {
 	ctx pixiv.Context
 
-	// task channel
-	taskCtx context.Context
-
 	// task taskGroup
-	taskGroup *errgroup.Group
+	jobPool *ants.Pool
 
 	// srv apis
 	apiInfo    apis.InfoAPI
@@ -46,19 +41,23 @@ func (srv *Service) SyncUser(pid int64) error {
 	return nil
 }
 
-func (srv *Service) asyncArtTag(artType string, artId int64, tagName, romaji string) func() error {
-	return func() error {
+func (srv *Service) asyncArtTag(artType string, artId int64, tagName, romaji string) func() {
+	return func() {
 		tagId, err := srv.modTag.Insert(tagName, romaji)
 		if err != nil {
-			return err
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, tagName, err.Error()))
+			return
 		}
 
-		return srv.modArtwork.MarkTag(artType, artId, tagId)
+		if err := srv.modArtwork.MarkTag(artType, artId, tagId); err != nil {
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, tagName, err.Error()))
+		}
+		return
 	}
 }
 
-func (srv *Service) asyncArt(artType string, artId int64) func() error {
-	return func() error {
+func (srv *Service) asyncArt(artType string, artId int64) func() {
+	return func() {
 		var fn func(pixiv.Context, int64) (*apis.ArtworkDTO, error)
 		switch artType {
 		case apis.Illust:
@@ -68,23 +67,27 @@ func (srv *Service) asyncArt(artType string, artId int64) func() error {
 		case apis.Novel:
 			fn = srv.apiArtwork.Novel
 		default:
-			return fmt.Errorf(fmt.Sprintf("Unsuport ArtType (%s)", artType))
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArt] error: art_type=%s art_id=%d errmsg=Unsuport ArtType", artType, artId))
+			return
 		}
 
 		artwork, err := fn(srv.ctx, artId)
 		if err != nil {
-			return err
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArt] apiArtwork error: art_type=%s art_id=%d errmsg=%s", artType, artId, err.Error()))
+			return
 		}
-		global.Logger.Info().Msg(fmt.Sprintf("[asyncArt] artwork: artId=%d data=%+v", artId, artwork))
 
 		if _, err := srv.modArtwork.Insert(*artwork); err != nil {
-			return err
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArt] insert error: art_type=%s art_id=%d errmsg=%s", artType, artId, err.Error()))
+			return
 		}
 
 		for _, tag := range artwork.Tags.Tags {
-			srv.taskGroup.Go(srv.asyncArtTag(artType, artwork.ArtId, tag.Name, tag.Romaji))
+			if err := srv.jobPool.Submit(srv.asyncArtTag(artType, artwork.ArtId, tag.Name, tag.Romaji)); err != nil {
+				global.Logger.Error().Msg(fmt.Sprintf("[AsyncArt] Submit AsyncArtTag error: art_type=%s art_id=%d errmsg=%s", artType, artId, err.Error()))
+			}
 		}
-		return nil
+		return
 	}
 }
 
@@ -96,55 +99,36 @@ func (srv *Service) SyncArtworks(pid int64) error {
 	global.Logger.Info().Msg(fmt.Sprintf("[SyncArtworks] artwork: pid=%d data=%+v", pid, artwork))
 
 	for _artId := range artwork.Illusts {
-		global.Logger.Info().Msg(fmt.Sprintf("[SyncArtworks] artwork: _artId=%s", _artId))
 		if artId, err := strconv.ParseInt(_artId, 10, 0); err == nil {
-			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtworks] artwork: artId=%d", artId))
-
-			srv.taskGroup.Go(srv.asyncArt(apis.Illust, artId))
+			if err := srv.jobPool.Submit(srv.asyncArt(apis.Illust, artId)); err != nil {
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtworks] Submit AsyncArt error: art_type=%s art_id=%d errmsg=%s", apis.Illust, artId, err.Error()))
+			}
 		}
 	}
 
 	for _artId := range artwork.Manga {
 		if artId, err := strconv.ParseInt(_artId, 10, 0); err == nil {
-			srv.taskGroup.Go(srv.asyncArt(apis.Manga, artId))
+			if err := srv.jobPool.Submit(srv.asyncArt(apis.Manga, artId)); err != nil {
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtworks] Submit AsyncArt error: art_type=%s art_id=%d errmsg=%s", apis.Illust, artId, err.Error()))
+			}
 		}
 	}
 
 	for _artId := range artwork.Novel {
 		if artId, err := strconv.ParseInt(_artId, 10, 0); err == nil {
-			srv.taskGroup.Go(srv.asyncArt(apis.Novel, artId))
+			if err := srv.jobPool.Submit(srv.asyncArt(apis.Novel, artId)); err != nil {
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtworks] Submit AsyncArt error: art_type=%s art_id=%d errmsg=%s", apis.Illust, artId, err.Error()))
+			}
 		}
 	}
 	return nil
 }
 
-type ServiceInterface interface {
-	SyncUser(int64) error
-	SyncArtworks(int64) error
-}
-
-var pMu sync.Mutex
-var _services map[string]ServiceInterface
-
-func NewService(phpSessID string, numG int, qSize int) ServiceInterface {
-	if srv, isOk := _services[phpSessID]; isOk {
-		return srv
+func NewService(phpSessID string, numG int, qSize int) Service {
+	pool, _ := ants.NewPool(200)
+	pool.MaxBlockingTasks = 5
+	return Service{
+		ctx:     pixiv.NewContext(phpSessID),
+		jobPool: pool,
 	}
-
-	pMu.Lock()
-	defer pMu.Unlock()
-
-	taskG, ch := errgroup.WithContextN(context.Background(), numG, qSize)
-	srv := Service{
-		ctx:       pixiv.NewContext(phpSessID),
-		taskGroup: taskG,
-		taskCtx:   ch,
-	}
-	_services[phpSessID] = &srv
-
-	return &srv
-}
-
-func init() {
-	_services = map[string]ServiceInterface{}
 }
