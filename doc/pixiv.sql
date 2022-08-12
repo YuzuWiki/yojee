@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS pixiv_user
     gender     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user gender',
     following  INT          DEFAULT 0   COMMENT '关注数量',
 
-    UNIQUE INDEX idx_pid (pid)
+    INDEX idx_pid (pid, name)
 ) CHARACTER SET utf8;
 
 

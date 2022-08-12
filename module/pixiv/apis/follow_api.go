@@ -19,7 +19,7 @@ func followLast(ctx pixiv.Context, mode string, page int) (*FollowLatestDTO, err
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/follow_latest", mode), query, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax/follow_latest", mode), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int)
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/following"), query, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/following"), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,6 @@ func following(ctx pixiv.Context, uid int32, rest string, limit int, offset int)
 	if err := json.Unmarshal(data, &body); err != nil {
 		return nil, err
 	}
-
 	return &body, nil
 }
 

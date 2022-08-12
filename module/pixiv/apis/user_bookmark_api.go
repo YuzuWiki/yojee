@@ -21,7 +21,7 @@ func (BookMarkAPI) FindShow(ctx pixiv.Context, uid int64, tag string, offset int
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmarks"), query, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmarks"), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (BookMarkAPI) FindHide(ctx pixiv.Context, uid int64, tag string, offset int
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmarks"), query, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmarks"), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (BookMarkAPI) FindHide(ctx pixiv.Context, uid int64, tag string, offset int
 }
 
 func (BookMarkAPI) GetIllustTags(ctx pixiv.Context, uid int64, tag string, offset int, limit int) (*BookMarkTagsDTO, error) {
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmark/tags"), nil, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax/user", uid, "/illusts/bookmark/tags"), nil, nil)
 	if err != nil {
 		return nil, err
 	}

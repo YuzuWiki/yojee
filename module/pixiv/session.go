@@ -10,6 +10,8 @@ import (
 
 var Sessions *Session
 
+type _RequestMethod func(string, *requests.Query, *requests.Params) (*http.Response, error)
+
 type RequestInterface interface {
 	Get(string, *requests.Query, *requests.Params) (*http.Response, error)
 	Post(string, *requests.Query, *requests.Params) (*http.Response, error)
@@ -70,15 +72,18 @@ type Session struct {
 }
 
 func (s *Session) Get(sessionID string) RequestInterface {
-	client, isOk := s.pool[sessionID]
-	if !isOk {
-		s.m.Lock()
-		if _, isOk := s.pool[sessionID]; !isOk {
-			client = newClient(sessionID)
-			s.pool[sessionID] = client
-		}
-		s.m.Unlock()
+	if client, isOk := s.pool[sessionID]; isOk {
+		return client
 	}
+
+	s.m.Lock()
+	defer s.m.Unlock()
+	if client, isOk := s.pool[sessionID]; isOk {
+		return client
+	}
+
+	client := newClient(sessionID)
+	s.pool[sessionID] = client
 	return client
 }
 

@@ -9,7 +9,7 @@ import (
 
 func TestSession_Session(t *testing.T) {
 	se := NewSession()
-	client := se.Get(os.Getenv(Phpsessid))
+	client := se.Get(os.Getenv(Phpsessid)).(ClientInterface)
 
 	proxyURL := os.Getenv("HTTP_PROXY")
 	if len(proxyURL) > 0 {

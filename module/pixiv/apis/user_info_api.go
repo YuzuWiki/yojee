@@ -19,7 +19,7 @@ func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/users", pid), query, nil)
+	data, err := pixiv.Body(ctx, http.MethodGet, pixiv.Path("/users", pid), query, nil)
 	if err != nil {
 		return nil, err
 	}

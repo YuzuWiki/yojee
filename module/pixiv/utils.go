@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/YuzuWiki/yojee/global"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -69,12 +68,10 @@ func Path(paths ...interface{}) string {
 	return strings.Join(elems, sep)
 }
 
-// Request return http.body && error
-func Request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func getMethod(ctx Context, method string) (_RequestMethod, error) {
 	method = strings.ToUpper(method)
-	var fn func(string, *requests.Query, *requests.Params) (*http.Response, error)
+	var fn _RequestMethod
 
-	global.Logger.Info().Msg(fmt.Sprintf("ctx is %+v", ctx))
 	client := ctx.Client()
 	switch method {
 	case http.MethodGet:
@@ -88,14 +85,57 @@ func Request(ctx Context, method string, u string, query *requests.Query, params
 	default:
 		return nil, errors.New("UnSupport method: " + method)
 	}
+	return fn, nil
+}
+
+func request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	fn, err := getMethod(ctx, method)
+	if err != nil {
+		return nil, err
+	}
 
 	resp, err := fn(u, query, params)
 	if err != nil {
 		return nil, err
 	}
-
-	body := resp.Body
 	defer resp.Body.Close()
 
-	return ioutil.ReadAll(body)
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+// Request return http.body
+func Request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	return request(ctx, method, u, query, params)
+}
+
+// Body return http.body && error
+func Body(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	return request(ctx, method, u, query, params)
+}
+
+// Json return interface
+func Json(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	data, err := request(ctx, method, u, query, params)
+	if err != nil {
+		return nil, err
+	}
+
+	body := &struct {
+		Error   bool        `json:"error"`
+		Message string      `json:"message"`
+		Body    interface{} `json:"body"`
+	}{}
+	if err := json.Unmarshal(data, body); err != nil {
+		return nil, err
+	}
+
+	if body.Error {
+		return nil, fmt.Errorf(body.Message)
+	}
+
+	return json.Marshal(body.Body)
 }

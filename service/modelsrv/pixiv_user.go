@@ -29,7 +29,7 @@ func (srv *PixivUser) FindUser(pid int64) (*model.PixivUserMod, error) {
 // InsertUser will insert user data
 func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO) error {
 	// 删除原有记录
-	if err := tx.Raw("UPDATE pixiv_user SET is_deleted=true WHERE pid=? AND is_deleted=false LIMIT 1;").Error; err != nil {
+	if err := tx.Exec("UPDATE pixiv_user SET is_deleted=true WHERE pid=? AND is_deleted=false LIMIT 1;", info.UserID).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -55,13 +55,8 @@ func (srv *PixivUser) insertUser(tx *gorm.DB, info apis.UserInfoDTO) error {
 
 func (srv *PixivUser) InsertUser(info apis.UserInfoDTO) error {
 	db := global.DB()
-
-	user, err := srv.findUser(db, info.UserID)
-	if err != nil {
-		return err
-	}
-
-	if user.Name == info.Name &&
+	user, _ := srv.findUser(db, info.UserID)
+	if user != nil && user.Name == info.Name &&
 		user.Avatar == info.Avatar &&
 		user.Gender == info.Gender.Name &&
 		user.Region == info.Region.Name &&

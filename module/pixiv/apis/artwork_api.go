@@ -17,7 +17,7 @@ func getArtWork(ctx pixiv.Context, artType string, artId int64) (*ArtworkDTO, er
 		return nil, err
 	}
 
-	data, err := pixiv.Request(ctx, http.MethodGet, pixiv.Path("/ajax", artType, artId), query, nil)
+	data, err := pixiv.Json(ctx, http.MethodGet, pixiv.Path("/ajax", artType, artId), query, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -40,16 +40,13 @@ func (ctx *Context) PhpSessID() string {
 
 // Pid return pixiv uid (if phpsessid is effective)
 func (ctx *Context) Pid() (int64, error) {
-	if ctx.uid == 0 {
-
-		uid, err := getUid(ctx.Client())
-		if err != nil {
-			return 0, err
-		}
-
-		ctx.uid = uid
+	if ctx.uid > 0 {
+		return ctx.uid, nil
 	}
-	return ctx.uid, nil
+
+	uid, err := getUid(ctx.Client())
+	ctx.uid = uid
+	return ctx.uid, err
 }
 
 // DeadLine always returns that there is no deadline (ok==false)

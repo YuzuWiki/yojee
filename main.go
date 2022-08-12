@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 
+	_ "github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/web"
 )
 
@@ -16,5 +17,4 @@ func main() {
 func init() {
 	// init some service
 	_ = godotenv.Load(".env")
-
 }

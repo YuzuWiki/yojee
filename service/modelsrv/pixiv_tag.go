@@ -23,7 +23,7 @@ func (PixivTag) FindID(name string) (int64, error) {
 	}
 
 	var tag model.PixivTagMod
-	if err := global.DB().Exec(`SELECT * FROM pixiv_tag WHERE name=? AND is_deleted=false LIMIT 1;`, name).Scan(&tag).Error; err != nil {
+	if err := global.DB().Exec(`SELECT * FROM pixiv_tag WHERE name=? AND is_deleted=0 LIMIT 1;`, name).Scan(&tag).Error; err != nil {
 		return 0, err
 	}
 
