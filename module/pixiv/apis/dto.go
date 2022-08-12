@@ -355,7 +355,7 @@ type ArtworkDTO struct {
 	Pid           int64     `json:"userId,string"`
 	Title         string    `json:"title"`
 	Description   string    `json:"description"`
-	PageCount     int64     `json:"pageCount,string"`
+	PageCount     int64     `json:"pageCount"`
 	LikeCount     int64     `json:"likeCount"`
 	BookmarkCount int64     `json:"bookmarkCount"`
 	ViewCount     int64     `json:"viewCount"`
