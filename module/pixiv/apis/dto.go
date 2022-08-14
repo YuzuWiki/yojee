@@ -27,6 +27,7 @@ type BookmarkDTO struct {
 
 /*
 TagsDTO
+
 	https://www.pixiv.net/ajax/user/32835219/illusts/bookmark/tags?lang=zh
 */
 type bookMarkTagDTO struct {
@@ -43,6 +44,7 @@ type BookMarkTagsDTO struct {
 
 /*
 ProfileAllDTO
+
 	profile all
 */
 type countDTO struct {
@@ -257,6 +259,7 @@ type ProfileTopDTO struct {
 
 /*
 ExtraDTO
+
 	https://www.pixiv.net/ajax/user/extra?lang=zh
 */
 type ExtraDTO struct {
@@ -266,7 +269,7 @@ type ExtraDTO struct {
 }
 
 /*
-	follow last
+follow last
 */
 type pageDTO struct {
 	Ids  []int32       `json:"ids"`
@@ -309,7 +312,7 @@ type FollowLatestDTO struct {
 }
 
 /*
-	following
+following
 */
 type followUserDTO struct {
 	UserID          int64       `json:"userId,string"`
@@ -369,3 +372,5 @@ type ArtworkDTO struct {
 		} `json:"tags"`
 	} `json:"tags"`
 }
+
+// TAG: // https://www.pixiv.net/ajax/search/tags/%E4%BA%8C%E6%AC%A1%E5%89%B5%E4%BD%9C?lang=zh
