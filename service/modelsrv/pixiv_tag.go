@@ -13,21 +13,21 @@ const _CacheTagPrefix = "pixiv:tag:cache:"
 
 type PixivTag struct{}
 
-func (PixivTag) FindID(name string) (int64, error) {
-	if len(name) == 0 {
-		return 0, fmt.Errorf("miss tag name")
+func (PixivTag) FindID(jp string) (int64, error) {
+	if len(jp) == 0 {
+		return 0, fmt.Errorf("miss tag jp")
 	}
 
-	if tagId, err := global.RDB().Get(_CacheTagPrefix + name).Result(); err == nil {
+	if tagId, err := global.RDB().Get(_CacheTagPrefix + jp).Result(); err == nil {
 		return strconv.ParseInt(tagId, 10, 0)
 	}
 
 	var tag model.PixivTagMod
-	if err := global.DB().Exec(`SELECT * FROM pixiv_tag WHERE name=? AND is_deleted=0 LIMIT 1;`, name).Scan(&tag).Error; err != nil {
+	if err := global.DB().Exec(`SELECT * FROM pixiv_tag WHERE jp=? AND is_deleted=0 LIMIT 1;`, jp).Scan(&tag).Error; err != nil {
 		return 0, err
 	}
 
-	global.RDB().Set(_CacheTagPrefix+tag.Name, tag.ID, 5*60*time.Second)
+	global.RDB().Set(_CacheTagPrefix+tag.Jp, tag.ID, 5*60*time.Second)
 	return int64(tag.ID), nil
 }
 
@@ -37,17 +37,17 @@ func (PixivTag) Insert(name, romaji string) (int64, error) {
 		return strconv.ParseInt(tagId, 10, 0)
 	}
 
-	row := model.PixivTagMod{Name: name, Romaji: romaji}
+	row := model.PixivTagMod{Jp: name, Romaji: romaji}
 	err := db.Create(&row).Error
 	if err != nil && !global.IsDuplicateEntry(err) {
 		return 0, err
 	}
 
-	if err := db.First(&row, &model.PixivTagMod{Name: name}).Error; err != nil {
+	if err := db.First(&row, &model.PixivTagMod{Jp: name}).Error; err != nil {
 		return 0, err
 	}
 
 	// set 缓存
-	rdb.Set(_CacheTagPrefix+row.Name, row.ID, 5*60*time.Second)
+	rdb.Set(_CacheTagPrefix+row.Jp, row.ID, 5*60*time.Second)
 	return int64(row.ID), nil
 }

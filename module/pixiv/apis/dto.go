@@ -367,10 +367,41 @@ type ArtworkDTO struct {
 
 	Tags struct {
 		Tags []struct {
-			Name   string `json:"tag"`
+			Jp     string `json:"tag"`
 			Romaji string `json:"romaji"`
 		} `json:"tags"`
 	} `json:"tags"`
 }
 
+// TageDTO
 // TAG: // https://www.pixiv.net/ajax/search/tags/%E4%BA%8C%E6%AC%A1%E5%89%B5%E4%BD%9C?lang=zh
+type tagInfoDTO struct {
+	Id       int64  `json:"id,string"`
+	Abstract string `json:"abstract"`
+	Image    string `json:"image"`
+	// parent tag
+	Parent string `json:"parentTag"`
+}
+
+func (dto *tagInfoDTO) UnmarshalJSON(body []byte) error {
+	if len(body) < 5 {
+		return nil
+	}
+
+	data := tagInfoDTO{}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return err
+	}
+
+	*dto = data
+	return nil
+}
+
+type TageDTO struct {
+	Tag  string `json:"tag"`
+	Word string `json:"word"`
+	// tag info, if exist
+	Info tagInfoDTO `json:"pixpedia"`
+	// translation, if exist
+	TagTranslation tagTranslationDTO `json:"tagTranslation"`
+}

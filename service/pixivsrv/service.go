@@ -41,16 +41,16 @@ func (srv *Service) SyncUser(pid int64) error {
 	return nil
 }
 
-func (srv *Service) asyncArtTag(artType string, artId int64, tagName, romaji string) func() {
+func (srv *Service) asyncArtTag(artType string, artId int64, Jp, romaji string) func() {
 	return func() {
-		tagId, err := srv.modTag.Insert(tagName, romaji)
+		tagId, err := srv.modTag.Insert(Jp, romaji)
 		if err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, tagName, err.Error()))
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, Jp, err.Error()))
 			return
 		}
 
 		if err := srv.modArtwork.MarkTag(artType, artId, tagId); err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, tagName, err.Error()))
+			global.Logger.Error().Msg(fmt.Sprintf("[AsyncArtTag] error: art_type=%s art_id=%d tag_name=%s errmsg=%s", artType, artId, Jp, err.Error()))
 		}
 		return
 	}
@@ -83,7 +83,7 @@ func (srv *Service) asyncArt(artType string, artId int64) func() {
 		}
 
 		for _, tag := range artwork.Tags.Tags {
-			if err := srv.jobPool.Submit(srv.asyncArtTag(artType, artwork.ArtId, tag.Name, tag.Romaji)); err != nil {
+			if err := srv.jobPool.Submit(srv.asyncArtTag(artType, artwork.ArtId, tag.Jp, tag.Romaji)); err != nil {
 				global.Logger.Error().Msg(fmt.Sprintf("[AsyncArt] Submit AsyncArtTag error: art_type=%s art_id=%d errmsg=%s", artType, artId, err.Error()))
 			}
 		}

@@ -39,10 +39,32 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
-    name   VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
-    romaji VARCHAR(512) NOT NULL Comment 'tage romaji, jp',
+    jp      VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
+    en      VARCHAR(512) NOT NULL COMMENT 'tage name, en',
+    ko      VARCHAR(512) NOT NULL COMMENT 'tage name, ko',
+    zh      VARCHAR(512) NOT NULL COMMENT 'tage name, zh',
+    romaji  VARCHAR(512) NOT NULL Comment 'tage romaji, jp',
 
-    UNIQUE INDEX idx_tag (name)
+
+    UNIQUE INDEX idx_tag (jp)
+) CHARACTER SET utf8mb4;
+
+
+CREATE TABLE IF NOT EXISTS pixiv_tag_taxon
+(
+    # 日语tag标签层级关系
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE  COMMENT '是否删除',
+
+    per_id  BIGINT          NOT NULL    COMMENT 'parent tag, id',
+    per_jp  VARCHAR(512)    NOT NULL    COMMENT 'parent tag, jp (name)',
+
+    tag_id  BIGINT          NOT NULL    COMMENT 'curr tag, id',
+    tag_jp  VARCHAR(512)    NOT NULL    COMMENT 'curr tag, jp (name)',
+
+    UNIQUE INDEX idx_taxon (per_id, tag_id)
 ) CHARACTER SET utf8mb4;
 
 

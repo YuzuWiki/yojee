@@ -23,7 +23,10 @@ func (PixivArtwork) FindTags(artType string, artId int64) (*[]model.PixivTagMod,
 	if err := global.DB().Exec(`
 		SELECT
 			tag.id          AS id,
-			tag.name        AS name,
+			tag.jp          AS jp,
+			tag.en          AS en,
+			tag.ko          AS ko,
+			tag.zh          AS zh,
 			tag.created_at  AS created_at,
 			tag.updated_at  AS updated_at,
 			tag.is_deleted  AS is_deleted
