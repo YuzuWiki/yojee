@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/YuzuWiki/yojee/module/pixiv/requests"
 	"io/ioutil"
 	"log"
 	"net/http"
 	netUrl "net/url"
 	"reflect"
 	"strings"
-
-	"github.com/YuzuWiki/yojee/common/requests"
 )
 
 // NewQuery return get params

@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/YuzuWiki/yojee/common/requests"
+	"github.com/YuzuWiki/yojee/module/pixiv/requests"
 )
 
 var Sessions *Session
