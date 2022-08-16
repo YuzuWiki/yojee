@@ -272,7 +272,7 @@ type ExtraDTO struct {
 follow last
 */
 type pageDTO struct {
-	Ids  []int32       `json:"ids"`
+	Ids  []int64       `json:"ids"`
 	Tags []interface{} `json:"tags"`
 }
 
