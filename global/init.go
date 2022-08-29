@@ -7,6 +7,7 @@ func init() {
 	initRedis()
 	InitDB()
 	InitCron()
+	initPixiv()
 
 	Logger.Debug().Msg("global init finish")
 }

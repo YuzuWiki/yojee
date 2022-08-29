@@ -8,8 +8,6 @@ import (
 	"sync"
 )
 
-var Session ISession
-
 type IClient interface {
 	Get(string, *requests.Query, *requests.Params) (*http.Response, error)
 	Post(string, *requests.Query, *requests.Params) (*http.Response, error)
@@ -100,8 +98,6 @@ func (s *session) Remove(sessionId string) {
 	delete(s.pool, sessionId)
 }
 
-func init() {
-	if Session == nil {
-		Session = &session{}
-	}
+func NewSession() ISession {
+	return &session{}
 }
