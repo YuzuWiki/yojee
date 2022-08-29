@@ -2,7 +2,7 @@ package requests
 
 import "net/http"
 
-func (r *request) SetHeader(options ...HeaderOption) {
+func (r *requests) SetHeader(options ...HeaderOption) {
 	if len(options) == 0 {
 		return
 	}

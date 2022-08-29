@@ -6,8 +6,8 @@ import (
 )
 
 type (
-	Query        = url.Values          // request data
-	Params       = map[string]struct{} // request body
+	Query        = url.Values          // requests data
+	Params       = map[string]struct{} // requests body
 	BeforeHook   = func(req *http.Request) error
 	AfterHook    = func(resp *http.Response) error
 	HeaderOption struct {
@@ -16,14 +16,19 @@ type (
 	}
 )
 
-type TransportInterface interface {
+type ITransport interface {
 	SetProxy(string) error
 	UnSetProxy() error
 }
 
-type RequestInterface interface {
+type IRequest interface {
 	Get(string, *Query, *Params) (*http.Response, error)
 	Post(string, *Query, *Params) (*http.Response, error)
 	Put(string, *Query, *Params) (*http.Response, error)
 	Delete(string, *Query, *Params) (*http.Response, error)
+
+	SetCookies(string, ...*http.Cookie) error
+	SetHeader(...HeaderOption)
+	SetProxy(string) error
+	UnSetProxy() error
 }

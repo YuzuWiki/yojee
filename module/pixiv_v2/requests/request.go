@@ -2,7 +2,7 @@ package requests
 
 import "net/http"
 
-type request struct {
+type requests struct {
 	http.Client
 
 	// Transport
@@ -13,22 +13,22 @@ type request struct {
 	AfterHooks  []AfterHook
 }
 
-func (r *request) Get(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Get(u string, query *Query, params *Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *request) Post(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Post(u string, query *Query, params *Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *request) Put(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Put(u string, query *Query, params *Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *request) Delete(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Delete(u string, query *Query, params *Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func NewRequest() RequestInterface {
-	return &request{}
+func NewRequest() IRequest {
+	return &requests{}
 }

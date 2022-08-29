@@ -67,7 +67,14 @@ func (t *transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 	return t.roundTrip(req)
 }
 
-func NewTransport() TransportInterface {
+func (r *requests) SetProxy(proxyUrl string) error {
+	return r.Transport.SetProxy(proxyUrl)
+}
+func (r *requests) UnSetProxy() error {
+	return r.Transport.UnSetProxy()
+}
+
+func NewTransport() ITransport {
 	return &transport{
 		mu: sync.Mutex{},
 

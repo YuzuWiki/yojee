@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-func (r *request) ensureJar() {
+func (r *requests) ensureJar() {
 	if r.Jar == nil {
 		r.Jar, _ = cookiejar.New(nil)
 	}
 }
 
-func (r *request) SetCookies(rawURL string, cookies ...*http.Cookie) error {
+func (r *requests) SetCookies(rawURL string, cookies ...*http.Cookie) error {
 	if len(rawURL) == 0 || len(cookies) == 0 {
 		return errors.New("invalid params")
 	}
