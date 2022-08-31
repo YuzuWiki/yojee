@@ -14,7 +14,7 @@ import (
 	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
 )
 
-type _RequestMethod func(string, *requests.Query, *requests.Params) (*http.Response, error)
+type doFunc func(string, *requests.Query, *requests.Params) (*http.Response, error)
 
 // NewQuery return get params
 func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
@@ -70,7 +70,7 @@ func Path(paths ...interface{}) string {
 	return strings.Join(elems, sep)
 }
 
-func request(fn _RequestMethod, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func request(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
 	resp, err := fn(u, query, params)
 	if err != nil {
 		return nil, err
@@ -85,24 +85,18 @@ func request(fn _RequestMethod, u string, query *requests.Query, params *request
 }
 
 // Request return http.body
-func Request(fn _RequestMethod, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Request(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
 	return request(fn, u, query, params)
 }
 
 // Body return http.body && error
-func Body(fn _RequestMethod, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Body(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
 	return request(fn, u, query, params)
 }
 
 // Json return interface
-func Json(fn _RequestMethod, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
-	resp, err := fn(u, query, params)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	defer resp.Body.Close()
+func Json(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+	data, err := request(fn, u, query, params)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +106,7 @@ func Json(fn _RequestMethod, method string, u string, query *requests.Query, par
 		Message string      `json:"message"`
 		Body    interface{} `json:"body"`
 	}{}
-	if err := json.Unmarshal(data, body); err != nil {
+	if err = json.Unmarshal(data, body); err != nil {
 		return nil, err
 	}
 
