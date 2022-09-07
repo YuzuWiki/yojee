@@ -1,15 +1,16 @@
 package apis
 
 import (
-	"golang.org/x/net/context"
+	"encoding/json"
 	"strconv"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/module/pixiv_v2"
+	"github.com/YuzuWiki/yojee/module/pixiv_v2/dtos"
 )
 
-func GetAccountPid(PhpSessID string) (int64, error) {
-	c, err := global.Pixiv.New(PhpSessID)
+func GetAccountPid(ctx pixiv_v2.IContext) (int64, error) {
+	c, err := global.Pixiv.New(ctx.PhpSessID())
 	if err != nil {
 		return 0, err
 	}
@@ -25,6 +26,40 @@ func GetAccountPid(PhpSessID string) (int64, error) {
 	return 0, nil
 }
 
-func Get(ctx context.Context) {
+func getArtWork(ctx pixiv_v2.IContext, artType string, artId int64) (*dtos.ArtworkDTO, error) {
+	c, err := global.Pixiv.New(ctx.PhpSessID())
+	if err != nil {
+		return nil, err
+	}
 
+	query, err := pixiv_v2.NewQuery(map[string]interface{}{
+		"lang": "jp",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := pixiv_v2.Json(c.Get, pixiv_v2.Path("/ajax", artType, artId), query, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body := &dtos.ArtworkDTO{ArtType: artType}
+	if err := json.Unmarshal(data, body); err != nil {
+		return nil, err
+	}
+	return body, nil
 }
+
+func GetIllusts(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
+	return getArtWork(ctx, Illust, artId)
+}
+
+func GetMangas(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
+	return getArtWork(ctx, Illust, artId)
+}
+
+func GetNovels(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
+	return getArtWork(ctx, Novel, artId)
+}
+

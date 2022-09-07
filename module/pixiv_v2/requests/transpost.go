@@ -2,6 +2,7 @@ package requests
 
 import (
 	"fmt"
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 	"net"
 	"net/http"
 	"net/url"
@@ -74,7 +75,7 @@ func (r *requests) UnSetProxy() error {
 	return r.Transport.UnSetProxy()
 }
 
-func NewTransport() ITransport {
+func NewTransport() pixiv_v2.ITransport {
 	return &transport{
 		mu: sync.Mutex{},
 

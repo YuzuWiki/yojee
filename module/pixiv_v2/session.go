@@ -1,18 +1,19 @@
 package pixiv_v2
 
 import (
-	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
 )
 
 type IClient interface {
-	Get(string, *requests.Query, *requests.Params) (*http.Response, error)
-	Post(string, *requests.Query, *requests.Params) (*http.Response, error)
-	Put(string, *requests.Query, *requests.Params) (*http.Response, error)
-	Delete(string, *requests.Query, *requests.Params) (*http.Response, error)
+	Get(string, *Query, *Params) (*http.Response, error)
+	Post(string, *Query, *Params) (*http.Response, error)
+	Put(string, *Query, *Params) (*http.Response, error)
+	Delete(string, *Query, *Params) (*http.Response, error)
 }
 
 func newClient(sessionIds ...string) (IClient, error) {
@@ -20,8 +21,8 @@ func newClient(sessionIds ...string) (IClient, error) {
 
 	// set default header
 	c.SetHeader(
-		requests.HeaderOption{Key: "User-Agent", Value: UserAgent},
-		requests.HeaderOption{Key: "referer", Value: "https://" + PixivHost},
+		HeaderOption{Key: "User-Agent", Value: UserAgent},
+		HeaderOption{Key: "referer", Value: "https://" + PixivHost},
 	)
 
 	// set cookie

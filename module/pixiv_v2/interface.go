@@ -1,4 +1,4 @@
-package requests
+package pixiv_v2
 
 import (
 	"net/http"
@@ -31,4 +31,8 @@ type IRequest interface {
 	SetHeader(...HeaderOption)
 	SetProxy(string) error
 	UnSetProxy() error
+}
+
+type IContext interface {
+	PhpSessID() string
 }

@@ -1,6 +1,10 @@
 package requests
 
-import "net/http"
+import (
+	"net/http"
+	
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
+)
 
 type requests struct {
 	http.Client
@@ -9,26 +13,26 @@ type requests struct {
 	Transport *transport
 
 	// 钩子函数..
-	BeforeHooks []BeforeHook
-	AfterHooks  []AfterHook
+	BeforeHooks []pixiv_v2.BeforeHook
+	AfterHooks  []pixiv_v2.AfterHook
 }
 
-func (r *requests) Get(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Get(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *requests) Post(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Post(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *requests) Put(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Put(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func (r *requests) Delete(u string, query *Query, params *Params) (*http.Response, error) {
+func (r *requests) Delete(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
 	return nil, nil
 }
 
-func NewRequest() IRequest {
+func NewRequest() pixiv_v2.IRequest {
 	return &requests{}
 }

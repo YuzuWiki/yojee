@@ -10,11 +10,9 @@ import (
 	netUrl "net/url"
 	"reflect"
 	"strings"
-
-	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
 )
 
-type doFunc func(string, *requests.Query, *requests.Params) (*http.Response, error)
+type doFunc func(string, *Query, *Params) (*http.Response, error)
 
 // NewQuery return get params
 func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
@@ -70,7 +68,7 @@ func Path(paths ...interface{}) string {
 	return strings.Join(elems, sep)
 }
 
-func request(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func request(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	resp, err := fn(u, query, params)
 	if err != nil {
 		return nil, err
@@ -85,17 +83,17 @@ func request(fn doFunc, u string, query *requests.Query, params *requests.Params
 }
 
 // Request return http.body
-func Request(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Request(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	return request(fn, u, query, params)
 }
 
 // Body return http.body && error
-func Body(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Body(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	return request(fn, u, query, params)
 }
 
 // Json return interface
-func Json(fn doFunc, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
+func Json(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	data, err := request(fn, u, query, params)
 	if err != nil {
 		return nil, err

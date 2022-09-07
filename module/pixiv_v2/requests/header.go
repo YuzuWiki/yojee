@@ -1,8 +1,11 @@
 package requests
 
-import "net/http"
+import (
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
+	"net/http"
+)
 
-func (r *requests) SetHeader(options ...HeaderOption) {
+func (r *requests) SetHeader(options ...pixiv_v2.HeaderOption) {
 	if len(options) == 0 {
 		return
 	}
