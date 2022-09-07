@@ -1,4 +1,3 @@
-exclude: "$.go"
 repos:
   -   repo: https://github.com/tekwizely/pre-commit-golang
       rev: master
