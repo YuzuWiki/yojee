@@ -1,4 +1,4 @@
-package pixiv_v2
+package requests
 
 import (
 	"net/http"
@@ -6,34 +6,27 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 )
 
-type IClient interface {
-	Get(string, *Query, *Params) (*http.Response, error)
-	Post(string, *Query, *Params) (*http.Response, error)
-	Put(string, *Query, *Params) (*http.Response, error)
-	Delete(string, *Query, *Params) (*http.Response, error)
-}
-
-func newClient(sessionIds ...string) (IClient, error) {
-	c := requests.NewRequest()
+func newClient(sessionIds ...string) (pixiv_v2.IClient, error) {
+	c := NewRequest()
 
 	// set default header
 	c.SetHeader(
-		HeaderOption{Key: "User-Agent", Value: UserAgent},
-		HeaderOption{Key: "referer", Value: "https://" + PixivHost},
+		pixiv_v2.HeaderOption{Key: "User-Agent", Value: pixiv_v2.UserAgent},
+		pixiv_v2.HeaderOption{Key: "referer", Value: "https://" + pixiv_v2.PixivHost},
 	)
 
 	// set cookie
 	if len(sessionIds) > 0 {
 		err := c.SetCookies(
-			PixivHost,
+			pixiv_v2.PixivHost,
 			&http.Cookie{
-				Name:   Phpsessid,
+				Name:   pixiv_v2.Phpsessid,
 				Value:  sessionIds[0],
 				Path:   "/",
-				Domain: PixivDomain,
+				Domain: pixiv_v2.PixivDomain,
 			},
 		)
 		if err != nil {
@@ -50,19 +43,13 @@ func newClient(sessionIds ...string) (IClient, error) {
 	return c, nil
 }
 
-type ISession interface {
-	Default() (IClient, error)
-	New(string) (IClient, error)
-	Remove(string)
-}
-
 type session struct {
-	pool map[string]IClient
+	pool map[string]pixiv_v2.IClient
 
 	m sync.Mutex
 }
 
-func (s *session) new(sessionId string) (IClient, error) {
+func (s *session) new(sessionId string) (pixiv_v2.IClient, error) {
 	sessionId = strings.TrimSpace(sessionId)
 	if c, isOk := s.pool[sessionId]; isOk {
 		return c, nil
@@ -84,11 +71,11 @@ func (s *session) new(sessionId string) (IClient, error) {
 	return c, nil
 }
 
-func (s *session) Default() (IClient, error) {
+func (s *session) Default() (pixiv_v2.IClient, error) {
 	return s.new("_DEFAULT")
 }
 
-func (s *session) New(sessionId string) (IClient, error) {
+func (s *session) New(sessionId string) (pixiv_v2.IClient, error) {
 	return s.new(sessionId)
 }
 
@@ -99,6 +86,6 @@ func (s *session) Remove(sessionId string) {
 	delete(s.pool, sessionId)
 }
 
-func NewSession() ISession {
+func NewSession() pixiv_v2.ISession {
 	return &session{}
 }

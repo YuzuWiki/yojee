@@ -26,28 +26,29 @@ func GetAccountPid(ctx pixiv_v2.IContext) (int64, error) {
 	return 0, nil
 }
 
-func getArtWork(ctx pixiv_v2.IContext, artType string, artId int64) (*dtos.ArtworkDTO, error) {
-	c, err := global.Pixiv.New(ctx.PhpSessID())
-	if err != nil {
-		return nil, err
+func getArtWork(ctx pixiv_v2.IContext, artType string, artId int64) (body *dtos.ArtworkDTO, err error) {
+	var (
+		query *pixiv_v2.Query
+		c     pixiv_v2.IClient
+	)
+
+	if query, err = pixiv_v2.NewQuery(map[string]interface{}{"lang": "jp"}); err != nil {
+		return
 	}
 
-	query, err := pixiv_v2.NewQuery(map[string]interface{}{
-		"lang": "jp",
-	})
-	if err != nil {
-		return nil, err
+	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
+		return
 	}
 
 	data, err := pixiv_v2.Json(c.Get, pixiv_v2.Path("/ajax", artType, artId), query, nil)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	body := &dtos.ArtworkDTO{ArtType: artType}
-	if err := json.Unmarshal(data, body); err != nil {
-		return nil, err
+	if err = json.Unmarshal(data, body); err != nil {
+		return
 	}
+
 	return body, nil
 }
 
@@ -62,4 +63,3 @@ func GetMangas(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
 func GetNovels(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
 	return getArtWork(ctx, Novel, artId)
 }
-

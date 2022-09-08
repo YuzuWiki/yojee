@@ -36,3 +36,16 @@ type IRequest interface {
 type IContext interface {
 	PhpSessID() string
 }
+
+type ISession interface {
+	Default() (IClient, error)
+	New(string) (IClient, error)
+	Remove(string)
+}
+
+type IClient interface {
+	Get(string, *Query, *Params) (*http.Response, error)
+	Post(string, *Query, *Params) (*http.Response, error)
+	Put(string, *Query, *Params) (*http.Response, error)
+	Delete(string, *Query, *Params) (*http.Response, error)
+}
