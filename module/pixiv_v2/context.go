@@ -1,4 +1,4 @@
-package requests
+package pixiv_v2
 
 import "fmt"
 
