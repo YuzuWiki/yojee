@@ -19,6 +19,7 @@ func GetAccountPid(ctx pixiv_v2.IContext) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer resp.Body.Close()
 
 	if pid := resp.Header.Get("x-userid"); len(pid) > 0 {
 		return strconv.ParseInt(pid, 10, 64)

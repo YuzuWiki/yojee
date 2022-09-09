@@ -33,6 +33,14 @@ func (r *requests) Delete(u string, query *pixiv_v2.Query, params *pixiv_v2.Para
 	return nil, nil
 }
 
+func (r *requests) SetProxy(proxyUrl string) error {
+	return r.Transport.SetProxy(proxyUrl)
+}
+
+func (r *requests) UnSetProxy() error {
+	return r.Transport.UnSetProxy()
+}
+
 func NewRequest() pixiv_v2.IRequest {
 	return &requests{}
 }

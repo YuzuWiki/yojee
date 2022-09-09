@@ -67,14 +67,6 @@ func (t *transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 	return t.roundTrip(req)
 }
 
-func (r *requests) SetProxy(proxyUrl string) error {
-	return r.Transport.SetProxy(proxyUrl)
-}
-
-func (r *requests) UnSetProxy() error {
-	return r.Transport.UnSetProxy()
-}
-
 func NewTransport() pixiv_v2.ITransport {
 	return &transport{
 		mu: sync.Mutex{},
