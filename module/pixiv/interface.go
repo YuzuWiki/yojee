@@ -1,4 +1,4 @@
-package pixiv_v2
+package pixiv
 
 import (
 	"net/http"

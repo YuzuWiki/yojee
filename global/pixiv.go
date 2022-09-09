@@ -1,11 +1,11 @@
 package global
 
 import (
-	"github.com/YuzuWiki/yojee/module/pixiv_v2"
-	"github.com/YuzuWiki/yojee/module/pixiv_v2/requests"
+	"github.com/YuzuWiki/yojee/module/pixiv"
+	"github.com/YuzuWiki/yojee/module/pixiv/requests"
 )
 
-var Pixiv pixiv_v2.ISession
+var Pixiv pixiv.ISession
 
 func initPixiv() {
 	if Pixiv == nil {

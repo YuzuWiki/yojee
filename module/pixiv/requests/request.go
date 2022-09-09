@@ -3,7 +3,7 @@ package requests
 import (
 	"net/http"
 
-	"github.com/YuzuWiki/yojee/module/pixiv_v2"
+	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
 type requests struct {
@@ -13,8 +13,8 @@ type requests struct {
 	Transport *transport
 
 	// 钩子函数..
-	beforeHooks []pixiv_v2.BeforeHook
-	afterHooks  []pixiv_v2.AfterHook
+	beforeHooks []pixiv.BeforeHook
+	afterHooks  []pixiv.AfterHook
 }
 
 func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) (err error) {
@@ -26,18 +26,18 @@ func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) (e
 	return
 }
 
-func newRequest(u, method string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Request, error) {
+func newRequest(u, method string, query *pixiv.Query, params *pixiv.Params) (*http.Request, error) {
 	var (
 		req *http.Request
 		err error
 	)
 
-	u, err = pixiv_v2.EncodeURL(u, query)
+	u, err = pixiv.EncodeURL(u, query)
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := pixiv_v2.EncodeBody(params)
+	body, err := pixiv.EncodeBody(params)
 	if err == nil {
 		req, err = http.NewRequest(method, u, body)
 	} else {
@@ -51,7 +51,7 @@ func newRequest(u, method string, query *pixiv_v2.Query, params *pixiv_v2.Params
 	}
 }
 
-func (r *requests) do(method, u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (resp *http.Response, err error) {
+func (r *requests) do(method, u string, query *pixiv.Query, params *pixiv.Params) (resp *http.Response, err error) {
 	var req *http.Request
 	if req, err = newRequest(method, u, query, params); err != nil {
 		return
@@ -75,19 +75,19 @@ func (r *requests) do(method, u string, query *pixiv_v2.Query, params *pixiv_v2.
 	return resp, nil
 }
 
-func (r *requests) Get(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
+func (r *requests) Get(u string, query *pixiv.Query, params *pixiv.Params) (*http.Response, error) {
 	return r.do(u, http.MethodGet, query, params)
 }
 
-func (r *requests) Post(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
+func (r *requests) Post(u string, query *pixiv.Query, params *pixiv.Params) (*http.Response, error) {
 	return r.do(u, http.MethodPost, query, params)
 }
 
-func (r *requests) Put(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
+func (r *requests) Put(u string, query *pixiv.Query, params *pixiv.Params) (*http.Response, error) {
 	return r.do(u, http.MethodPut, query, params)
 }
 
-func (r *requests) Delete(u string, query *pixiv_v2.Query, params *pixiv_v2.Params) (*http.Response, error) {
+func (r *requests) Delete(u string, query *pixiv.Query, params *pixiv.Params) (*http.Response, error) {
 	return r.do(u, http.MethodDelete, query, params)
 }
 
@@ -99,18 +99,18 @@ func (r *requests) UnSetProxy() error {
 	return r.Transport.UnSetProxy()
 }
 
-func (r *requests) BeforeHooks(fns ...pixiv_v2.BeforeHook) {
+func (r *requests) BeforeHooks(fns ...pixiv.BeforeHook) {
 	for idx := range fns {
 		r.beforeHooks = append(r.beforeHooks, fns[idx])
 	}
 }
 
-func (r *requests) AfterHooks(fns ...pixiv_v2.AfterHook) {
+func (r *requests) AfterHooks(fns ...pixiv.AfterHook) {
 	for idx := range fns {
 		r.afterHooks = append(r.afterHooks, fns[idx])
 	}
 }
 
-func NewRequest() pixiv_v2.IRequest {
+func NewRequest() pixiv.IRequest {
 	return &requests{}
 }

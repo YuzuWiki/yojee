@@ -5,7 +5,7 @@ import (
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
+	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 type PixivArtwork struct{}
@@ -41,7 +41,7 @@ func (PixivArtwork) FindTags(artType string, artId int64) (*[]model.PixivTagMod,
 	return &tags, nil
 }
 
-func (PixivArtwork) Insert(data apis.ArtworkDTO) (int64, error) {
+func (PixivArtwork) Insert(data dtos.ArtworkDTO) (int64, error) {
 	row := model.PixivArtworkMod{
 		Pid:           data.Pid,
 		ArtId:         data.ArtId,

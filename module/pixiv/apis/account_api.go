@@ -8,16 +8,16 @@ import (
 	"github.com/PuerkitoBio/goquery"
 
 	"github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/module/pixiv_v2"
-	"github.com/YuzuWiki/yojee/module/pixiv_v2/dtos"
+	"github.com/YuzuWiki/yojee/module/pixiv"
+	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
-func GetAccountInfo(ctx pixiv_v2.IContext, uid int64) (_ *dtos.UserInfoDTO, err error) {
+func GetAccountInfo(ctx pixiv.IContext, uid int64) (_ *dtos.UserInfoDTO, err error) {
 	var (
-		query *pixiv_v2.Query
-		c     pixiv_v2.IClient
+		query *pixiv.Query
+		c     pixiv.IClient
 	)
-	if query, err = pixiv_v2.NewQuery(map[string]interface{}{"lang": "jp"}); err != nil {
+	if query, err = pixiv.NewQuery(map[string]interface{}{"lang": "jp"}); err != nil {
 		return
 	}
 
@@ -25,7 +25,7 @@ func GetAccountInfo(ctx pixiv_v2.IContext, uid int64) (_ *dtos.UserInfoDTO, err 
 		return
 	}
 
-	data, err := pixiv_v2.Body(c.Get, pixiv_v2.Path("/users", uid), query, nil)
+	data, err := pixiv.Body(c.Get, pixiv.Path("/users", uid), query, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -60,13 +60,13 @@ func GetAccountInfo(ctx pixiv_v2.IContext, uid int64) (_ *dtos.UserInfoDTO, err 
 	return nil, fmt.Errorf("not Found UserInfo")
 }
 
-func GetProfileAll(ctx pixiv_v2.IContext, uid int64) (body *dtos.AllProfileDTO, err error) {
-	var c pixiv_v2.IClient
+func GetProfileAll(ctx pixiv.IContext, uid int64) (body *dtos.AllProfileDTO, err error) {
+	var c pixiv.IClient
 	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
 		return
 	}
 
-	data, err := pixiv_v2.Json(c.Get, pixiv_v2.Path("/ajax/user/", uid, "/profile", All), nil, nil)
+	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", uid, "/profile", All), nil, nil)
 	if err != nil {
 		return
 	}
@@ -78,13 +78,13 @@ func GetProfileAll(ctx pixiv_v2.IContext, uid int64) (body *dtos.AllProfileDTO, 
 	return body, nil
 }
 
-func GetProfileTop(ctx pixiv_v2.IContext, uid int64) (body *dtos.TopProfileDTO, err error) {
-	var c pixiv_v2.IClient
+func GetProfileTop(ctx pixiv.IContext, uid int64) (body *dtos.TopProfileDTO, err error) {
+	var c pixiv.IClient
 	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
 		return
 	}
 
-	data, err := pixiv_v2.Json(c.Get, pixiv_v2.Path("/ajax/user/", uid, "/profile", Top), nil, nil)
+	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", uid, "/profile", Top), nil, nil)
 	if err != nil {
 		return
 	}

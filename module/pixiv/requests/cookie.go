@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-func (c *Client) ensureJar() {
-	if c.Jar == nil {
-		c.Jar, _ = cookiejar.New(nil)
+func (r *requests) ensureJar() {
+	if r.Jar == nil {
+		r.Jar, _ = cookiejar.New(nil)
 	}
 }
 
-func (c *Client) SetCookies(rawURL string, cookies ...*http.Cookie) error {
+func (r *requests) SetCookies(rawURL string, cookies ...*http.Cookie) error {
 	if len(rawURL) == 0 || len(cookies) == 0 {
 		return fmt.Errorf("invalid params")
 	}
 
-	c.ensureJar()
+	r.ensureJar()
 	if !strings.HasPrefix(rawURL, "http") {
 		rawURL = "https://" + rawURL
 	}
@@ -29,6 +29,6 @@ func (c *Client) SetCookies(rawURL string, cookies ...*http.Cookie) error {
 		return err
 	}
 
-	c.Jar.SetCookies(u, cookies)
+	r.Jar.SetCookies(u, cookies)
 	return nil
 }

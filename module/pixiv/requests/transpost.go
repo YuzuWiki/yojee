@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"net/url"
@@ -8,87 +9,71 @@ import (
 	"time"
 
 	"golang.org/x/net/http/httpproxy"
+
+	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
-var defaultTransport http.RoundTripper
+var _defaultTransport http.RoundTripper
 
-type Transport struct {
-	// TODO: 路由分发
+type transport struct {
 	http.Transport
-
-	// 代理设置
-	ProxyURl string
 
 	// mutex
 	mu sync.Mutex
 }
 
-func (t *Transport) proxyFromUrl(req *http.Request) (*url.URL, error) {
-	cnf := &httpproxy.Config{
-		HTTPProxy:  t.ProxyURl,
-		HTTPSProxy: t.ProxyURl,
-		NoProxy:    "",
-		CGI:        false,
+func proxyFromUrl(proxyUrl string) func(*http.Request) (*url.URL, error) {
+	return func(req *http.Request) (*url.URL, error) {
+		cnf := &httpproxy.Config{
+			HTTPProxy:  proxyUrl,
+			HTTPSProxy: proxyUrl,
+			NoProxy:    "",
+			CGI:        false,
+		}
+		return cnf.ProxyFunc()(req.URL)
 	}
-	return cnf.ProxyFunc()(req.URL)
 }
 
-func (t *Transport) SetProxy(proxyUrl string) {
-	if len(proxyUrl) == 0 || t.ProxyURl == proxyUrl {
-		return
+func (t *transport) SetProxy(proxyUrl string) error {
+	if len(proxyUrl) == 0 {
+		return fmt.Errorf("invalid proxy url")
 	}
 
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	t.ProxyURl = proxyUrl
 
 	if t.Proxy == nil {
-		t.Transport.Proxy = t.proxyFromUrl
+		t.Transport.Proxy = proxyFromUrl(proxyUrl)
 	}
+	return nil
 }
 
-func (t *Transport) UnSetProxy() {
+func (t *transport) UnSetProxy() error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
-	t.ProxyURl = ""
 	t.Proxy = nil
+	return nil
 }
 
-func (t *Transport) roundTrip(req *http.Request) (resp *http.Response, err error) {
-	if len(t.ProxyURl) == 0 {
-		return defaultTransport.RoundTrip(req)
+func (t *transport) roundTrip(req *http.Request) (resp *http.Response, err error) {
+	if t.Proxy == nil {
+		return _defaultTransport.RoundTrip(req)
 	}
 	return t.Transport.RoundTrip(req)
 }
 
-func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
+func (t *transport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 	return t.roundTrip(req)
 }
 
-func NewTransport() *Transport {
-	return &Transport{
-		ProxyURl: "",
-		mu:       sync.Mutex{},
+func NewTransport() pixiv.ITransport {
+	return &transport{
+		mu: sync.Mutex{},
 
 		Transport: http.Transport{
 			DisableKeepAlives: true,
 		},
-	}
-}
-
-func (c *Client) SetProxy(proxy string) {
-	if c.Transport == nil {
-		c.Transport = NewTransport()
-		c.Client.Transport = c.Transport
-	}
-
-	c.Transport.SetProxy(proxy)
-}
-
-func (c *Client) UnSetProxy() {
-	if c.Transport != nil {
-		c.Transport.UnSetProxy()
 	}
 }
 
@@ -98,7 +83,7 @@ func init() {
 		KeepAlive: 30 * time.Second,
 	}
 
-	defaultTransport = &http.Transport{
+	_defaultTransport = &http.Transport{
 		DialContext:           dialer.DialContext,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,

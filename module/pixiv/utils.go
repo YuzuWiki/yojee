@@ -1,21 +1,22 @@
 package pixiv
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	netUrl "net/url"
+	"net/url"
 	"reflect"
 	"strings"
-
-	"github.com/YuzuWiki/yojee/module/pixiv/requests"
 )
 
+type doFunc func(string, *Query, *Params) (*http.Response, error)
+
 // NewQuery return get params
-func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
-	query := netUrl.Values{}
+func NewQuery(values map[string]interface{}) (*url.Values, error) {
+	query := url.Values{}
 	for k := range values {
 		var v string
 
@@ -66,32 +67,7 @@ func Path(paths ...interface{}) string {
 	return strings.Join(elems, sep)
 }
 
-func getMethod(ctx Context, method string) (_RequestMethod, error) {
-	method = strings.ToUpper(method)
-	var fn _RequestMethod
-
-	client := ctx.Client()
-	switch method {
-	case http.MethodGet:
-		fn = client.Get
-	case http.MethodPost:
-		fn = client.Post
-	case http.MethodPut:
-		fn = client.Put
-	case http.MethodDelete:
-		fn = client.Delete
-	default:
-		return nil, fmt.Errorf("UnSupport method: " + method)
-	}
-	return fn, nil
-}
-
-func request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
-	fn, err := getMethod(ctx, method)
-	if err != nil {
-		return nil, err
-	}
-
+func request(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	resp, err := fn(u, query, params)
 	if err != nil {
 		return nil, err
@@ -105,19 +81,25 @@ func request(ctx Context, method string, u string, query *requests.Query, params
 	return data, nil
 }
 
-// Request return http.body
-func Request(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
-	return request(ctx, method, u, query, params)
+// Header return http.Header
+func Header(fn doFunc, u string, query *Query, params *Params) (header http.Header, err error) {
+	resp, err := fn(u, query, params)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	return resp.Header, nil
 }
 
 // Body return http.body && error
-func Body(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
-	return request(ctx, method, u, query, params)
+func Body(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
+	return request(fn, u, query, params)
 }
 
 // Json return interface
-func Json(ctx Context, method string, u string, query *requests.Query, params *requests.Params) ([]byte, error) {
-	data, err := request(ctx, method, u, query, params)
+func Json(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
+	data, err := request(fn, u, query, params)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +109,7 @@ func Json(ctx Context, method string, u string, query *requests.Query, params *r
 		Message string      `json:"message"`
 		Body    interface{} `json:"body"`
 	}{}
-	if err := json.Unmarshal(data, body); err != nil {
+	if err = json.Unmarshal(data, body); err != nil {
 		return nil, err
 	}
 
@@ -136,4 +118,29 @@ func Json(ctx Context, method string, u string, query *requests.Query, params *r
 	}
 
 	return json.Marshal(body.Body)
+}
+
+func EncodeURL(u string, data *Query) (string, error) {
+	URL, err := url.Parse(u)
+	if err != nil {
+		return "", err
+	}
+
+	if data != nil {
+		URL.RawQuery = data.Encode()
+	}
+
+	return URL.String(), nil
+}
+
+func EncodeBody(params *Params) (*bytes.Buffer, error) {
+	if params == nil {
+		return nil, fmt.Errorf("params is nil")
+	}
+
+	body, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewBuffer(body), nil
 }

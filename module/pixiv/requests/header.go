@@ -1,25 +1,19 @@
 package requests
 
-import "net/http"
+import (
+	"net/http"
 
-type (
-	HeaderOption struct {
-		Key   string
-		Value string
-	}
+	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
-func (c *Client) SetHeader(options ...HeaderOption) {
+func (r *requests) SetHeader(options ...pixiv.HeaderOption) {
 	if len(options) == 0 {
 		return
 	}
 
-	c.BeforeHooks = append(
-		c.BeforeHooks,
+	r.BeforeHooks(
 		func(req *http.Request) error {
-			for idx := range options {
-				option := options[idx]
-
+			for _, option := range options {
 				req.Header.Set(option.Key, option.Value)
 			}
 			return nil
