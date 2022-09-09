@@ -14,7 +14,7 @@ import (
 type InfoAPI struct{}
 
 func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
-	query, err := pixiv.NewQuery(map[string]interface{}{"lang": "en"})
+	query, err := pixiv.NewQuery(map[string]interface{}{"lang": "jp"})
 	if err != nil {
 		return nil, err
 	}
