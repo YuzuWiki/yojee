@@ -11,8 +11,7 @@ func (r *requests) SetHeader(options ...pixiv_v2.HeaderOption) {
 		return
 	}
 
-	r.BeforeHooks = append(
-		r.BeforeHooks,
+	r.BeforeHooks(
 		func(req *http.Request) error {
 			for _, option := range options {
 				req.Header.Set(option.Key, option.Value)

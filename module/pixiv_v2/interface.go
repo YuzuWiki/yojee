@@ -31,6 +31,9 @@ type IRequest interface {
 	SetHeader(...HeaderOption)
 	SetProxy(string) error
 	UnSetProxy() error
+
+	BeforeHooks(...BeforeHook)
+	AfterHooks(...AfterHook)
 }
 
 type IContext interface {

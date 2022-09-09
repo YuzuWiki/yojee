@@ -1,12 +1,13 @@
 package pixiv_v2
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	netUrl "net/url"
+	"net/url"
 	"reflect"
 	"strings"
 )
@@ -14,8 +15,8 @@ import (
 type doFunc func(string, *Query, *Params) (*http.Response, error)
 
 // NewQuery return get params
-func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
-	query := netUrl.Values{}
+func NewQuery(values map[string]interface{}) (*url.Values, error) {
+	query := url.Values{}
 	for k := range values {
 		var v string
 
@@ -117,4 +118,29 @@ func Json(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
 	}
 
 	return json.Marshal(body.Body)
+}
+
+func EncodeURL(u string, data *Query) (string, error) {
+	URL, err := url.Parse(u)
+	if err != nil {
+		return "", err
+	}
+
+	if data != nil {
+		URL.RawQuery = data.Encode()
+	}
+
+	return URL.String(), nil
+}
+
+func EncodeBody(params *Params) (*bytes.Buffer, error) {
+	if params == nil {
+		return nil, fmt.Errorf("params is nil")
+	}
+
+	body, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewBuffer(body), nil
 }
