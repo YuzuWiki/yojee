@@ -21,11 +21,15 @@ type ITransport interface {
 	UnSetProxy() error
 }
 
-type IRequest interface {
+type IClient interface {
 	Get(string, *Query, *Params) (*http.Response, error)
 	Post(string, *Query, *Params) (*http.Response, error)
 	Put(string, *Query, *Params) (*http.Response, error)
 	Delete(string, *Query, *Params) (*http.Response, error)
+}
+
+type IRequest interface {
+	IClient
 
 	SetCookies(string, ...*http.Cookie) error
 	SetHeader(...HeaderOption)
@@ -44,11 +48,4 @@ type ISession interface {
 	Default() (IClient, error)
 	New(string) (IClient, error)
 	Remove(string)
-}
-
-type IClient interface {
-	Get(string, *Query, *Params) (*http.Response, error)
-	Post(string, *Query, *Params) (*http.Response, error)
-	Put(string, *Query, *Params) (*http.Response, error)
-	Delete(string, *Query, *Params) (*http.Response, error)
 }
