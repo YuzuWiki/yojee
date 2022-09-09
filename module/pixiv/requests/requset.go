@@ -3,7 +3,7 @@ package requests
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -29,7 +29,7 @@ func encodeURL(u string, data *Query) (string, error) {
 
 func encodeBody(params *Params) (*bytes.Buffer, error) {
 	if params == nil {
-		return nil, errors.New("params is nil")
+		return nil, fmt.Errorf("params is nil")
 	}
 
 	body, err := json.Marshal(params)
@@ -64,16 +64,13 @@ func newRequest(u, method string, query *Query, params *Params) (*http.Request, 
 	}
 }
 
-func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) error {
-	if hooks != nil {
-		for idx := range hooks {
-			if err := hooks[idx](body); err != nil {
-				return err
-			}
+func doHooks[T *http.Request | *http.Response](hooks []func(T) error, body T) (err error) {
+	for idx := range hooks {
+		if err = hooks[idx](body); err != nil {
+			return
 		}
 	}
-
-	return nil
+	return
 }
 
 func (c *Client) do(method, u string, query *Query, params *Params) (*http.Response, error) {

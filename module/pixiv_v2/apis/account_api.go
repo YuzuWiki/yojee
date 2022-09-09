@@ -3,7 +3,7 @@ package apis
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 
 	"github.com/PuerkitoBio/goquery"
 
@@ -41,7 +41,6 @@ func GetAccountInfo(ctx pixiv_v2.IContext, uid int64) (_ *dtos.UserInfoDTO, err 
 	document.Find("#meta-preload-data").Each(func(i int, selection *goquery.Selection) {
 		var text string
 		if _text, isExist := selection.Attr("content"); !isExist {
-
 			return
 		} else {
 			text = _text
@@ -58,7 +57,7 @@ func GetAccountInfo(ctx pixiv_v2.IContext, uid int64) (_ *dtos.UserInfoDTO, err 
 			return &info, nil
 		}
 	}
-	return nil, errors.New("not Found UserInfo")
+	return nil, fmt.Errorf("not Found UserInfo")
 }
 
 func GetProfileAll(ctx pixiv_v2.IContext, uid int64) (body *dtos.AllProfileDTO, err error) {

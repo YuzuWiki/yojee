@@ -2,7 +2,6 @@ package pixiv_v2
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -32,7 +31,7 @@ func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
 			}
 			v = string(_setV)
 		default:
-			return nil, errors.New(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[k]).String()))
+			return nil, fmt.Errorf(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[k]).String()))
 		}
 
 		query.Set(k, v)
@@ -63,7 +62,6 @@ func Path(paths ...interface{}) string {
 		default:
 			log.Printf("Warning: Unsupported path = %v", paths[i])
 		}
-
 	}
 	return strings.Join(elems, sep)
 }

@@ -10,9 +10,7 @@ import (
 	"golang.org/x/net/http/httpproxy"
 )
 
-var (
-	defaultTransport http.RoundTripper
-)
+var defaultTransport http.RoundTripper
 
 type Transport struct {
 	// TODO: 路由分发

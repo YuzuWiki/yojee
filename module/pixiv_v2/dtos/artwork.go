@@ -17,8 +17,8 @@ type ArtworkDTO struct {
 	// artwork into
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	CreateDate  time.Time `json:"createDate,string"`
-	UpdateDate  time.Time `json:"updateDate,string"`
+	CreateDate  time.Time `json:"createDate"`
+	UpdateDate  time.Time `json:"updateDate"`
 
 	// artwork abstract
 	PageCount     int64 `json:"pageCount"`

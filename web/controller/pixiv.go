@@ -10,9 +10,7 @@ import (
 	"github.com/YuzuWiki/yojee/service/pixivsrv"
 )
 
-type PixivController struct {
-	baseController
-}
+type PixivController struct{}
 
 func (ctr *PixivController) Sync(ctx *gin.Context) {
 	phpsessid := ctx.Query("phpsessid")
@@ -37,5 +35,4 @@ func (ctr *PixivController) Sync(ctx *gin.Context) {
 	}()
 
 	ctx.JSON(200, success())
-	return
 }

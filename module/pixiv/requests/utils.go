@@ -4,17 +4,15 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"golang.org/x/net/context"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
+
+	"golang.org/x/net/context"
 )
 
-var (
-	dnsQueryAPI = "https://1.1.1.1/dns-query?name="
-)
+var dnsQueryAPI = "https://1.1.1.1/dns-query?name="
 
 // LookUpDNS by 1.1.1.1
 type dNsBody struct {
@@ -29,7 +27,7 @@ type dNsBody struct {
 
 func LookUpDNS(host string) (err error, ip string) {
 	if len(host) == 0 {
-		return errors.New("invalid host"), ""
+		return fmt.Errorf("invalid host"), ""
 	}
 
 	request, err := http.NewRequest(http.MethodGet, dnsQueryAPI+host, nil)
@@ -45,10 +43,10 @@ func LookUpDNS(host string) (err error, ip string) {
 	}
 
 	if response.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("lookup dns fail, StatusCode is %d", response.StatusCode)), ""
+		return fmt.Errorf(fmt.Sprintf("lookup dns fail, StatusCode is %d", response.StatusCode)), ""
 	}
 
-	data, err := ioutil.ReadAll(response.Body)
+	data, err := io.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
@@ -64,7 +62,7 @@ func LookUpDNS(host string) (err error, ip string) {
 			return nil, answer.Data
 		}
 	}
-	return errors.New("not found IP"), ""
+	return fmt.Errorf("not found IP"), ""
 }
 
 // ByPassSNI Transport.DialTLSContext

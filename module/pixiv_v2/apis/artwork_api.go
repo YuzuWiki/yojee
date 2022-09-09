@@ -57,7 +57,7 @@ func GetIllusts(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
 }
 
 func GetMangas(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {
-	return getArtWork(ctx, Illust, artId)
+	return getArtWork(ctx, Manga, artId)
 }
 
 func GetNovels(ctx pixiv_v2.IContext, artId int64) (*dtos.ArtworkDTO, error) {

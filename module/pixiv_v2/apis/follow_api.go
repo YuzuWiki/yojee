@@ -40,3 +40,7 @@ func FollowIllusts(ctx pixiv_v2.IContext, page int) (*dtos.FollowLatestDTO, erro
 func FollowNovel(ctx pixiv_v2.IContext, page int) (*dtos.FollowLatestDTO, error) {
 	return followArtWork(ctx, Novel, page)
 }
+
+func FollowManga(ctx pixiv_v2.IContext, page int) (*dtos.FollowLatestDTO, error) {
+	return followArtWork(ctx, Manga, page)
+}

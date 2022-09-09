@@ -1,8 +1,9 @@
 package requests
 
 import (
-	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 	"net/http"
+
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 )
 
 func (r *requests) SetHeader(options ...pixiv_v2.HeaderOption) {

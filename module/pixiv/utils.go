@@ -2,9 +2,8 @@ package pixiv
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	netUrl "net/url"
@@ -32,7 +31,7 @@ func NewQuery(values map[string]interface{}) (*netUrl.Values, error) {
 			}
 			v = string(_setV)
 		default:
-			return nil, errors.New(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[k]).String()))
+			return nil, fmt.Errorf(fmt.Sprintf("Query error: unsupported type = %s", reflect.TypeOf(values[k]).String()))
 		}
 
 		query.Set(k, v)
@@ -63,7 +62,6 @@ func Path(paths ...interface{}) string {
 		default:
 			log.Printf("Warning: Unsupported path = %v", paths[i])
 		}
-
 	}
 	return strings.Join(elems, sep)
 }
@@ -83,7 +81,7 @@ func getMethod(ctx Context, method string) (_RequestMethod, error) {
 	case http.MethodDelete:
 		fn = client.Delete
 	default:
-		return nil, errors.New("UnSupport method: " + method)
+		return nil, fmt.Errorf("UnSupport method: " + method)
 	}
 	return fn, nil
 }
@@ -100,7 +98,7 @@ func request(ctx Context, method string, u string, query *requests.Query, params
 	}
 	defer resp.Body.Close()
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

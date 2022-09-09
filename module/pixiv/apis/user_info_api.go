@@ -3,11 +3,12 @@ package apis
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/YuzuWiki/yojee/global"
+	"fmt"
 	"net/http"
 
+	"github.com/PuerkitoBio/goquery"
+
+	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
@@ -35,7 +36,6 @@ func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 	document.Find("#meta-preload-data").Each(func(i int, selection *goquery.Selection) {
 		var text string
 		if _text, isExist := selection.Attr("content"); !isExist {
-
 			return
 		} else {
 			text = _text
@@ -52,7 +52,7 @@ func (InfoAPI) Information(ctx pixiv.Context, pid int64) (*UserInfoDTO, error) {
 			return &info, nil
 		}
 	}
-	return nil, errors.New("not Found UserInfo")
+	return nil, fmt.Errorf("not Found UserInfo")
 }
 
 func (InfoAPI) Artwork(ctx pixiv.Context, pid int64) (*ProfileAllDTO, error) {

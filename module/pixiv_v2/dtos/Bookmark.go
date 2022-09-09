@@ -12,8 +12,8 @@ type workDTO struct {
 	PageCount      int       `json:"pageCount"`
 	IsBookmarkable bool      `json:"isBookmarkable"`
 	Alt            string    `json:"alt"`
-	CreateDate     time.Time `json:"createDate,string"`
-	UpdateDate     time.Time `json:"updateDate,string"`
+	CreateDate     time.Time `json:"createDate"`
+	UpdateDate     time.Time `json:"updateDate"`
 }
 
 type BookmarkDTO struct {

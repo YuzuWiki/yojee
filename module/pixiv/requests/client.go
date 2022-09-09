@@ -22,7 +22,7 @@ type Client struct {
 
 func NewClient() *Client {
 	return &Client{
-		Client:      http.Client{
+		Client: http.Client{
 			Transport: defaultTransport,
 		},
 		Transport:   nil,

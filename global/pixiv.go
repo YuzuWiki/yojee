@@ -7,7 +7,7 @@ import (
 
 var Pixiv pixiv_v2.ISession
 
-func init() {
+func initPixiv() {
 	if Pixiv == nil {
 		Pixiv = requests.NewSession()
 	}

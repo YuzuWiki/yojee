@@ -4,8 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type baseController struct {
-}
+type baseController struct{}
 
 // Success return body
 func success(data ...any) gin.H {
@@ -21,7 +20,6 @@ func success(data ...any) gin.H {
 			"data":    data[0],
 		}
 	}
-
 }
 
 // fail return body

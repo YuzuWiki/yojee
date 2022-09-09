@@ -2,7 +2,6 @@ package requests
 
 import (
 	"fmt"
-	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 	"net"
 	"net/http"
 	"net/url"
@@ -10,11 +9,11 @@ import (
 	"time"
 
 	"golang.org/x/net/http/httpproxy"
+
+	"github.com/YuzuWiki/yojee/module/pixiv_v2"
 )
 
-var (
-	_defaultTransport http.RoundTripper
-)
+var _defaultTransport http.RoundTripper
 
 type transport struct {
 	http.Transport
@@ -71,6 +70,7 @@ func (t *transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 func (r *requests) SetProxy(proxyUrl string) error {
 	return r.Transport.SetProxy(proxyUrl)
 }
+
 func (r *requests) UnSetProxy() error {
 	return r.Transport.UnSetProxy()
 }

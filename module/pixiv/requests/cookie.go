@@ -1,7 +1,7 @@
 package requests
 
 import (
-	"errors"
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -16,7 +16,7 @@ func (c *Client) ensureJar() {
 
 func (c *Client) SetCookies(rawURL string, cookies ...*http.Cookie) error {
 	if len(rawURL) == 0 || len(cookies) == 0 {
-		return errors.New("invalid params")
+		return fmt.Errorf("invalid params")
 	}
 
 	c.ensureJar()

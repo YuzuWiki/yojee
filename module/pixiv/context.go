@@ -1,7 +1,7 @@
 package pixiv
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -22,7 +22,7 @@ func getUid(client RequestInterface) (int64, error) {
 
 	uidStr := resp.Header.Get("x-userid")
 	if len(uidStr) == 0 {
-		return 0, errors.New("invalid login status")
+		return 0, fmt.Errorf("invalid login status")
 	}
 
 	return strconv.ParseInt(uidStr, 10, 64)
