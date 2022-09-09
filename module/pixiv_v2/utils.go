@@ -80,9 +80,15 @@ func request(fn doFunc, u string, query *Query, params *Params) ([]byte, error) 
 	return data, nil
 }
 
-// Request return http.body
-func Request(fn doFunc, u string, query *Query, params *Params) ([]byte, error) {
-	return request(fn, u, query, params)
+// Header return http.Header
+func Header(fn doFunc, u string, query *Query, params *Params) (header http.Header, err error) {
+	resp, err := fn(u, query, params)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	return resp.Header, nil
 }
 
 // Body return http.body && error

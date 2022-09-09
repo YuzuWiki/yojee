@@ -15,13 +15,12 @@ func GetAccountPid(ctx pixiv_v2.IContext) (int64, error) {
 		return 0, err
 	}
 
-	resp, err := c.Get("https://"+pixiv_v2.PixivHost, nil, nil)
+	header, err := pixiv_v2.Header(c.Get, "https://"+pixiv_v2.PixivHost, nil, nil)
 	if err != nil {
 		return 0, err
 	}
-	defer resp.Body.Close()
 
-	if pid := resp.Header.Get("x-userid"); len(pid) > 0 {
+	if pid := header.Get("x-userid"); len(pid) > 0 {
 		return strconv.ParseInt(pid, 10, 64)
 	}
 	return 0, nil
