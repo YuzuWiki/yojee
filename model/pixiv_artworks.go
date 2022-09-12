@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/YuzuWiki/yojee/global"
@@ -9,7 +10,10 @@ import (
 )
 
 type PixivArtworkMod struct {
-	BaseMod
+	ID        uint64     `gorm:"type:timestamp;primaryKey;autoIncrement;column:id" json:"id"`
+	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
+	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
+	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	Pid     int64  `gorm:"type:bigint;column:pid" json:"pid"`
 	ArtId   int64  `gorm:"type:bigint;column:art_id" json:"art_id"`
@@ -25,7 +29,7 @@ type PixivArtworkMod struct {
 }
 
 func (PixivArtworkMod) TableName() string {
-	return "pixiv_artwork"
+	return strings.Join([]string{global.DATABASE(), "pixiv_artwork"}, ".")
 }
 
 func (PixivArtworkMod) Find(artType string, pid int64) (artworks *[]PixivArtworkTagMod, err error) {

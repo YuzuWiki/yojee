@@ -7,7 +7,7 @@ package controller
 // 	"github.com/gin-gonic/gin"
 //
 // 	"github.com/YuzuWiki/yojee/global"
-// 	"github.com/YuzuWiki/yojee/service/pixivsrv"
+// 	"github.com/YuzuWiki/yojee/service/pixiv_service"
 // )
 //
 // type PixivController struct{}
@@ -20,7 +20,7 @@ package controller
 // 		ctx.JSON(400, fail(400, "Miss pid"))
 // 		return
 // 	}
-// 	psrv := pixivsrv.NewService(phpsessid, 6, 10)
+// 	psrv := pixiv_service.NewService(phpsessid, 6, 10)
 //
 // 	go func() {
 // 		if err := psrv.SyncUser(pid); err != nil {

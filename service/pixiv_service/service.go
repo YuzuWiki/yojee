@@ -1,4 +1,4 @@
-package pixivsrv
+package pixiv_service
 
 // import (
 // 	"fmt"
@@ -9,21 +9,16 @@ package pixivsrv
 // 	"github.com/YuzuWiki/yojee/global"
 // 	"github.com/YuzuWiki/yojee/module/pixiv"
 // 	"github.com/YuzuWiki/yojee/module/pixiv/apis"
-// 	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 // 	"github.com/YuzuWiki/yojee/service/modelsrv"
 // )
 //
 // type Service struct {
 // 	ctx pixiv.Context
 //
-// 	//  task taskGroup
+// 	//   task taskGroup
 // 	jobPool *ants.Pool
 //
-// 	//  srv apis
-// 	apiInfo    apis.InfoAPI
-// 	apiArtwork apis.ArtworkAPI
-//
-// 	//  srv mod
+// 	//   srv mod
 // 	modUser    modelsrv.PixivUser
 // 	modTag     modelsrv.PixivTag
 // 	modArtwork modelsrv.PixivArtwork

@@ -13,6 +13,10 @@ import (
 
 var db *gorm.DB
 
+var DATABASE = func() string {
+	return os.Getenv("MYSQL_DATABASE")
+}
+
 func dns() string {
 	return fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?charset=utf8mb4&parseTime=true",
@@ -20,7 +24,7 @@ func dns() string {
 		os.Getenv("MYSQL_PASSWORD"),
 		os.Getenv("MYSQL_HOST"),
 		os.Getenv("MYSQL_PORT"),
-		os.Getenv("MYSQL_DATABASE"),
+		DATABASE(),
 	)
 }
 
