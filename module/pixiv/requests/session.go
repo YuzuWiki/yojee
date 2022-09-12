@@ -49,7 +49,7 @@ type session struct {
 	m sync.Mutex
 }
 
-func (s *session) new(sessionId string) (pixiv.IClient, error) {
+func (s *session) new(sessionId string) (c pixiv.IClient, err error) {
 	sessionId = strings.TrimSpace(sessionId)
 	if c, isOk := s.pool[sessionId]; isOk {
 		return c, nil
@@ -62,13 +62,12 @@ func (s *session) new(sessionId string) (pixiv.IClient, error) {
 		return c, nil
 	}
 
-	c, err := newClient(sessionId)
-	if err != nil {
-		return nil, err
+	if c, err = newClient(sessionId); err != nil {
+		return
 	}
 
 	s.pool[sessionId] = c
-	return c, nil
+	return
 }
 
 func (s *session) Default() (pixiv.IClient, error) {

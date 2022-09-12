@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
 ) CHARACTER SET utf8mb4;
 
 
-CREATE TABLE IF NOT EXISTS pixiv_tag_taxon
+CREATE TABLE IF NOT EXISTS pixiv_tag_tree
 (
     # 日语tag标签层级关系
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -58,13 +58,13 @@ CREATE TABLE IF NOT EXISTS pixiv_tag_taxon
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE  COMMENT '是否删除',
 
-    per_id  BIGINT          NOT NULL    COMMENT 'parent tag, id',
-    per_jp  VARCHAR(512)    NOT NULL    COMMENT 'parent tag, jp (name)',
+    parent_id  BIGINT          NOT NULL    COMMENT 'parent tag, id',
+    parent_jp  VARCHAR(512)    NOT NULL    COMMENT 'parent tag, jp (name)',
 
     tag_id  BIGINT          NOT NULL    COMMENT 'curr tag, id',
     tag_jp  VARCHAR(512)    NOT NULL    COMMENT 'curr tag, jp (name)',
 
-    UNIQUE INDEX idx_taxon (per_id, tag_id)
+    UNIQUE INDEX idx_tree (parent_id, tag_id)
 ) CHARACTER SET utf8mb4;
 
 
