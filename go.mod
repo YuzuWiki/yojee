@@ -11,12 +11,14 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/robfig/cron v1.2.0
 	github.com/rs/zerolog v1.26.1
+	go.uber.org/ratelimit v0.2.0
 	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/gorm v1.23.8
 )
 
 require (
+	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect

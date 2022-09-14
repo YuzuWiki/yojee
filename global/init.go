@@ -8,6 +8,7 @@ func init() {
 	InitDB()
 	InitCron()
 	initPixiv()
+	initPool()
 
 	Logger.Debug().Msg("global init finish")
 }
