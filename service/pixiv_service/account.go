@@ -38,6 +38,8 @@ func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivUserMod, err error) 
 			Avatar:    data.Avatar,
 			Region:    data.Region.Name,
 			Gender:    data.Gender.Name,
+			BirthDay:  data.BirthDay.Name,
+			Job:       data.Job.Name,
 			Following: data.Following,
 		}
 

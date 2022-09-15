@@ -8,9 +8,11 @@ type UserInfoDTO struct {
 	Following  int32       `json:"following"`
 	Region     userDataDTO `json:"region"`
 	Gender     userDataDTO `json:"gender"`
+	BirthDay   userDataDTO `json:"birthDay"`
+	Job        userDataDTO `json:"job"`
 }
 
 type userDataDTO struct {
-	Name         string `json:"region"`
+	Name         string `json:"name"`
 	PrivacyLevel string `json:"privacyLevel"`
 }

@@ -14,7 +14,7 @@ func followArtWork(ctx pixiv.IContext, mode string, page int) (body *dtos.Follow
 		c     pixiv.IClient
 	)
 
-	if query, err = pixiv.NewQuery(map[string]interface{}{"p": page, "mode": mode, "lang": "zh"}); err != nil {
+	if query, err = pixiv.NewQuery(map[string]interface{}{"p": page, "mode": mode, "lang": "jp"}); err != nil {
 		return
 	}
 

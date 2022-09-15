@@ -8,7 +8,7 @@ import (
 	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
-func FollowingArtWork(ctx pixiv.IContext, uid int32, limit int32, offset int) (body *dtos.FollowingDTO, err error) {
+func GetFollowing(ctx pixiv.IContext, pid int32, limit int32, offset int) (body *dtos.FollowingDTO, err error) {
 	var (
 		query *pixiv.Query
 		c     pixiv.IClient
@@ -19,7 +19,7 @@ func FollowingArtWork(ctx pixiv.IContext, uid int32, limit int32, offset int) (b
 		"limit":  limit,
 		"rest":   Show,
 		"tag":    "",
-		"lang":   "zh",
+		"lang":   "jp",
 	}); err != nil {
 		return
 	}
@@ -28,7 +28,7 @@ func FollowingArtWork(ctx pixiv.IContext, uid int32, limit int32, offset int) (b
 		return
 	}
 
-	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user", uid, "/following"), query, nil)
+	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user", pid, "/following"), query, nil)
 	if err != nil {
 		return nil, err
 	}

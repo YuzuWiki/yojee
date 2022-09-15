@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS pixiv_user
     avatar     VARCHAR(512) DEFAULT ''  COMMENT 'pixiv user avatar',
     region     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user region',
     gender     VARCHAR(16)  DEFAULT ''  COMMENT 'pixiv user gender',
+    birth_day  VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user birth_day',
+    Job        VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user Job',
     following  INT          DEFAULT 0   COMMENT '关注数量',
 
     INDEX idx_pid (pid, name)

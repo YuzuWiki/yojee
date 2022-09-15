@@ -18,6 +18,8 @@ type PixivUserMod struct {
 	Avatar    string `gorm:"type:varchar(512);column:avatar" json:"avatar"`
 	Region    string `gorm:"type:varchar(16);column:region" json:"region"`
 	Gender    string `gorm:"type:varchar(16);column:gender" json:"gender"`
+	BirthDay  string `gorm:"type:varchar(128);column:birth_day" json:"birthDay"`
+	Job       string `gorm:"type:varchar(128);column:job" json:"job"`
 	Following int32  `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
 }
 

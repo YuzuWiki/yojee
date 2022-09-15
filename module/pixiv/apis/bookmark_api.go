@@ -18,7 +18,7 @@ func bookmark(ctx pixiv.IContext, rest string, uid int64, tag string, offset int
 		"limit":  limit,
 		"offset": offset,
 		"rest":   rest,
-		"lang":   "zh",
+		"lang":   "jp",
 	}); err != nil {
 		return
 	}

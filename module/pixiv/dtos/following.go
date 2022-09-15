@@ -7,16 +7,16 @@ type FollowingDTO struct {
 }
 
 type followUserDTO struct {
-	UserID          int64       `json:"userId,string"`
-	UserName        string      `json:"userName"`
-	ProfileImageURL string      `json:"profileImageUrl"`
-	UserComment     string      `json:"userComment"`
-	Following       bool        `json:"following"`
-	Followed        bool        `json:"followed"`
-	IsBlocking      bool        `json:"isBlocking"`
-	IsMypixiv       bool        `json:"isMypixiv"`
-	Illusts         []illustDTO `json:"illusts"`
-	AcceptRequest   bool        `json:"acceptRequest"`
+	UserID        int64       `json:"userId,string"`
+	Name          string      `json:"userName"`
+	Avatar        string      `json:"profileImageUrl"`
+	UserComment   string      `json:"userComment"`
+	Following     bool        `json:"following"`
+	Followed      bool        `json:"followed"`
+	IsBlocking    bool        `json:"isBlocking"`
+	IsMypixiv     bool        `json:"isMypixiv"`
+	Illusts       []illustDTO `json:"illusts"`
+	AcceptRequest bool        `json:"acceptRequest"`
 }
 
 // FollowLatestDTO  follow_latest
