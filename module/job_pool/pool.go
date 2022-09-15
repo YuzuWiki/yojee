@@ -1,4 +1,4 @@
-package tasks
+package job_pool
 
 import (
 	"go.uber.org/ratelimit"

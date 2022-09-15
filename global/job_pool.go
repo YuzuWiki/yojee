@@ -4,18 +4,18 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/YuzuWiki/yojee/module/tasks"
+	"github.com/YuzuWiki/yojee/module/job_pool"
 )
 
-var Pool tasks.IPool
+var JobPool job_pool.IPool
 
 func initPool() {
-	if Pool == nil {
+	if JobPool == nil {
 		rate, err := strconv.Atoi(os.Getenv("POOL_RATE"))
 		if err != nil {
 			panic(err.Error())
 		}
 
-		Pool = tasks.New(rate)
+		JobPool = job_pool.New(rate)
 	}
 }
