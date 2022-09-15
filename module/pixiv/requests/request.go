@@ -10,7 +10,7 @@ type requests struct {
 	http.Client
 
 	// Transport
-	Transport *transport
+	Transport pixiv.ITransport
 
 	// 钩子函数..
 	beforeHooks []pixiv.BeforeHook
@@ -112,5 +112,5 @@ func (r *requests) AfterHooks(fns ...pixiv.AfterHook) {
 }
 
 func NewRequest() pixiv.IRequest {
-	return &requests{}
+	return &requests{Transport: NewTransport()}
 }

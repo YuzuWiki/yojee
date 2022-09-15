@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -33,7 +32,7 @@ func (PixivArtworkMod) TableName() string {
 }
 
 func (PixivArtworkMod) Find(artType string, pid int64) (artworks *[]PixivArtworkTagMod, err error) {
-	if err = global.DB().Exec("SELECT * FROM pixiv_artwork WHERE pid=? AND art_type=? AND is_deleted=false;", pid, artType).Find(artworks).Error; err != nil {
+	if err = global.DB().Where("pid=? AND art_type=? AND is_deleted=?", pid, artType, false).Find(artworks).Error; err != nil {
 		return nil, err
 	}
 	return
@@ -52,7 +51,6 @@ func (PixivArtworkMod) Insert(data dtos.ArtworkDTO) (int64, error) {
 		CreateDate:    &data.CreateDate,
 	}
 	if err := global.DB().FirstOrCreate(&row, PixivArtworkMod{Pid: data.Pid, ArtType: data.ArtType, ArtId: data.ArtId}).Error; err != nil {
-		global.Logger.Error().Msg(fmt.Sprintf("insert illust(%d) error,  %s", data.ArtId, err.Error()))
 		return 0, err
 	}
 	return int64(row.ID), nil

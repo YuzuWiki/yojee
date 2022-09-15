@@ -1,11 +1,11 @@
 package modelsrv
 
 import (
+	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 	"gorm.io/gorm"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 type PixivUser struct{}

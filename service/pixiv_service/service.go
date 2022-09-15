@@ -127,3 +127,5 @@ package pixiv_service
 // 		jobPool: pool,
 // 	}
 // }
+
+type Service struct{}

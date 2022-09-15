@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -66,6 +67,7 @@ func (s *session) new(sessionId string) (c pixiv.IClient, err error) {
 		return
 	}
 
+	fmt.Println(fmt.Sprintf("[DEBUG] Client: %s  %+v", sessionId, c))
 	s.pool[sessionId] = c
 	return
 }
@@ -86,5 +88,5 @@ func (s *session) Remove(sessionId string) {
 }
 
 func NewSession() pixiv.ISession {
-	return &session{}
+	return &session{pool: map[string]pixiv.IClient{}}
 }

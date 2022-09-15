@@ -1,8 +1,6 @@
 package model
 
 import (
-	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -39,36 +37,16 @@ func (PixivTagMod) Find(artType string, artId int64) (tags *[]PixivTagMod, err e
 			tag.created_at  AS created_at,
 			tag.updated_at  AS updated_at,
 			tag.is_deleted  AS is_deleted
-		FROM pixiv_tag 			AS tag
-		JOIN pixiv_artwork_tag  AS pag
+		FROM ?.pixiv_tag 			AS tag
+		JOIN ?.pixiv_artwork_tag  	AS pag
 			ON tag.id=pag.tag_id AND pag.is_deleted=false
-		WHERE pag.art_type=? AND pag.art_id=?;`, artType, artId,
+		WHERE pag.art_type=? AND pag.art_id=?;`,
+		global.DATABASE(), global.DATABASE(), artType, artId,
 	).Scan(tags).Error; err != nil {
 		return nil, err
 	}
 
 	return tags, nil
-}
-
-func (PixivTagMod) FindId(jp string) (int64, error) {
-	if len(jp) == 0 {
-		return 0, fmt.Errorf("invalid tag")
-	}
-
-	if tagId, err := global.RDB().Get(_TagIdKey + jp).Result(); err == nil {
-		return strconv.ParseInt(tagId, 10, 0)
-	}
-
-	var tag struct {
-		ID int64  `gorm:"column:id" json:"id"`
-		Jp string `gorm:"type:VARCHAR(512);column:jp" json:"jp"`
-	}
-	if err := global.DB().Exec(`SELECT id, jp FROM pixiv_tag WHERE jp=? AND is_deleted=0 LIMIT 1;`, jp).Scan(&tag).Error; err != nil {
-		return 0, err
-	}
-
-	global.RDB().Set(_TagIdKey+tag.Jp, tag.ID, 10*60*time.Second)
-	return tag.ID, nil
 }
 
 func (PixivTagMod) Insert(jp, romaji, en, ko, zh string) (int64, error) {
@@ -83,7 +61,6 @@ func (PixivTagMod) Insert(jp, romaji, en, ko, zh string) (int64, error) {
 	if err := global.DB().FirstOrCreate(tag, &PixivTagMod{Jp: jp, IsDeleted: false}).Error; err != nil {
 		return 0, err
 	}
-	global.RDB().Set(_TagIdKey+tag.Jp, tag.ID, 10*60*time.Second)
 	return int64(tag.ID), nil
 }
 

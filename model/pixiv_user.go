@@ -13,13 +13,12 @@ type PixivUserMod struct {
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
-	PID    int64  `gorm:"type:bigint;column:pid" json:"pid"`
-	Name   string `gorm:"type:varchar(256);column:name" json:"name"`
-	Avatar string `gorm:"type:varchar(512);column:avatar" json:"avatar"`
-	Region string `gorm:"type:varchar(16);column:region" json:"region"`
-	Gender string `gorm:"type:varchar(16);column:gender" json:"gender"`
-
-	Following int32 `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
+	PID       int64  `gorm:"type:bigint;column:pid" json:"pid"`
+	Name      string `gorm:"type:varchar(256);column:name" json:"name"`
+	Avatar    string `gorm:"type:varchar(512);column:avatar" json:"avatar"`
+	Region    string `gorm:"type:varchar(16);column:region" json:"region"`
+	Gender    string `gorm:"type:varchar(16);column:gender" json:"gender"`
+	Following int32  `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
 }
 
 func (PixivUserMod) TableName() string {

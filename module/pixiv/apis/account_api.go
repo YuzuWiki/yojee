@@ -46,7 +46,7 @@ func GetAccountInfo(ctx pixiv.IContext, uid int64) (_ *dtos.UserInfoDTO, err err
 			text = _text
 		}
 
-		if err := json.Unmarshal([]byte(text), user); err != nil {
+		if err = json.Unmarshal([]byte(text), user); err != nil {
 			global.Logger.Error().Err(err)
 			return
 		}

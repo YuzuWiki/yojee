@@ -1,6 +1,11 @@
 package pixiv
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
+
+var DefaultContext = NewContext(os.Getenv("PIXIV_PHPSESSID"))
 
 type Context struct {
 	phpSessID string
@@ -30,4 +35,8 @@ func (ctx *Context) DelSessID(phpSessID string) error {
 
 	ctx.phpSessID = phpSessID
 	return nil
+}
+
+func NewContext(phpSessId string) IContext {
+	return &Context{phpSessID: phpSessId}
 }

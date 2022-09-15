@@ -13,8 +13,12 @@ import (
 
 var db *gorm.DB
 
-var DATABASE = func() string {
-	return os.Getenv("MYSQL_DATABASE")
+var DATABASE = func() (database string) {
+	database = os.Getenv("MYSQL_DATABASE")
+	if len(database) == 0 {
+		database = "yojee"
+	}
+	return
 }
 
 func dns() string {
