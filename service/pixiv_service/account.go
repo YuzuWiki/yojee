@@ -17,22 +17,22 @@ func (s Service) GetPid(phpSessId string) (pid int64, err error) {
 	return pid, nil
 }
 
-func (s Service) GetAccountInfo(pid int64) (_ *model.PixivUserMod, err error) {
-	row := &model.PixivUserMod{}
-	if err = global.DB().First(row, model.PixivUserMod{PID: pid, IsDeleted: false}).Error; err != nil {
+func (s Service) GetAccountInfo(pid int64) (_ *model.PixivAccountMod, err error) {
+	row := &model.PixivAccountMod{}
+	if err = global.DB().First(row, model.PixivAccountMod{PID: pid, IsDeleted: false}).Error; err != nil {
 		return nil, err
 	}
 	return row, nil
 }
 
-func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivUserMod, err error) {
+func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err error) {
 	data, err := apis.GetAccountInfo(pixiv.DefaultContext, pid)
 	if err != nil {
 		return nil, err
 	}
 
 	var (
-		row = &model.PixivUserMod{
+		row = &model.PixivAccountMod{
 			PID:       data.UserID,
 			Name:      data.Name,
 			Avatar:    data.Avatar,
@@ -46,7 +46,7 @@ func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivUserMod, err error) 
 		db = global.DB()
 	)
 
-	if err = db.Table(model.PixivUserMod{}.TableName()).Where("pid = ? AND is_deleted = ?", pid, false).Updates(map[string]interface{}{"is_deleted": true}).Error; err != nil {
+	if err = db.Table(model.PixivAccountMod{}.TableName()).Where("pid = ? AND is_deleted = ?", pid, false).Updates(map[string]interface{}{"is_deleted": true}).Error; err != nil {
 		return nil, err
 	}
 

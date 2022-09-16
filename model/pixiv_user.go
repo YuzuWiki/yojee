@@ -7,7 +7,7 @@ import (
 	"github.com/YuzuWiki/yojee/global"
 )
 
-type PixivUserMod struct {
+type PixivAccountMod struct {
 	ID        uint64     `gorm:"type:timestamp;primaryKey;autoIncrement;column:id" json:"id"`
 	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
@@ -23,12 +23,12 @@ type PixivUserMod struct {
 	Following int32  `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
 }
 
-func (PixivUserMod) TableName() string {
-	return strings.Join([]string{global.DATABASE(), "pixiv_user"}, ".")
+func (PixivAccountMod) TableName() string {
+	return strings.Join([]string{global.DATABASE(), "pixiv_account"}, ".")
 }
 
-func (PixivUserMod) Insert(pid int64, name string, avatar string, region string, gender string, following int32) (int64, error) {
-	row := &PixivUserMod{
+func (PixivAccountMod) Insert(pid int64, name string, avatar string, region string, gender string, following int32) (int64, error) {
+	row := &PixivAccountMod{
 		PID:       pid,
 		Name:      name,
 		Avatar:    avatar,

@@ -31,36 +31,6 @@ func GetAccountInfo(ctx pixiv.IContext, pid int64) (body *dtos.UserInfoDTO, err 
 		return nil, err
 	}
 	return body, nil
-	//
-	//
-	// document, err := goquery.NewDocumentFromReader(bytes.NewReader(data))
-	// if err != nil {
-	// 	return nil, err
-	// }
-	//
-	// user := &struct {
-	// 	User map[string]dtos.UserInfoDTO `json:"user"`
-	// }{}
-	// document.Find("#meta-preload-data").Each(func(i int, selection *goquery.Selection) {
-	// 	var text string
-	// 	if _text, isExist := selection.Attr("content"); !isExist {
-	// 		return
-	// 	} else {
-	// 		text = _text
-	// 	}
-	//
-	// 	if err = json.Unmarshal([]byte(text), user); err != nil {
-	// 		global.Logger.Error().Err(err)
-	// 		return
-	// 	}
-	// })
-	//
-	// for _, info := range user.User {
-	// 	if info.UserID > 0 {
-	// 		return &info, nil
-	// 	}
-	// }
-	// return nil, fmt.Errorf("not Found UserInfo")
 }
 
 func GetProfileAll(ctx pixiv.IContext, uid int64) (body *dtos.AllProfileDTO, err error) {
