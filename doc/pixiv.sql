@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS pixiv_follow
 
     pid          BIGINT    NOT NULL COMMENT 'user id',
     followed_pid BIGINT    NOT NULL COMMENT '被关注者的 uid id',
-    followed_at  TIMESTAMP NOT NULL COMMENT '关注时间',
 
     INDEX idx_followed (pid, followed_pid)
 ) CHARACTER SET utf8mb4;

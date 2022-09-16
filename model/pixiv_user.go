@@ -13,7 +13,7 @@ type PixivAccountMod struct {
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
-	PID       int64  `gorm:"type:bigint;column:pid" json:"pid"`
+	Pid       int64  `gorm:"type:bigint;column:pid" json:"pid"`
 	Name      string `gorm:"type:varchar(256);column:name" json:"name"`
 	Avatar    string `gorm:"type:varchar(512);column:avatar" json:"avatar"`
 	Region    string `gorm:"type:varchar(16);column:region" json:"region"`
@@ -29,7 +29,7 @@ func (PixivAccountMod) TableName() string {
 
 func (PixivAccountMod) Insert(pid int64, name string, avatar string, region string, gender string, following int32) (int64, error) {
 	row := &PixivAccountMod{
-		PID:       pid,
+		Pid:       pid,
 		Name:      name,
 		Avatar:    avatar,
 		Region:    region,
@@ -48,20 +48,18 @@ type PixivFollowMod struct {
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
-	PID         int64      `gorm:"type:bigint;column:pid" json:"pid"`
-	FollowedPid int64      `gorm:"type:bigint;column:followed_pid" json:"followed_pid"`
-	FollowedAt  *time.Time `gorm:"type:timestamp;column:followed_at"  json:"followed_at"`
+	PID         int64 `gorm:"type:bigint;column:pid" json:"pid"`
+	FollowedPid int64 `gorm:"type:bigint;column:followed_pid" json:"followed_pid"`
 }
 
 func (PixivFollowMod) TableName() string {
 	return strings.Join([]string{global.DATABASE(), "pixiv_follow"}, ".")
 }
 
-func (PixivFollowMod) MarkFollowing(pid int64, followedPid int64, followedAt time.Time) (int64, error) {
+func (PixivFollowMod) MarkFollowing(pid int64, followedPid int64) (int64, error) {
 	row := &PixivFollowMod{
 		PID:         pid,
 		FollowedPid: followedPid,
-		FollowedAt:  &followedAt,
 	}
 	if err := global.DB().Create(row).Error; err != nil {
 		return 0, err

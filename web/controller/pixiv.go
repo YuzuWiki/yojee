@@ -82,3 +82,24 @@ func (ctr *PixivController) Account(ctx *gin.Context) {
 	}
 	return
 }
+
+func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
+	params := struct {
+		Pid    int64 `json:"pid"`
+		Limit  int   `json:"limit"`
+		Offset int   `json:"offset" `
+	}{}
+	if err := ctx.ShouldBindJSON(&params); err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	follows, err := ctr.srv.GetFollowing(params.Pid, params.Limit, params.Offset)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	ctx.JSON(200, success(follows))
+	return
+}

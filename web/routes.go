@@ -15,4 +15,5 @@ func (svr *Server) RegisterRoutes() {
 	pixiv := controller.PixivController{}
 	svr.GET("/pixiv/account/pid", pixiv.GetPid)
 	svr.GET("/pixiv/account/info", pixiv.Account)
+	svr.POST("/pixiv/account/following", pixiv.GetFollowing)
 }

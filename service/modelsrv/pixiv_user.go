@@ -34,7 +34,7 @@ func (srv *PixivUser) insertUser(tx *gorm.DB, info dtos.UserInfoDTO) error {
 	}
 
 	if err := tx.Create(&model.PixivAccountMod{
-		PID:       info.UserID,
+		Pid:       info.UserID,
 		Name:      info.Name,
 		Avatar:    info.Avatar,
 		Region:    info.Region.Name,
