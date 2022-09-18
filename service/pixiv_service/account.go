@@ -13,7 +13,6 @@ func (s Service) GetPid(phpSessId string) (pid int64, err error) {
 	if pid, err = apis.GetAccountPid(ctx); err != nil {
 		return 0, err
 	}
-
 	return pid, nil
 }
 
@@ -25,24 +24,28 @@ func (s Service) GetAccountInfo(pid int64) (_ *model.PixivAccountMod, err error)
 	return row, nil
 }
 
-func (s Service) FlushAccountInfo(pid int64) (account *model.PixivAccountMod, err error) {
+func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err error) {
 	data, err := apis.GetAccountInfo(pixiv.DefaultContext, pid)
 	if err != nil {
 		return nil, err
 	}
 
-	row := model.PixivAccountMod{
-		Pid:       data.UserID,
-		Name:      data.Name,
-		Avatar:    data.Avatar,
-		Region:    data.Region.Name,
-		Gender:    data.Gender.Name,
-		BirthDay:  data.BirthDay.Name,
-		Job:       data.Job.Name,
-		Following: data.Following,
-	}
-	if err = global.DB().Where("pid = ? AND is_deleted = ?", pid, false).Assign(row).FirstOrCreate(account).Error; err != nil {
+	account := &model.PixivAccountMod{}
+	if err = global.DB().Where(
+		model.PixivAccountMod{Pid: data.UserID, IsDeleted: false},
+	).Assign(
+		model.PixivAccountMod{
+			Pid:       data.UserID,
+			Name:      data.Name,
+			Avatar:    data.Avatar,
+			Region:    data.Region.Name,
+			Gender:    data.Gender.Name,
+			BirthDay:  data.BirthDay.Name,
+			Job:       data.Job.Name,
+			Following: data.Following,
+		},
+	).FirstOrCreate(account).Error; err != nil {
 		return nil, err
 	}
-	return account, err
+	return account, nil
 }

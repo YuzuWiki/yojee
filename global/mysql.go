@@ -41,7 +41,7 @@ func InitDB() *gorm.DB {
 				SkipInitializeWithVersion: false,
 			}),
 			&gorm.Config{
-				Logger: logger.Default.LogMode(logger.Silent), // 日志输出级别
+				Logger: logger.Default.LogMode(logger.Error), // 日志输出级别
 			},
 		)
 		if err != nil {

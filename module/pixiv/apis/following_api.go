@@ -8,7 +8,7 @@ import (
 	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
-func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (body *dtos.FollowingDTO, err error) {
+func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (_ *dtos.FollowingDTO, err error) {
 	var (
 		query *pixiv.Query
 		c     pixiv.IClient
@@ -33,9 +33,9 @@ func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (body *d
 		return nil, err
 	}
 
+	body := &dtos.FollowingDTO{}
 	if err = json.Unmarshal(data, body); err != nil {
 		return
 	}
-
 	return body, nil
 }

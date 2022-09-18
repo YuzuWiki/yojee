@@ -10,16 +10,16 @@ import (
 )
 
 func (Service) GetFollowing(pid int64, limit, offset int) (follows *[]model.PixivAccountMod, err error) {
-	if err = global.DB().Exec(`
-	SELECT
-		account.*
-	FROM pixiv_account AS account
-	JOIN pixiv_follow  AS follow
-		ON follow.followed_pid = account.pid 
-		   AND follow.pid = ?
-		   AND follow.is_deleted = false
-	WHERE account.is_deleted = false
-	LIMIT ? OFFSET ?;`, pid, limit, offset,
+	if err = global.DB().Raw(`
+		SELECT
+			account.*
+		FROM pixiv_account AS account
+		JOIN pixiv_follow  AS follow
+			ON follow.followed_pid = account.pid 
+			   AND follow.pid = ?
+			   AND follow.is_deleted = false
+		WHERE account.is_deleted = false
+		LIMIT ? OFFSET ?;`, pid, limit, offset,
 	).Scan(follows).Error; err != nil {
 		return nil, err
 	}
@@ -27,16 +27,18 @@ func (Service) GetFollowing(pid int64, limit, offset int) (follows *[]model.Pixi
 	return follows, nil
 }
 
-func (s Service) SyncFollowing(pid int64) (total int, err error) {
+func (s Service) SyncFollowing(pid int64) (int, error) {
+	global.Logger.Debug().Msg(fmt.Sprintf("[DEBUG] SyncFollowing: (%d) BEGIN", pid))
 	var (
 		limit  = 50
 		offset = 0
+		total  = offset + 1
 	)
 
-	total = limit + 1
-	for (limit + offset) <= total {
-		body, err := apis.GetFollowing(pixiv.DefaultContext, pid, 50, 0)
+	for (offset) <= total {
+		body, err := apis.GetFollowing(pixiv.DefaultContext, pid, limit, offset)
 		if err != nil {
+			global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%d): ERROR, GetFollowing %s", pid, err.Error()))
 			return 0, err
 		}
 
@@ -45,13 +47,12 @@ func (s Service) SyncFollowing(pid int64) (total int, err error) {
 
 		for _, u := range body.Users {
 			global.JobPool.Submit(func() {
-				global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%d): BEGIN, relation syncing...", u.UserID))
 				var (
 					account *model.PixivAccountMod
 					e       error
 				)
 				if account, e = s.FlushAccountInfo(u.UserID); e != nil {
-					global.Logger.Error().Err(e).Msg(fmt.Sprintf("[SyncFollowing] (%d): ERROR, sync account Fail", u.UserID))
+					global.Logger.Error().Err(e).Msg(fmt.Sprintf("[SyncFollowing] (%d): ERROR, %s", u.UserID, e.Error()))
 					return
 				}
 
@@ -63,6 +64,6 @@ func (s Service) SyncFollowing(pid int64) (total int, err error) {
 			})
 		}
 	}
-
+	global.Logger.Debug().Msg(fmt.Sprintf("[DEBUG] SyncFollowing: (%d) DONE, total = %d", pid, total))
 	return total, nil
 }

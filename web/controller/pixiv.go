@@ -51,6 +51,10 @@ type PixivController struct {
 
 func (ctr *PixivController) GetPid(ctx *gin.Context) {
 	phpsessid := ctx.Query("phpsessid")
+	if len(phpsessid) == 0 {
+		ctx.JSON(400, fail(400, "invalid phpsessid"))
+		return
+	}
 
 	pid, err := ctr.srv.GetPid(phpsessid)
 	if err != nil {
@@ -76,7 +80,6 @@ func (ctr *PixivController) Account(ctx *gin.Context) {
 
 	if data, err := ctr.srv.FlushAccountInfo(pid); err != nil {
 		ctx.JSON(400, fail(402, err.Error()))
-		return
 	} else {
 		ctx.JSON(200, success(data))
 	}
@@ -88,7 +91,11 @@ func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 		Pid    int64 `json:"pid"`
 		Limit  int   `json:"limit"`
 		Offset int   `json:"offset" `
-	}{}
+	}{
+		Pid:    0,
+		Limit:  0,
+		Offset: 24,
+	}
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(400, fail(400, err.Error()))
 		return
@@ -102,4 +109,19 @@ func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 
 	ctx.JSON(200, success(follows))
 	return
+}
+
+func (ctr *PixivController) SyncFollowing(ctx *gin.Context) {
+	params := struct {
+		Pid int64 `json:"pid"`
+	}{}
+	if err := ctx.BindJSON(&params); err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	go func() {
+		_, _ = ctr.srv.SyncFollowing(params.Pid)
+	}()
+	ctx.JSON(200, success())
 }
