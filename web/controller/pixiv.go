@@ -93,8 +93,8 @@ func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 		Offset int   `json:"offset" `
 	}{
 		Pid:    0,
-		Limit:  0,
-		Offset: 24,
+		Limit:  24,
+		Offset: 0,
 	}
 	if err := ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(400, fail(400, err.Error()))

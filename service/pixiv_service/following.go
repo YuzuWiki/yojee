@@ -9,7 +9,9 @@ import (
 	"github.com/YuzuWiki/yojee/module/pixiv/apis"
 )
 
-func (Service) GetFollowing(pid int64, limit, offset int) (follows *[]model.PixivAccountMod, err error) {
+func (Service) GetFollowing(pid int64, limit, offset int) (_ *[]model.PixivAccountMod, err error) {
+	follows := make([]model.PixivAccountMod, 0)
+	global.Logger.Debug().Msg(fmt.Sprintf("[DEBUG] pid=%d limit=%d offset=%d", pid, limit, offset))
 	if err = global.DB().Raw(`
 		SELECT
 			account.*
@@ -20,11 +22,11 @@ func (Service) GetFollowing(pid int64, limit, offset int) (follows *[]model.Pixi
 			   AND follow.is_deleted = false
 		WHERE account.is_deleted = false
 		LIMIT ? OFFSET ?;`, pid, limit, offset,
-	).Scan(follows).Error; err != nil {
+	).Scan(&follows).Error; err != nil {
 		return nil, err
 	}
 
-	return follows, nil
+	return &follows, nil
 }
 
 func (s Service) SyncFollowing(pid int64) (int, error) {
@@ -35,6 +37,12 @@ func (s Service) SyncFollowing(pid int64) (int, error) {
 		total  = offset + 1
 	)
 
+	// un-mark following status
+	if err := global.DB().Exec("UPDATE pixiv_follow SET is_deleted = true WHERE pid = ?;", pid).Error; err != nil {
+		return 0, err
+	}
+
+	// re-mark following status
 	for (offset) <= total {
 		body, err := apis.GetFollowing(pixiv.DefaultContext, pid, limit, offset)
 		if err != nil {
@@ -56,7 +64,7 @@ func (s Service) SyncFollowing(pid int64) (int, error) {
 					return
 				}
 
-				if e = global.DB().Where("pid = ? AND followed_pid = ? AND is_deleted = ?", pid, account.Pid, false).FirstOrCreate(&model.PixivFollowMod{PID: pid, FollowedPid: u.UserID}).Error; e != nil {
+				if e = global.DB().Where("pid = ? AND followed_pid = ?", pid, account.Pid, false).FirstOrCreate(&model.PixivFollowMod{PID: pid, FollowedPid: u.UserID, IsDeleted: false}).Error; e != nil {
 					global.Logger.Error().Err(e).Msg(fmt.Sprintf("[SyncFollowing] (%d): ERROR, mark following Fail, pid=%d followed_pid=%d", u.UserID, pid, u.UserID))
 					return
 				}
