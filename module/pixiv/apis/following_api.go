@@ -8,10 +8,11 @@ import (
 	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
-func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (_ *dtos.FollowingDTO, err error) {
+func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (*dtos.FollowingDTO, error) {
 	var (
 		query *pixiv.Query
 		c     pixiv.IClient
+		err   error
 	)
 
 	if query, err = pixiv.NewQuery(map[string]interface{}{
@@ -21,11 +22,11 @@ func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (_ *dtos
 		"tag":    "",
 		"lang":   "jp",
 	}); err != nil {
-		return
+		return nil, err
 	}
 
 	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
-		return
+		return nil, err
 	}
 
 	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user", pid, "/following"), query, nil)
@@ -35,7 +36,7 @@ func GetFollowing(ctx pixiv.IContext, pid int64, limit int, offset int) (_ *dtos
 
 	body := &dtos.FollowingDTO{}
 	if err = json.Unmarshal(data, body); err != nil {
-		return
+		return nil, err
 	}
 	return body, nil
 }

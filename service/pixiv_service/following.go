@@ -30,13 +30,13 @@ func (Service) GetFollowing(pid int64, limit, offset int) (_ *[]model.PixivAccou
 }
 
 func (s Service) SyncFollowing(pid int64) (int, error) {
-	global.Logger.Debug().Msg(fmt.Sprintf("[DEBUG] SyncFollowing: (%d) BEGIN", pid))
 	var (
 		limit  = 50
 		offset = 0
 		total  = offset + 1
 	)
 
+	global.Logger.Debug().Msg(fmt.Sprintf("[DEBUG] SyncFollowing: (%d) BEGIN", pid))
 	// un-mark following status
 	if err := global.DB().Exec("UPDATE pixiv_follow SET is_deleted = true WHERE pid = ?;", pid).Error; err != nil {
 		return 0, err
