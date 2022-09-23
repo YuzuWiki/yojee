@@ -31,7 +31,9 @@ type ArtworkDTO struct {
 }
 
 type abstractTag struct {
-	Tags briefTag `json:"tags"`
+	Tags []struct {
+		Jp string `json:"tag,omitempty"`
+	} `json:"tags"`
 }
 
 // base data

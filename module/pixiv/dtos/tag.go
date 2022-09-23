@@ -61,8 +61,3 @@ func (dto *tagTranslDTO) UnmarshalJSON(body []byte) error {
 	*dto = data
 	return nil
 }
-
-type briefTag struct {
-	Jp     string `json:"tag"`
-	Romaji string `json:"romaji"`
-}

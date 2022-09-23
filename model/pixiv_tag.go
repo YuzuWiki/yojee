@@ -26,6 +26,13 @@ func (PixivTagMod) TableName() string {
 	return strings.Join([]string{global.DATABASE(), "pixiv_tag"}, ".")
 }
 
+func (PixivTagMod) GetId(jp string) (tagId int64, err error) {
+	if err = global.DB().Exec(`SELECT id FROM pixiv_tag WHERE jp=? AND is_deleted=false LIMIT 1;`, jp).Find(&tagId).Error; err != nil {
+		return 0, err
+	}
+	return tagId, nil
+}
+
 func (PixivTagMod) Find(artType string, artId int64) (tags *[]PixivTagMod, err error) {
 	if err = global.DB().Exec(`
 		SELECT
