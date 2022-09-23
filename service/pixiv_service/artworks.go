@@ -20,7 +20,7 @@ func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
 			WHERE pat.is_deleted = false
 			  AND pat.art_type   = artwork.art_type
 			  AND pat.art_id     = artwork.art_id
-		)as tags
+		) AS tags
 	FROM pixiv_artwork AS artwork
 	WHERE artwork.art_type = ?
 	  AND artwork.art_id = ?
