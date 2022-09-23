@@ -105,5 +105,6 @@ CREATE TABLE IF NOT EXISTS pixiv_artwork
     bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
     create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
 
-    UNIQUE INDEX idx_illust (pid, art_type, art_id)
+    UNIQUE INDEX idx_illust (pid, art_type, art_id),
+    INDEX idx_art (art_type, art_id)
 ) CHARACTER SET utf8mb4;

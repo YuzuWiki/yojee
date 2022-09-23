@@ -37,11 +37,10 @@ func (PixivTagMod) Find(artType string, artId int64) (tags *[]PixivTagMod, err e
 			tag.created_at  AS created_at,
 			tag.updated_at  AS updated_at,
 			tag.is_deleted  AS is_deleted
-		FROM ?.pixiv_tag 			AS tag
-		JOIN ?.pixiv_artwork_tag  	AS pag
+		FROM pixiv_tag 			AS tag
+		JOIN pixiv_artwork_tag  	AS pag
 			ON tag.id=pag.tag_id AND pag.is_deleted=false
-		WHERE pag.art_type=? AND pag.art_id=?;`,
-		global.DATABASE(), global.DATABASE(), artType, artId,
+		WHERE pag.art_type=? AND pag.art_id=?;`, artType, artId,
 	).Scan(tags).Error; err != nil {
 		return nil, err
 	}

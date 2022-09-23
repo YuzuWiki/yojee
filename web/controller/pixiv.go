@@ -125,3 +125,22 @@ func (ctr *PixivController) SyncFollowing(ctx *gin.Context) {
 	}()
 	ctx.JSON(200, success())
 }
+
+func (ctr *PixivController) GetArtWork(ctx *gin.Context) {
+	params := struct {
+		ArtType string `form:"art_type"`
+		ArtId   int64  `form:"art_id"`
+	}{}
+	if err := ctx.BindQuery(&params); err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	artWork, err := ctr.srv.GetArtwork(params.ArtType, params.ArtId)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+	} else {
+		ctx.JSON(200, success(artWork))
+	}
+	return
+}
