@@ -4,39 +4,20 @@ import (
 	"encoding/json"
 )
 
-// tagName, string alise
-type tagName string
-
-// TageDTO  https://www.pixiv.net/ajax/search/tags/%E4%BA%8C%E6%AC%A1%E5%89%B5%E4%BD%9C?lang=zh
-type TageDTO struct {
-	Tag  string `json:"tag"`
-	Word string `json:"word"`
-	// tag digests , if exist
-	Digest tagDigestDTO `json:"pixpedia"`
-	// translation, if exist ( tag_name: translation )
-	Transl tagTranslDTO `json:"tagTranslation"`
+// TagDTO  https://www.pixiv.net/ajax/search/tags/%E4%BA%8C%E6%AC%A1%E5%89%B5%E4%BD%9C?lang=zh
+type TagDTO struct {
+	Jp          string       `json:"tag"`
+	Digest      tagDigestDTO `json:"pixpedia"`
+	Translation tagTranslDTO `json:"tagTranslation"`
 }
 
 type tagDigestDTO struct {
-	Id       int64  `json:"id,string"`
-	Abstract string `json:"abstract"`
-	Image    string `json:"image"`
-	// parent tag
-	Parent string `json:"parentTag"`
-}
-
-func (dto *tagDigestDTO) UnmarshalJSON(body []byte) error {
-	if len(body) < 5 {
-		return nil
-	}
-
-	data := tagDigestDTO{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return err
-	}
-
-	*dto = data
-	return nil
+	Id           int64    `json:"id,string"`
+	Abstract     string   `json:"abstract"`
+	Image        string   `json:"image"`
+	ParentTag    string   `json:"parentTag"`
+	SiblingsTags []string `json:"siblingsTags"`
+	ChildrenTags []string `json:"childrenTags"`
 }
 
 type multilingualDTO struct {
@@ -46,18 +27,12 @@ type multilingualDTO struct {
 	Romaji string `json:"romaji"`
 }
 
-type tagTranslDTO map[tagName]multilingualDTO
+type tagTranslDTO map[string]multilingualDTO
 
 func (dto *tagTranslDTO) UnmarshalJSON(body []byte) error {
-	if len(body) < 5 {
-		return nil
+	var data map[string]multilingualDTO
+	if err := json.Unmarshal(body, &data); err == nil {
+		*dto = data
 	}
-
-	data := map[tagName]multilingualDTO{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return err
-	}
-
-	*dto = data
 	return nil
 }

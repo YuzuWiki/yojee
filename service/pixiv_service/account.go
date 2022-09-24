@@ -34,6 +34,7 @@ func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err erro
 	if err = global.DB().Where(
 		model.PixivAccountMod{Pid: data.UserID, IsDeleted: false},
 	).Assign(
+		// TODO: 可能有问题
 		model.PixivAccountMod{
 			Pid:       data.UserID,
 			Name:      data.Name,

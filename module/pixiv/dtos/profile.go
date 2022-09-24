@@ -1,6 +1,9 @@
 package dtos
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"strconv"
+)
 
 // TopProfileDTO return user's  profile (top)
 type TopProfileDTO struct {
@@ -33,55 +36,29 @@ type extraDataDTO struct {
 
 // AllProfileDTO return user's  profile (all)
 type AllProfileDTO struct {
-	Illusts IllustMapDTO `json:"illusts"`
-	Manga   MangaMapDTO  `json:"manga"`
-	Novel   NovelMapDTO  `json:"novels"`
+	Illusts ArtWorkIdsDTO `json:"illusts"`
+	Manga   ArtWorkIdsDTO `json:"manga"`
+	Novel   ArtWorkIdsDTO `json:"novels"`
 }
 
-type IllustMapDTO map[string]struct{}
+type ArtWorkIdsDTO []int64
 
-func (dto *IllustMapDTO) UnmarshalJSON(body []byte) error {
-	if len(body) < 5 {
-		return nil
+func (dto *ArtWorkIdsDTO) UnmarshalJSON(body []byte) error {
+	var (
+		data map[string]struct{}
+		ids  []int64
+	)
+
+	if err := json.Unmarshal(body, &data); err == nil {
+		for idStr := range data {
+			id, err := strconv.ParseInt(idStr, 10, 64)
+			if err != nil {
+				return err
+			}
+			ids = append(ids, id)
+		}
 	}
 
-	data := map[string]struct{}{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return err
-	}
-
-	*dto = data
-	return nil
-}
-
-type MangaMapDTO map[string]struct{}
-
-func (dto *MangaMapDTO) UnmarshalJSON(body []byte) error {
-	if len(body) < 5 {
-		return nil
-	}
-
-	data := map[string]struct{}{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return err
-	}
-
-	*dto = data
-	return nil
-}
-
-type NovelMapDTO map[string]struct{}
-
-func (dto *NovelMapDTO) UnmarshalJSON(body []byte) error {
-	if len(body) < 5 {
-		return nil
-	}
-
-	data := map[string]struct{}{}
-	if err := json.Unmarshal(body, &data); err != nil {
-		return err
-	}
-
-	*dto = data
+	*dto = ids
 	return nil
 }

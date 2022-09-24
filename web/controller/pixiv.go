@@ -38,10 +38,12 @@ package controller
 // }
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/service/pixiv_service"
 )
 
@@ -142,5 +144,26 @@ func (ctr *PixivController) GetArtWork(ctx *gin.Context) {
 	} else {
 		ctx.JSON(200, success(artWork))
 	}
+	return
+}
+
+func (ctr *PixivController) SyncArtWorks(ctx *gin.Context) {
+	params := struct {
+		Pid int64 `json:"pid"`
+	}{}
+	if err := ctx.BindJSON(&params); err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	go func() {
+		if err := ctr.srv.SyncArtWorks(params.Pid); err != nil {
+			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWorks] ERROR: pid=%d, errmsg=%s", params.Pid, err.Error()))
+		} else {
+			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtWorks] SUCCESS: pid=%d", params.Pid))
+		}
+	}()
+
+	ctx.JSON(200, success())
 	return
 }

@@ -33,26 +33,32 @@ func GetAccountInfo(ctx pixiv.IContext, pid int64) (body *dtos.UserInfoDTO, err 
 	return body, nil
 }
 
-func GetProfileAll(ctx pixiv.IContext, uid int64) (body *dtos.AllProfileDTO, err error) {
-	var c pixiv.IClient
+func GetProfileAll(ctx pixiv.IContext, uid int64) (_ *dtos.AllProfileDTO, err error) {
+	var (
+		c    pixiv.IClient
+		body dtos.AllProfileDTO
+	)
 	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
-		return
+		return nil, err
 	}
 
 	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", uid, "/profile", All), nil, nil)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	if err = json.Unmarshal(data, body); err != nil {
-		return
+	if err = json.Unmarshal(data, &body); err != nil {
+		return nil, err
 	}
 
-	return body, nil
+	return &body, nil
 }
 
-func GetProfileTop(ctx pixiv.IContext, uid int64) (body *dtos.TopProfileDTO, err error) {
-	var c pixiv.IClient
+func GetProfileTop(ctx pixiv.IContext, uid int64) (_ *dtos.TopProfileDTO, err error) {
+	var (
+		c    pixiv.IClient
+		body dtos.TopProfileDTO
+	)
 	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
 		return
 	}
@@ -62,9 +68,9 @@ func GetProfileTop(ctx pixiv.IContext, uid int64) (body *dtos.TopProfileDTO, err
 		return
 	}
 
-	if err = json.Unmarshal(data, body); err != nil {
+	if err = json.Unmarshal(data, &body); err != nil {
 		return
 	}
 
-	return body, nil
+	return &body, nil
 }

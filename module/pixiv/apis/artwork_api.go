@@ -26,10 +26,11 @@ func GetAccountPid(ctx pixiv.IContext) (int64, error) {
 	return 0, nil
 }
 
-func getArtWork(ctx pixiv.IContext, artType string, artId int64) (body *dtos.ArtworkDTO, err error) {
+func getArtWork(ctx pixiv.IContext, artType string, artId int64) (_ *dtos.ArtworkDTO, err error) {
 	var (
 		query *pixiv.Query
 		c     pixiv.IClient
+		body  dtos.ArtworkDTO
 	)
 
 	if query, err = pixiv.NewQuery(map[string]interface{}{"lang": "jp"}); err != nil {
@@ -45,11 +46,11 @@ func getArtWork(ctx pixiv.IContext, artType string, artId int64) (body *dtos.Art
 		return
 	}
 
-	if err = json.Unmarshal(data, body); err != nil {
+	if err = json.Unmarshal(data, &body); err != nil {
 		return
 	}
 
-	return body, nil
+	return &body, nil
 }
 
 func GetIllusts(ctx pixiv.IContext, artId int64) (*dtos.ArtworkDTO, error) {

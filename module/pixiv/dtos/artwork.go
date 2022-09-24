@@ -10,9 +10,8 @@ import (
 // manga: https://www.pixiv.net/ajax/illust/28819260
 // novel: https://www.pixiv.net/ajax/novel/18132849
 type ArtworkDTO struct {
-	ArtId   int64 `json:"id,string"`
-	ArtType string
-	Pid     int64 `json:"userId,string"`
+	ArtId int64 `json:"id,string"`
+	Pid   int64 `json:"userId,string"`
 
 	// artwork into
 	Title       string    `json:"title"`
@@ -43,7 +42,7 @@ type illustDTO struct {
 	IllustType      int       `json:"illustType"`
 	URL             string    `json:"url"`
 	Description     string    `json:"description"`
-	Tags            []tagName `json:"tags"`
+	Tags            []string  `json:"tags"`
 	UserID          string    `json:"userId"`
 	UserName        string    `json:"userName"`
 	PageCount       int       `json:"pageCount"`
@@ -75,7 +74,7 @@ type mangaDTO struct {
 	IllustType      int       `json:"illustType"`
 	URL             string    `json:"url"`
 	Description     string    `json:"description"`
-	Tags            []tagName `json:"tags"`
+	Tags            []string  `json:"tags"`
 	UserID          string    `json:"userId"`
 	UserName        string    `json:"userName"`
 	PageCount       int       `json:"pageCount"`
@@ -105,7 +104,7 @@ type novelDTO struct {
 	ID            string    `json:"id"`
 	Title         string    `json:"title"`
 	URL           string    `json:"url"`
-	Tags          []tagName `json:"tags"`
+	Tags          []string  `json:"tags"`
 	UserID        string    `json:"userId"`
 	UserName      string    `json:"userName"`
 	TextCount     int       `json:"textCount"`

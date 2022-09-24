@@ -5,11 +5,10 @@ import (
 	"time"
 
 	"github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 type PixivArtworkMod struct {
-	ID        uint64     `gorm:"type:timestamp;primaryKey;autoIncrement;column:id" json:"id"`
+	ID        uint64     `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
 	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
@@ -29,29 +28,4 @@ type PixivArtworkMod struct {
 
 func (PixivArtworkMod) TableName() string {
 	return strings.Join([]string{global.DATABASE(), "pixiv_artwork"}, ".")
-}
-
-func (PixivArtworkMod) Find(artType string, pid int64) (artworks *[]PixivArtworkTagMod, err error) {
-	if err = global.DB().Where("pid=? AND art_type=? AND is_deleted=?", pid, artType, false).Find(artworks).Error; err != nil {
-		return nil, err
-	}
-	return
-}
-
-func (PixivArtworkMod) Insert(data dtos.ArtworkDTO) (int64, error) {
-	row := PixivArtworkMod{
-		Pid:           data.Pid,
-		ArtId:         data.ArtId,
-		ArtType:       data.ArtType,
-		Title:         data.Title,
-		Description:   data.Description,
-		ViewCount:     data.ViewCount,
-		LikeCount:     data.LikeCount,
-		BookmarkCount: data.BookmarkCount,
-		CreateDate:    &data.CreateDate,
-	}
-	if err := global.DB().FirstOrCreate(&row, PixivArtworkMod{Pid: data.Pid, ArtType: data.ArtType, ArtId: data.ArtId}).Error; err != nil {
-		return 0, err
-	}
-	return int64(row.ID), nil
 }

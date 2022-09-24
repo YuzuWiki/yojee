@@ -18,4 +18,5 @@ func (svr *Server) RegisterRoutes() {
 	svr.POST("/pixiv/account/following", pixiv.GetFollowing)
 	svr.PUT("/pixiv/account/following", pixiv.SyncFollowing)
 	svr.GET("/pixiv/artwork/info", pixiv.GetArtWork)
+	svr.POST("/pixiv/artwork/info", pixiv.SyncArtWorks)
 }

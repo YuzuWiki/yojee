@@ -2,12 +2,12 @@ package pixiv_service
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
 	"github.com/YuzuWiki/yojee/module/pixiv"
 	"github.com/YuzuWiki/yojee/module/pixiv/apis"
+	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
@@ -20,7 +20,7 @@ func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
 				GROUP_CONCAT(tag.jp)
 			FROM pixiv_tag          AS tag
 			JOIN pixiv_artwork_tag  AS pat
-				ON pat.tag_id    = tag.id
+				ON pat.tag_id    = tag.tag_id
 			WHERE pat.is_deleted = false
 			  AND pat.art_type   = artwork.art_type
 			  AND pat.art_id     = artwork.art_id
@@ -39,48 +39,76 @@ func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
 	return &artworks[0], nil
 }
 
-func (s Service) SyncArtWork(pid int64) error {
-	if _, err := s.FlushAccountInfo(pid); err != nil {
+func insertArtwork(artType string, data *dtos.ArtworkDTO) (int64, error) {
+	row := model.PixivArtworkMod{
+		Pid:           data.Pid,
+		ArtId:         data.ArtId,
+		ArtType:       artType,
+		Title:         data.Title,
+		Description:   data.Description,
+		ViewCount:     data.ViewCount,
+		LikeCount:     data.LikeCount,
+		BookmarkCount: data.BookmarkCount,
+		CreateDate:    &data.CreateDate,
+	}
+	if err := global.DB().FirstOrCreate(&row, model.PixivArtworkMod{Pid: data.Pid, ArtType: artType, ArtId: data.ArtId}).Error; err != nil {
+		return 0, err
+	}
+	return int64(row.ID), nil
+}
+
+func SyncArtWork(artType string, artId int64) (err error) {
+	var (
+		artwork *dtos.ArtworkDTO
+		tagId   int64
+	)
+
+	// 获取作品信息
+	global.JobPool.Submit(func() { artwork, err = apis.GetIllusts(pixiv.DefaultContext, artId) })
+	if err != nil {
 		return err
 	}
 
-	global.JobPool.Submit(func() {
-		profile, err := apis.GetProfileAll(pixiv.DefaultContext, pid)
+	if _, err = insertArtwork(artType, artwork); err != nil {
+		return err
+	}
+
+	for _, tag := range artwork.Tags.Tags {
+		global.JobPool.Submit(func() { tagId, err = SyncTag(tag.Jp) })
 		if err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork]  ERROR: (%d) GetProfileAll error, %s", pid, err.Error()))
-			return
+			continue
 		}
 
-		for illustId := range profile.Illusts {
-			var artId int64
-			if artId, err = strconv.ParseInt(illustId, 10, 64); err != nil {
-				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork]  ERROR: (%d)-(%s)  GetIllusts error, %s", pid, illustId, err.Error()))
-				continue
+		if err = markArtworkTag(artType, artId, tagId); err != nil {
+			continue
+		}
+	}
+	return nil
+}
+
+func (s Service) SyncArtWorks(pid int64) (err error) {
+	if _, err = s.FlushAccountInfo(pid); err != nil {
+		return err
+	}
+
+	var profile *dtos.AllProfileDTO
+	global.JobPool.Submit(func() { profile, err = apis.GetProfileAll(pixiv.DefaultContext, pid) })
+	if err != nil {
+		return err
+	}
+
+	for artType, artIds := range map[string]dtos.ArtWorkIdsDTO{
+		apis.Illust: profile.Illusts,
+		apis.Manga:  profile.Manga,
+		apis.Novel:  profile.Novel,
+	} {
+		for idx, artId := range artIds {
+			if err = SyncArtWork(artType, artId); err != nil {
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork] SyncArtWork ERROR: (%d) artType=%s artId=%d  errmsg=%s", pid, artType, artId, err.Error()))
+				return err
 			}
-
-			global.JobPool.Submit(func() {
-				data, err := apis.GetIllusts(pixiv.DefaultContext, artId)
-				if err != nil {
-					global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork]  ERROR: (%d)-(%s)  GetIllusts error, %s", pid, illustId, err.Error()))
-					return
-				}
-
-				if _, err = (model.PixivArtworkMod{}).Insert(*data); err != nil {
-					global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork]  ERROR: (%d)-(%s)  GetIllusts error, %s", pid, illustId, err.Error()))
-					return
-				}
-
-				for idx := range data.Tags.Tags {
-					tag := data.Tags.Tags[idx]
-
-					tagId, err := model.PixivTagMod{}.GetId(tag.Jp)
-					if err != nil {
-						// TODO tag info
-					}
-					global.Logger.Error().Msg(fmt.Sprintf("%d", tagId))
-				}
-			})
+			global.Logger.Debug().Msg(fmt.Sprintf("[SyncArtWork] SyncArtWork RUNNING: (%d) artType=%s artId=%d  %d/%d ", pid, artType, artId, idx+1, len(artIds)))
 		}
-	})
+	}
 	return nil
 }

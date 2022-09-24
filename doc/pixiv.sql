@@ -34,20 +34,20 @@ CREATE TABLE IF NOT EXISTS pixiv_follow
 
 CREATE TABLE IF NOT EXISTS pixiv_tag
 (
-    # 日语tag标签(多语言暂不可靠)
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
-    jp      VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
-    en      VARCHAR(512) NOT NULL COMMENT 'tage name, en',
-    ko      VARCHAR(512) NOT NULL COMMENT 'tage name, ko',
-    zh      VARCHAR(512) NOT NULL COMMENT 'tage name, zh',
-    romaji  VARCHAR(512) NOT NULL Comment 'tage romaji, jp',
+    tag_id      BIGINT       NOT NULl COMMENT 'tag id',
+    jp          VARCHAR(512) NOT NULL COMMENT 'tage name, jp',
+    en          VARCHAR(512) NOT NULL COMMENT 'tage name, en',
+    ko          VARCHAR(512) NOT NULL COMMENT 'tage name, ko',
+    zh          VARCHAR(512) NOT NULL COMMENT 'tage name, zh',
+    romaji      VARCHAR(512) NOT NULL COMMENT 'tage romaji, jp',
 
-
-    UNIQUE INDEX idx_tag (jp)
+    UNIQUE idx_tag_id(tag_id),
+    INDEX idx_tag (jp, tag_id)
 ) CHARACTER SET utf8mb4;
 
 

@@ -26,7 +26,7 @@ type artworkTagDTO []uint8
 func (dto *artworkTagDTO) MarshalJSON() ([]byte, error) {
 	tagStr := string(*dto)
 	if len(tagStr) == 0 {
-		return []byte{}, nil
+		return []byte{'[', ']'}, nil
 	}
 	return json.Marshal(strings.Split(tagStr, ","))
 }
