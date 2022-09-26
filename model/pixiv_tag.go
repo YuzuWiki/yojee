@@ -50,6 +50,7 @@ type PixivArtworkTagMod struct {
 	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
+	Pid     int64  `gorm:"type:bigint;column:pid" json:"pid"`
 	ArtId   int64  `gorm:"type:bigint;column:art_id" json:"art_id"`
 	ArtType string `gorm:"type:varchar(64);column:art_type" json:"art_type"`
 
@@ -58,17 +59,4 @@ type PixivArtworkTagMod struct {
 
 func (PixivArtworkTagMod) TableName() string {
 	return strings.Join([]string{global.DATABASE(), "pixiv_artwork_tag"}, ".")
-}
-
-func (PixivArtworkTagMod) MarkTag(artType string, artId int64, tagId int64) error {
-	row := PixivArtworkTagMod{
-		ArtId:   artId,
-		ArtType: artType,
-		TagId:   tagId,
-	}
-	if err := global.DB().FirstOrCreate(&row, PixivArtworkTagMod{ArtId: artId, ArtType: artType, TagId: tagId}).Error; err != nil {
-		global.Logger.Error().Msg(err.Error())
-		return err
-	}
-	return nil
 }

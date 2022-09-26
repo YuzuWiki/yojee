@@ -15,23 +15,7 @@ func findTagId(jp string) (tagId int64, err error) {
 	return tagId, nil
 }
 
-func markArtworkTag(artType string, artID int64, tagId int64) error {
-	row := model.PixivArtworkTagMod{
-		ArtId:   artID,
-		ArtType: artType,
-		TagId:   tagId,
-	}
-	if err := global.DB().FirstOrCreate(&row, row).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func SyncTag(jp string) (tagId int64, err error) {
-	if tagId, err = findTagId(jp); err == nil {
-		return tagId, nil
-	}
-
+func syncTag(jp string) (tagId int64, err error) {
 	var tag *dtos.TagDTO
 	if tag, err = apis.GetTag(pixiv.DefaultContext, jp); err != nil {
 		return 0, err
@@ -50,4 +34,28 @@ func SyncTag(jp string) (tagId int64, err error) {
 		return 0, err
 	}
 	return row.TagId, nil
+}
+
+func SyncTag(jp string) (tagId int64, err error) {
+	if tagId, err = findTagId(jp); err == nil {
+		return tagId, nil
+	}
+
+	if tagId, err = syncTag(jp); err != nil {
+		return 0, err
+	}
+	return tagId, nil
+}
+
+func markArtworkTag(pid int64, artType string, artID int64, tagId int64) error {
+	row := model.PixivArtworkTagMod{
+		Pid:     pid,
+		ArtId:   artID,
+		ArtType: artType,
+		TagId:   tagId,
+	}
+	if err := global.DB().FirstOrCreate(&row, row).Error; err != nil {
+		return err
+	}
+	return nil
 }

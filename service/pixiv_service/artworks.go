@@ -75,7 +75,7 @@ func SyncArtWork(artType string, artId int64) (err error) {
 			continue
 		}
 
-		if err = markArtworkTag(artType, artId, tagId); err != nil {
+		if err = markArtworkTag(artwork.Pid, artType, artId, tagId); err != nil {
 			continue
 		}
 	}

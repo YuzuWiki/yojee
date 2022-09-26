@@ -75,12 +75,12 @@ CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
     updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
 
+    pid             BIGINT      NOT NULL    COMMENT 'pixiv user id',
     art_id          BIGINT      NOT NULL    COMMENT 'artwork id',
     art_type        VARCHAR(64) NOT NULL    COMMENT 'artwork type',
-
     tag_id          BIGINT      NOT NULL    COMMENT 'tag id',
 
-    INDEX idx_art (art_type, art_id),
+    INDEX idx_art (pid, tag_id),
     INDEX idx_art_tag (art_type, art_id, tag_id)
 ) CHARACTER SET utf8mb4;
 
