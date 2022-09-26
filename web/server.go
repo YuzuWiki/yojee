@@ -12,7 +12,7 @@ import (
 )
 
 type Server struct {
-	*gin.Engine
+	router *gin.Engine
 
 	isRun      bool
 	listenPort int
@@ -21,12 +21,12 @@ type Server struct {
 }
 
 func (svr *Server) setupPProf() *Server {
-	pprof.Register(svr.Engine, "yojee/pprof")
+	pprof.Register(svr.router, "yojee/pprof")
 	return svr
 }
 
 func (svr *Server) setupLogger(logger *zerolog.Logger) *Server {
-	svr.Use(func(ctx *gin.Context) {
+	svr.router.Use(func(ctx *gin.Context) {
 		ctx.Next()
 		logger.Info().Msg(fmt.Sprintf("[%s] %s", ctx.Request.Method, ctx.Request.URL.Path))
 	})
@@ -68,7 +68,7 @@ func (svr *Server) Run() error {
 	svr.mu.Lock()
 	defer svr.mu.Unlock()
 
-	if err := svr.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+	if err := svr.router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
 		return err
 	}
 
@@ -77,7 +77,7 @@ func (svr *Server) Run() error {
 
 	svr.setupLogger(global.Logger)
 	svr.RegisterRoutes()
-	if err := svr.Engine.Run(fmt.Sprintf(":%d", svr.listenPort)); err != nil {
+	if err := svr.router.Run(fmt.Sprintf(":%d", svr.listenPort)); err != nil {
 		global.Logger.Err(err).Msg("HTTP server run: fail")
 		return err
 	}
@@ -88,7 +88,7 @@ func (svr *Server) Run() error {
 
 func Start(listenPort int) {
 	svr := &Server{
-		Engine:     gin.New(),
+		router:     gin.New(),
 		isRun:      false,
 		listenPort: listenPort,
 		mu:         sync.Mutex{},

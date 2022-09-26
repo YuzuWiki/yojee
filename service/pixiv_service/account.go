@@ -24,7 +24,7 @@ func (s Service) GetAccountInfo(pid int64) (_ *model.PixivAccountMod, err error)
 	return row, nil
 }
 
-func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err error) {
+func flushAccount(pid int64) (_ *model.PixivAccountMod, err error) {
 	data, err := apis.GetAccountInfo(pixiv.DefaultContext, pid)
 	if err != nil {
 		return nil, err
@@ -49,4 +49,8 @@ func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err erro
 		return nil, err
 	}
 	return account, nil
+}
+
+func (s Service) FlushAccountInfo(pid int64) (_ *model.PixivAccountMod, err error) {
+	return flushAccount(pid)
 }

@@ -58,12 +58,7 @@ func insertArtwork(artType string, data *dtos.ArtworkDTO) (int64, error) {
 }
 
 func SyncArtWork(artType string, artId int64) (err error) {
-	var (
-		artwork *dtos.ArtworkDTO
-		tagId   int64
-	)
-
-	// 获取作品信息
+	var artwork *dtos.ArtworkDTO
 	global.JobPool.Submit(func() { artwork, err = apis.GetIllusts(pixiv.DefaultContext, artId) })
 	if err != nil {
 		return err
@@ -73,6 +68,7 @@ func SyncArtWork(artType string, artId int64) (err error) {
 		return err
 	}
 
+	var tagId int64
 	for _, tag := range artwork.Tags.Tags {
 		global.JobPool.Submit(func() { tagId, err = SyncTag(tag.Jp) })
 		if err != nil {
@@ -104,10 +100,10 @@ func (s Service) SyncArtWorks(pid int64) (err error) {
 	} {
 		for idx, artId := range artIds {
 			if err = SyncArtWork(artType, artId); err != nil {
-				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork] SyncArtWork ERROR: (%d) artType=%s artId=%d  errmsg=%s", pid, artType, artId, err.Error()))
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork] (%9d):   ERROR,  artType=%8s  artId=%9d  errmsg=%s", pid, artType, artId, err.Error()))
 				return err
 			}
-			global.Logger.Debug().Msg(fmt.Sprintf("[SyncArtWork] SyncArtWork RUNNING: (%d) artType=%s artId=%d  %d/%d ", pid, artType, artId, idx+1, len(artIds)))
+			global.Logger.Debug().Msg(fmt.Sprintf("[SyncArtWork] (%9d): RUNNING  artType=%8s  artId=%9d  %4d/%4d ", pid, artType, artId, idx+1, len(artIds)))
 		}
 	}
 	return nil

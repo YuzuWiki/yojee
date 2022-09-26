@@ -5,6 +5,7 @@ import (
 	"github.com/YuzuWiki/yojee/model"
 	"github.com/YuzuWiki/yojee/module/pixiv"
 	"github.com/YuzuWiki/yojee/module/pixiv/apis"
+	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 func findTagId(jp string) (tagId int64, err error) {
@@ -31,8 +32,8 @@ func SyncTag(jp string) (tagId int64, err error) {
 		return tagId, nil
 	}
 
-	tag, err := apis.GetTag(pixiv.DefaultContext, jp)
-	if err != nil {
+	var tag *dtos.TagDTO
+	if tag, err = apis.GetTag(pixiv.DefaultContext, jp); err != nil {
 		return 0, err
 	}
 

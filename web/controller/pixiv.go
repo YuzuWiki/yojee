@@ -69,7 +69,7 @@ func (ctr *PixivController) GetPid(ctx *gin.Context) {
 }
 
 func (ctr *PixivController) Account(ctx *gin.Context) {
-	pid, err := strconv.ParseInt(ctx.Query("pid"), 10, 64)
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
 	if err != nil {
 		ctx.JSON(400, fail(400, err.Error()))
 		return
@@ -89,16 +89,22 @@ func (ctr *PixivController) Account(ctx *gin.Context) {
 }
 
 func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
 	params := struct {
 		Pid    int64 `json:"pid"`
 		Limit  int   `json:"limit"`
 		Offset int   `json:"offset" `
 	}{
-		Pid:    0,
+		Pid:    pid,
 		Limit:  24,
 		Offset: 0,
 	}
-	if err := ctx.ShouldBindJSON(&params); err != nil {
+	if err = ctx.ShouldBindJSON(&params); err != nil {
 		ctx.JSON(400, fail(400, err.Error()))
 		return
 	}
@@ -114,16 +120,14 @@ func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 }
 
 func (ctr *PixivController) SyncFollowing(ctx *gin.Context) {
-	params := struct {
-		Pid int64 `json:"pid"`
-	}{}
-	if err := ctx.BindJSON(&params); err != nil {
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
+	if err != nil {
 		ctx.JSON(400, fail(400, err.Error()))
 		return
 	}
 
 	go func() {
-		_, _ = ctr.srv.SyncFollowing(params.Pid)
+		_, _ = ctr.srv.SyncFollowing(pid)
 	}()
 	ctx.JSON(200, success())
 }
@@ -158,9 +162,9 @@ func (ctr *PixivController) SyncArtWorks(ctx *gin.Context) {
 
 	go func() {
 		if err := ctr.srv.SyncArtWorks(params.Pid); err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWorks] ERROR: pid=%d, errmsg=%s", params.Pid, err.Error()))
+			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): ERROR, errmsg=%s", params.Pid, err.Error()))
 		} else {
-			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtWorks] SUCCESS: pid=%d", params.Pid))
+			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): SUCCESS", params.Pid))
 		}
 	}()
 

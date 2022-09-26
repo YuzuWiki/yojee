@@ -1,22 +1,36 @@
 package web
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/YuzuWiki/yojee/web/controller"
 )
 
 func (svr *Server) RegisterRoutes() {
 	// 健康检查 api
 	alive := controller.AliveController{}
-	svr.GET("/alive", alive.Alive)
+	svr.router.GET("/alive", alive.Alive)
 
 	// pixiv := controller.PixivController{}
 	// svr.GET("/pixiv/user/Sync", pixiv.Sync)
 
+	registerPixiv(svr.router.Group("/pixiv"))
+}
+
+func registerPixiv(group *gin.RouterGroup) {
 	pixiv := controller.PixivController{}
-	svr.GET("/pixiv/account/pid", pixiv.GetPid)
-	svr.GET("/pixiv/account/info", pixiv.Account)
-	svr.POST("/pixiv/account/following", pixiv.GetFollowing)
-	svr.PUT("/pixiv/account/following", pixiv.SyncFollowing)
-	svr.GET("/pixiv/artwork/info", pixiv.GetArtWork)
-	svr.POST("/pixiv/artwork/info", pixiv.SyncArtWorks)
+
+	UserGroup := group.Group("/user")
+	{
+		UserGroup.GET("/phpsessid", pixiv.GetPid)
+		UserGroup.GET("/:pid/info", pixiv.Account)
+		UserGroup.POST("/:pid/following", pixiv.GetFollowing)
+		UserGroup.PUT("/:pid/following", pixiv.SyncFollowing)
+		UserGroup.PUT("/:pid/artwork", pixiv.SyncArtWorks)
+	}
+
+	ArtworkGroup := group.Group("/artwork")
+	{
+		ArtworkGroup.GET("/:artId", pixiv.GetArtWork)
+	}
 }
