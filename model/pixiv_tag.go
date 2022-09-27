@@ -16,6 +16,7 @@ type PixivTagMod struct {
 	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	TagId  int64  `gorm:"type:bigint;column:tag_id" json:"tag_id"`
+	Image  string `gorm:"type:varchar(512);column:image" json:"image"`
 	Jp     string `gorm:"type:VARCHAR(512);column:jp" json:"jp"`
 	En     string `gorm:"type:VARCHAR(512);column:en" json:"en"`
 	Ko     string `gorm:"type:VARCHAR(512);column:ko" json:"ko"`

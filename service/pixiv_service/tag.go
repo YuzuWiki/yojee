@@ -21,16 +21,21 @@ func syncTag(jp string) (tagId int64, err error) {
 		return 0, err
 	}
 
-	row := model.PixivTagMod{
-		TagId:     tag.Digest.Id,
-		Jp:        tag.Jp,
-		En:        tag.Translation[tag.Jp].En,
-		Ko:        tag.Translation[tag.Jp].Ko,
-		Zh:        tag.Translation[tag.Jp].Zh,
-		Romaji:    tag.Translation[tag.Jp].Romaji,
-		IsDeleted: false,
-	}
-	if err = global.DB().Where(model.PixivTagMod{TagId: tag.Digest.Id}).FirstOrCreate(&row).Error; err != nil {
+	var row model.PixivTagMod
+	if err = global.DB().Where(
+		model.PixivTagMod{TagId: tag.Digest.Id},
+	).Assign(
+		model.PixivTagMod{
+			TagId:     tag.Digest.Id,
+			Image:     tag.Digest.Image,
+			Jp:        tag.Jp,
+			En:        tag.Translation[tag.Jp].En,
+			Ko:        tag.Translation[tag.Jp].Ko,
+			Zh:        tag.Translation[tag.Jp].Zh,
+			Romaji:    tag.Translation[tag.Jp].Romaji,
+			IsDeleted: false,
+		},
+	).FirstOrCreate(&row).Error; err != nil {
 		return 0, err
 	}
 	return row.TagId, nil

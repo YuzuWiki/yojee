@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS pixiv_tag
     ko          VARCHAR(512) NOT NULL COMMENT 'tage name, ko',
     zh          VARCHAR(512) NOT NULL COMMENT 'tage name, zh',
     romaji      VARCHAR(512) NOT NULL COMMENT 'tage romaji, jp',
+    image       VARCHAR(512) DEFAULT ''  COMMENT 'tag image',
 
     UNIQUE idx_tag_id(tag_id),
     INDEX idx_tag (jp, tag_id)
