@@ -26,7 +26,8 @@ func registerPixiv(group *gin.RouterGroup) {
 		UserGroup.GET("/:pid/info", pixiv.Account)
 		UserGroup.POST("/:pid/following", pixiv.GetFollowing)
 		UserGroup.PUT("/:pid/following", pixiv.SyncFollowing)
-		UserGroup.PUT("/:pid/artwork", pixiv.SyncArtWorks)
+		UserGroup.GET("/:pid/artworks", pixiv.GetArtWorks)
+		UserGroup.PUT("/:pid/artworks", pixiv.SyncArtWorks)
 	}
 
 	ArtworkGroup := group.Group("/artwork")

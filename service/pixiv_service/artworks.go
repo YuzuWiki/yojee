@@ -39,22 +39,30 @@ func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
 	return &artworks[0], nil
 }
 
-func insertArtwork(artType string, data *dtos.ArtworkDTO) (int64, error) {
-	row := model.PixivArtworkMod{
-		Pid:           data.Pid,
-		ArtId:         data.ArtId,
-		ArtType:       artType,
-		Title:         data.Title,
-		Description:   data.Description,
-		ViewCount:     data.ViewCount,
-		LikeCount:     data.LikeCount,
-		BookmarkCount: data.BookmarkCount,
-		CreateDate:    &data.CreateDate,
+func (Service) GetArtworks(pid int64, artType string, limit, offset int) (*[]ArtworkDTO, error) {
+	var artworks []ArtworkDTO
+	if err := global.DB().Raw(`
+	 SELECT
+		artwork.*,
+		(
+			SELECT
+				GROUP_CONCAT(tag.jp)
+			FROM pixiv_tag          AS tag
+			JOIN pixiv_artwork_tag  AS pat
+				ON pat.tag_id    = tag.tag_id
+			WHERE pat.is_deleted = false
+			  AND pat.art_type   = artwork.art_type
+			  AND pat.art_id     = artwork.art_id
+		) AS tags
+	FROM pixiv_artwork AS artwork
+	WHERE artwork.art_type = ?
+	  AND artwork.pid = ?
+	LIMIT ? OFFSET ?;`, artType, pid, limit, offset,
+	).Find(&artworks).Error; err != nil {
+		return nil, err
 	}
-	if err := global.DB().FirstOrCreate(&row, model.PixivArtworkMod{Pid: data.Pid, ArtType: artType, ArtId: data.ArtId}).Error; err != nil {
-		return 0, err
-	}
-	return int64(row.ID), nil
+
+	return &artworks, nil
 }
 
 func SyncArtWork(artType string, artId int64) (err error) {
@@ -64,7 +72,23 @@ func SyncArtWork(artType string, artId int64) (err error) {
 		return err
 	}
 
-	if _, err = insertArtwork(artType, artwork); err != nil {
+	var row model.PixivArtworkMod
+	if err = global.DB().Where(
+		model.PixivArtworkMod{Pid: artwork.Pid, ArtType: artType, ArtId: artwork.ArtId},
+	).Assign(
+		model.PixivArtworkMod{
+			Pid:           artwork.Pid,
+			ArtId:         artwork.ArtId,
+			ArtType:       artType,
+			Title:         artwork.Title,
+			Description:   artwork.Description,
+			PageCount:     artwork.PageCount,
+			ViewCount:     artwork.ViewCount,
+			LikeCount:     artwork.LikeCount,
+			BookmarkCount: artwork.BookmarkCount,
+			CreateDate:    &artwork.CreateDate,
+		},
+	).FirstOrCreate(&row).Error; err != nil {
 		return err
 	}
 
@@ -100,10 +124,10 @@ func (s Service) SyncArtWorks(pid int64) (err error) {
 	} {
 		for idx, artId := range artIds {
 			if err = SyncArtWork(artType, artId); err != nil {
-				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork] (%9d):   ERROR,  artType=%8s  artId=%9d  errmsg=%s", pid, artType, artId, err.Error()))
+				global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWork] (%9d):   ERROR,  artType=%6s  artId=%9d  errmsg=%s", pid, artType, artId, err.Error()))
 				return err
 			}
-			global.Logger.Debug().Msg(fmt.Sprintf("[SyncArtWork] (%9d): RUNNING  artType=%8s  artId=%9d  %4d/%4d ", pid, artType, artId, idx+1, len(artIds)))
+			global.Logger.Debug().Msg(fmt.Sprintf("[SyncArtWork] (%9d): RUNNING  artType=%6s  artId=%9d  %4d/%4d ", pid, artType, artId, idx+1, len(artIds)))
 		}
 	}
 	return nil

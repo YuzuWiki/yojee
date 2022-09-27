@@ -1,42 +1,5 @@
 package controller
 
-// import (
-// 	"fmt"
-// 	"strconv"
-//
-// 	"github.com/gin-gonic/gin"
-//
-// 	"github.com/YuzuWiki/yojee/global"
-// 	"github.com/YuzuWiki/yojee/service/pixiv_service"
-// )
-//
-// type PixivController struct{}
-//
-// func (ctr *PixivController) Sync(ctx *gin.Context) {
-// 	phpsessid := ctx.Query("phpsessid")
-//
-// 	pid, err := strconv.ParseInt(ctx.Query("pid"), 10, 0)
-// 	if len(phpsessid) == 0 || err != nil {
-// 		ctx.JSON(400, fail(400, "Miss pid"))
-// 		return
-// 	}
-// 	psrv := pixiv_service.NewService(phpsessid, 6, 10)
-//
-// 	go func() {
-// 		if err := psrv.SyncUser(pid); err != nil {
-// 			global.Logger.Err(err).Msg(fmt.Sprintf("[SyncUser] phpsessid=%s  pid=%d", phpsessid, pid))
-// 		}
-// 	}()
-//
-// 	go func() {
-// 		if err := psrv.SyncArtworks(pid); err != nil {
-// 			global.Logger.Err(err).Msg(fmt.Sprintf("[SyncArtworks] phpsessid=%s  pid=%d", phpsessid, pid))
-// 		}
-// 	}()
-//
-// 	ctx.JSON(200, success())
-// }
-
 import (
 	"fmt"
 	"strconv"
@@ -44,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/YuzuWiki/yojee/global"
+	"github.com/YuzuWiki/yojee/module/pixiv/apis"
 	"github.com/YuzuWiki/yojee/service/pixiv_service"
 )
 
@@ -151,20 +115,51 @@ func (ctr *PixivController) GetArtWork(ctx *gin.Context) {
 	return
 }
 
-func (ctr *PixivController) SyncArtWorks(ctx *gin.Context) {
+func (ctr *PixivController) GetArtWorks(ctx *gin.Context) {
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
 	params := struct {
-		Pid int64 `json:"pid"`
-	}{}
-	if err := ctx.BindJSON(&params); err != nil {
+		Pid     int64
+		ArtType string `form:"art_type"`
+		Limit   int    `form:"limit"`
+		Offset  int    `form:"offset"`
+	}{
+		Pid:     pid,
+		ArtType: apis.Illust,
+		Limit:   24,
+		Offset:  0,
+	}
+	if err = ctx.BindQuery(&params); err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	fmt.Println(params)
+	artWorks, err := ctr.srv.GetArtworks(params.Pid, params.ArtType, params.Limit, params.Offset)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+	} else {
+		ctx.JSON(200, success(artWorks))
+	}
+	return
+}
+
+func (ctr *PixivController) SyncArtWorks(ctx *gin.Context) {
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
+	if err != nil {
 		ctx.JSON(400, fail(400, err.Error()))
 		return
 	}
 
 	go func() {
-		if err := ctr.srv.SyncArtWorks(params.Pid); err != nil {
-			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): ERROR, errmsg=%s", params.Pid, err.Error()))
+		if err := ctr.srv.SyncArtWorks(pid); err != nil {
+			global.Logger.Error().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): ERROR, errmsg=%s", pid, err.Error()))
 		} else {
-			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): SUCCESS", params.Pid))
+			global.Logger.Info().Msg(fmt.Sprintf("[SyncArtWorks] (%9d): SUCCESS", pid))
 		}
 	}()
 
