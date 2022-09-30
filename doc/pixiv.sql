@@ -5,16 +5,17 @@ CREATE TABLE IF NOT EXISTS pixiv_account
     updated_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
     is_deleted BOOL         DEFAULT FALSE COMMENT '是否删除',
 
-    pid        BIGINT       NOT NULL    COMMENT 'pixiv user id',
-    name       VARCHAR(256) NOT NULL    COMMENT 'pixiv user name',
-    avatar     VARCHAR(512) DEFAULT ''  COMMENT 'pixiv user avatar',
-    region     VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user region',
-    gender     VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user gender',
-    birth_day  VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user birth_day',
-    Job        VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user Job',
-    following  INT          DEFAULT 0   COMMENT '关注数量',
+    pid             BIGINT       NOT NULL    COMMENT 'pixiv user id',
+    name            VARCHAR(256) NOT NULL    COMMENT 'pixiv user name',
+    avatar          VARCHAR(512) DEFAULT ''  COMMENT 'pixiv user avatar',
+    region          VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user region',
+    gender          VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user gender',
+    birth_day       VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user birth_day',
+    Job             VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user Job',
+    following       INT          DEFAULT 0   COMMENT '关注数量',
+    art_updated     BIGINT       DEFAULT 0   COMMENT '最后一次更新时间戳',
 
-    INDEX idx_pid (pid, name)
+    INDEX idx_pan (pid, art_updated, name)
 ) CHARACTER SET utf8mb4;
 
 

@@ -2,6 +2,7 @@ package dtos
 
 import (
 	"encoding/json"
+	"sort"
 	"strconv"
 )
 
@@ -58,7 +59,9 @@ func (dto *ArtWorkIdsDTO) UnmarshalJSON(body []byte) error {
 			ids = append(ids, id)
 		}
 	}
-
+	sort.Slice(ids, func(i, j int) bool {
+		return ids[i] < ids[j]
+	})
 	*dto = ids
 	return nil
 }

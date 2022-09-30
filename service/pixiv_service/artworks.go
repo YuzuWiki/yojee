@@ -103,6 +103,10 @@ func SyncArtWork(artType string, artId int64) (err error) {
 			continue
 		}
 	}
+
+	if err = global.DB().Exec(`UPDATE pixiv_account SET art_updated = ? WHERE pid = ? AND art_updated < ?`, artwork.CreateDate.Unix(), artwork.Pid, artwork.CreateDate.Unix()).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
