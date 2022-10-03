@@ -52,6 +52,21 @@ func (ctr *PixivController) Account(ctx *gin.Context) {
 	return
 }
 
+func (ctr *PixivController) FlushAccount(ctx *gin.Context) {
+	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
+	if err != nil {
+		ctx.JSON(400, fail(400, err.Error()))
+		return
+	}
+
+	if data, err := ctr.srv.FlushAccountInfo(pid); err != nil {
+		ctx.JSON(400, fail(402, err.Error()))
+	} else {
+		ctx.JSON(200, success(data))
+	}
+	return
+}
+
 func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
 	if err != nil {
@@ -138,7 +153,6 @@ func (ctr *PixivController) GetArtWorks(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(params)
 	artWorks, err := ctr.srv.GetArtworks(params.Pid, params.ArtType, params.Limit, params.Offset)
 	if err != nil {
 		ctx.JSON(400, fail(400, err.Error()))

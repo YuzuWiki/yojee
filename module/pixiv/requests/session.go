@@ -35,7 +35,7 @@ func newClient(sessionIds ...string) (pixiv.IClient, error) {
 	}
 
 	// set proxy
-	if proxyUrl := os.Getenv("Proxy_URL"); len(proxyUrl) > 0 {
+	if proxyUrl := os.Getenv("PROXY_URL"); len(proxyUrl) > 0 {
 		if err := c.SetProxy(proxyUrl); err != nil {
 			return nil, err
 		}

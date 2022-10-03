@@ -21,6 +21,7 @@ func registerPixiv(group *gin.RouterGroup) {
 	{
 		UserGroup.GET("/phpsessid", pixiv.GetPid)
 		UserGroup.GET("/:pid/info", pixiv.Account)
+		UserGroup.PUT("/:pid/info", pixiv.FlushAccount)
 		UserGroup.POST("/:pid/following", pixiv.GetFollowing)
 		UserGroup.PUT("/:pid/following", pixiv.SyncFollowing)
 		UserGroup.GET("/:pid/artworks", pixiv.GetArtWorks)

@@ -2,6 +2,7 @@ package requests
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/YuzuWiki/yojee/module/pixiv"
 )
@@ -46,9 +47,8 @@ func newRequest(u, method string, query *pixiv.Query, params *pixiv.Params) (*ht
 
 	if err != nil {
 		return nil, err
-	} else {
-		return req, nil
 	}
+	return req, nil
 }
 
 func (r *requests) do(method, u string, query *pixiv.Query, params *pixiv.Params) (resp *http.Response, err error) {
@@ -61,7 +61,14 @@ func (r *requests) do(method, u string, query *pixiv.Query, params *pixiv.Params
 		return
 	}
 
-	if resp, err = r.Client.Do(req); err != nil {
+	switch strings.SplitN(strings.Replace(req.URL.Path, "/", "", 1), "/", 3)[0] {
+	case "fanbox":
+		resp, err = r.Transport.RoundTrip(req)
+	default:
+		resp, err = r.Client.Do(req)
+	}
+
+	if err != nil {
 		if resp != nil {
 			resp.Body.Close()
 		}
@@ -112,5 +119,11 @@ func (r *requests) AfterHooks(fns ...pixiv.AfterHook) {
 }
 
 func NewRequest() pixiv.IRequest {
-	return &requests{Transport: NewTransport()}
+	t := NewTransport()
+	return &requests{
+		Client: http.Client{
+			Transport: t,
+		},
+		Transport: t,
+	}
 }

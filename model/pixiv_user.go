@@ -21,6 +21,7 @@ type PixivAccountMod struct {
 	BirthDay   string `gorm:"type:varchar(128);column:birth_day" json:"birthDay"`
 	Job        string `gorm:"type:varchar(128);column:job" json:"job"`
 	Following  int32  `gorm:"type:int;default:0;column:following;comment:'关注数量'" json:"following"`
+	FanboxUrl  string `gorm:"type:varchar(256);column:fanbox_url" json:"fanbox_url"`
 	ArtUpdated int64  `gorm:"type:bigint;default:0;column:art_updated;comment:'作品最后一次更细那时间'" json:"art_updated"`
 }
 

@@ -75,6 +75,8 @@ func (s Service) SyncFollowing(pid int64) (_ int, err error) {
 					global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): Doing  following_pid=%9d  %3d/%3d", pid, u.UserID, idx+_offset+1, total))
 				}
 			})
+
+			global.JobPool.Submit(func() { _, _ = flushFanboxUrl(pid) })
 		}
 	}
 	global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): DONE, total=%d", pid, total))

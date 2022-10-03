@@ -33,7 +33,7 @@ func GetAccountInfo(ctx pixiv.IContext, pid int64) (body *dtos.UserInfoDTO, err 
 	return body, nil
 }
 
-func GetProfileAll(ctx pixiv.IContext, uid int64) (_ *dtos.AllProfileDTO, err error) {
+func GetProfileAll(ctx pixiv.IContext, pid int64) (_ *dtos.AllProfileDTO, err error) {
 	var (
 		c    pixiv.IClient
 		body dtos.AllProfileDTO
@@ -42,7 +42,7 @@ func GetProfileAll(ctx pixiv.IContext, uid int64) (_ *dtos.AllProfileDTO, err er
 		return nil, err
 	}
 
-	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", uid, "/profile", All), nil, nil)
+	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", pid, "/profile", All), nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func GetProfileAll(ctx pixiv.IContext, uid int64) (_ *dtos.AllProfileDTO, err er
 	return &body, nil
 }
 
-func GetProfileTop(ctx pixiv.IContext, uid int64) (_ *dtos.TopProfileDTO, err error) {
+func GetProfileTop(ctx pixiv.IContext, pid int64) (_ *dtos.TopProfileDTO, err error) {
 	var (
 		c    pixiv.IClient
 		body dtos.TopProfileDTO
@@ -63,7 +63,7 @@ func GetProfileTop(ctx pixiv.IContext, uid int64) (_ *dtos.TopProfileDTO, err er
 		return
 	}
 
-	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", uid, "/profile", Top), nil, nil)
+	data, err := pixiv.Json(c.Get, pixiv.Path("/ajax/user/", pid, "/profile", Top), nil, nil)
 	if err != nil {
 		return
 	}
@@ -73,4 +73,17 @@ func GetProfileTop(ctx pixiv.IContext, uid int64) (_ *dtos.TopProfileDTO, err er
 	}
 
 	return &body, nil
+}
+
+func GetFanboxUlr(ctx pixiv.IContext, pid int64) (u string, err error) {
+	var c pixiv.IClient
+	if c, err = global.Pixiv.New(ctx.PhpSessID()); err != nil {
+		return "", err
+	}
+
+	header, err := pixiv.Header(c.Get, pixiv.Path("/fanbox/creator/", pid), nil, nil)
+	if err != nil {
+		return "", err
+	}
+	return header.Get("location"), nil
 }

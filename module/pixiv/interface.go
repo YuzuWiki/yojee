@@ -17,6 +17,8 @@ type (
 )
 
 type ITransport interface {
+	http.RoundTripper
+
 	SetProxy(string) error
 	UnSetProxy() error
 }

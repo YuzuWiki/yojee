@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS pixiv_account
     Job             VARCHAR(128) DEFAULT ''  COMMENT 'pixiv user Job',
     following       INT          DEFAULT 0   COMMENT '关注数量',
     art_updated     BIGINT       DEFAULT 0   COMMENT '最后一次更新时间戳',
+    fanbox_url      VARCHAR(512) DEFAULT ''  COMMENT 'fanbox url',
 
     INDEX idx_pan (pid, art_updated, name)
 ) CHARACTER SET utf8mb4;
