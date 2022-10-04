@@ -1,4 +1,4 @@
-package pixiv_service
+package pixiv
 
 import (
 	"github.com/YuzuWiki/Pixivlee"

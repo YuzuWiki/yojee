@@ -4,10 +4,30 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/YuzuWiki/yojee/module/job_pool"
+	"go.uber.org/ratelimit"
 )
 
-var JobPool job_pool.IPool
+type TaskFunc func()
+
+type IPool interface {
+	Submit(TaskFunc)
+}
+
+func New(rate int) IPool {
+	p := pool{limiter: ratelimit.New(rate)}
+	return &p
+}
+
+type pool struct {
+	limiter ratelimit.Limiter
+}
+
+func (p *pool) Submit(fn TaskFunc) {
+	p.limiter.Take()
+	fn()
+}
+
+var JobPool IPool
 
 func initPool() {
 	if JobPool == nil {
@@ -16,6 +36,6 @@ func initPool() {
 			panic(err.Error())
 		}
 
-		JobPool = job_pool.New(rate)
+		JobPool = New(rate)
 	}
 }

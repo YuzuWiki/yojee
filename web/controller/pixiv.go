@@ -8,11 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/service/pixiv_service"
+	"github.com/YuzuWiki/yojee/module/pixiv"
 )
 
 type PixivController struct {
-	srv pixiv_service.Service
+	srv pixiv.Service
 }
 
 func (ctr *PixivController) GetPid(ctx *gin.Context) {
