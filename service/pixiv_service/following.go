@@ -3,11 +3,11 @@ package pixiv_service
 import (
 	"fmt"
 
+	"github.com/YuzuWiki/Pixivlee/apis"
+	"github.com/YuzuWiki/Pixivlee/dtos"
+
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
-	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 func (Service) GetFollowing(pid int64, limit, offset int) (_ *[]model.PixivAccountMod, err error) {
@@ -58,7 +58,7 @@ func (s Service) SyncFollowing(pid int64) (_ int, err error) {
 
 	// re-mark following status
 	for (offset) <= total {
-		if body, err = apis.GetFollowing(pixiv.DefaultContext, pid, limit, offset); err != nil {
+		if body, err = apis.GetFollowing(DefaultContext, pid, limit, offset); err != nil {
 			global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): ERROR, GetFollowing errmsg=%s", pid, err.Error()))
 			return 0, err
 		}
@@ -71,12 +71,15 @@ func (s Service) SyncFollowing(pid int64) (_ int, err error) {
 			global.JobPool.Submit(func() {
 				if err = syncFollowing(pid, u.UserID); err != nil {
 					global.Logger.Error().Err(err).Msg(fmt.Sprintf("[SyncFollowing] (%9d): Error  following_pid=%d  %3d/%3d, FlushAccountInfo errmsg=%s", pid, u.UserID, idx+_offset+1, total, err.Error()))
-				} else {
-					global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): Doing  following_pid=%9d  %3d/%3d", pid, u.UserID, idx+_offset+1, total))
 				}
 			})
 
-			global.JobPool.Submit(func() { _, _ = flushFanboxUrl(pid) })
+			global.JobPool.Submit(func() {
+				if _, err = flushFanboxUrl(u.UserID); err != nil {
+					global.Logger.Error().Err(err).Msg(fmt.Sprintf("[SyncFollowing] (%9d): Error  following_pid=%d  %3d/%3d, FlushAccountInfo errmsg=%s", pid, u.UserID, idx+_offset+1, total, err.Error()))
+				}
+			})
+			global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): Doing  following_pid=%9d  %3d/%3d", pid, u.UserID, idx+_offset+1, total))
 		}
 	}
 	global.Logger.Debug().Msg(fmt.Sprintf("[SyncFollowing] (%9d): DONE, total=%d", pid, total))

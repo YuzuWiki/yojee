@@ -3,15 +3,15 @@ module github.com/YuzuWiki/yojee
 go 1.19
 
 require (
+	github.com/YuzuWiki/Pixivlee v0.0.5
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/joho/godotenv v1.4.0
-	github.com/robfig/cron v1.2.0
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/rs/zerolog v1.26.1
 	go.uber.org/ratelimit v0.2.0
-	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/gorm v1.23.8
 )
@@ -37,6 +37,7 @@ require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
+	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
 	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect

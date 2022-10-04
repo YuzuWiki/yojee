@@ -3,11 +3,11 @@ package pixiv_service
 import (
 	"fmt"
 
+	"github.com/YuzuWiki/Pixivlee/apis"
+	"github.com/YuzuWiki/Pixivlee/dtos"
+
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
-	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 func (Service) GetArtwork(artType string, artId int64) (*ArtworkDTO, error) {
@@ -67,7 +67,7 @@ func (Service) GetArtworks(pid int64, artType string, limit, offset int) (*[]Art
 
 func SyncArtWork(artType string, artId int64) (err error) {
 	var artwork *dtos.ArtworkDTO
-	global.JobPool.Submit(func() { artwork, err = apis.GetIllusts(pixiv.DefaultContext, artId) })
+	global.JobPool.Submit(func() { artwork, err = apis.GetIllusts(DefaultContext, artId) })
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (s Service) SyncArtWorks(pid int64) (err error) {
 	}
 
 	var profile *dtos.AllProfileDTO
-	global.JobPool.Submit(func() { profile, err = apis.GetProfileAll(pixiv.DefaultContext, pid) })
+	global.JobPool.Submit(func() { profile, err = apis.GetProfileAll(DefaultContext, pid) })
 	if err != nil {
 		return err
 	}

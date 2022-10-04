@@ -1,14 +1,15 @@
 package pixiv_service
 
 import (
+	"github.com/YuzuWiki/Pixivlee"
+	"github.com/YuzuWiki/Pixivlee/apis"
+
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
 )
 
 func (s Service) GetPid(phpSessId string) (pid int64, err error) {
-	ctx := pixiv.NewContext(phpSessId)
+	ctx := Pixivlee.NewContext(phpSessId)
 
 	if pid, err = apis.GetAccountPid(ctx); err != nil {
 		return 0, err
@@ -25,7 +26,7 @@ func (s Service) GetAccountInfo(pid int64) (_ *model.PixivAccountMod, err error)
 }
 
 func flushAccount(pid int64) (_ *model.PixivAccountMod, err error) {
-	data, err := apis.GetAccountInfo(pixiv.DefaultContext, pid)
+	data, err := apis.GetAccountInfo(DefaultContext, pid)
 	if err != nil {
 		return nil, err
 	}
@@ -51,12 +52,12 @@ func flushAccount(pid int64) (_ *model.PixivAccountMod, err error) {
 	return account, nil
 }
 
-func flushFanboxUrl(pid int64) (fanboxUrl string, err error) {
-	if fanboxUrl, err = apis.GetFanboxUlr(pixiv.DefaultContext, pid); err != nil {
+func flushFanboxUrl(pid int64) (u string, err error) {
+	if u, err = apis.GetFanboxUlr(DefaultContext, pid); err != nil {
 		return "", err
 	}
 
-	return fanboxUrl, global.DB().Exec(`UPDATE pixiv_account SET fanbox_url = ? WHERE pid = ? AND pixiv_account.is_deleted = false`, fanboxUrl, pid).Error
+	return u, global.DB().Exec(`UPDATE pixiv_account SET fanbox_url = ? WHERE pid = ? AND is_deleted = false`, u, pid).Error
 }
 
 func (s Service) FlushAccountInfo(pid int64) (account *model.PixivAccountMod, err error) {

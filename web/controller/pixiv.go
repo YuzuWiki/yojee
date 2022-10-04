@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/YuzuWiki/Pixivlee/apis"
 	"github.com/gin-gonic/gin"
 
 	"github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
 	"github.com/YuzuWiki/yojee/service/pixiv_service"
 )
 

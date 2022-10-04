@@ -1,11 +1,11 @@
 package pixiv_service
 
 import (
+	"github.com/YuzuWiki/Pixivlee/apis"
+	"github.com/YuzuWiki/Pixivlee/dtos"
+
 	"github.com/YuzuWiki/yojee/global"
 	"github.com/YuzuWiki/yojee/model"
-	"github.com/YuzuWiki/yojee/module/pixiv"
-	"github.com/YuzuWiki/yojee/module/pixiv/apis"
-	"github.com/YuzuWiki/yojee/module/pixiv/dtos"
 )
 
 func findTagId(jp string) (tagId int64, err error) {
@@ -17,7 +17,7 @@ func findTagId(jp string) (tagId int64, err error) {
 
 func syncTag(jp string) (tagId int64, err error) {
 	var tag *dtos.TagDTO
-	if tag, err = apis.GetTag(pixiv.DefaultContext, jp); err != nil {
+	if tag, err = apis.GetTag(DefaultContext, jp); err != nil {
 		return 0, err
 	}
 
