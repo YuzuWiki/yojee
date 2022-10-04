@@ -1,21 +1,20 @@
 package web
 
 import (
+	controller2 "github.com/YuzuWiki/yojee/service/web/controller"
 	"github.com/gin-gonic/gin"
-
-	"github.com/YuzuWiki/yojee/web/controller"
 )
 
 func (svr *Server) RegisterRoutes() {
 	// 健康检查 api
-	alive := controller.AliveController{}
+	alive := controller2.AliveController{}
 	svr.router.GET("/alive", alive.Alive)
 
 	registerPixiv(svr.router.Group("/pixiv"))
 }
 
 func registerPixiv(group *gin.RouterGroup) {
-	pixiv := controller.PixivController{}
+	pixiv := controller2.PixivController{}
 
 	UserGroup := group.Group("/user")
 	{

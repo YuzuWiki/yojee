@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/gin-contrib/pprof"
@@ -86,7 +87,12 @@ func (svr *Server) Run() error {
 	return nil
 }
 
-func Start(listenPort int) {
+func Start(port string) {
+	listenPort, err := strconv.Atoi(port)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	svr := &Server{
 		router:     gin.New(),
 		isRun:      false,
@@ -94,7 +100,7 @@ func Start(listenPort int) {
 		mu:         sync.Mutex{},
 	}
 
-	if err := svr.Run(); err != nil {
+	if err = svr.Run(); err != nil {
 		panic("web service error")
 	}
 	return

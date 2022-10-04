@@ -1,19 +1,10 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
-
-	_ "github.com/YuzuWiki/yojee/global"
-	"github.com/YuzuWiki/yojee/web"
+	"github.com/YuzuWiki/yojee/service"
 )
 
 func main() {
-	// run service
-	web.Start(27100)
-}
-
-func init() {
-	// init some service
-	_ = godotenv.Load(".env")
+	//// run service
+	service.Start()
 }

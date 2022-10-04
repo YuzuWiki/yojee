@@ -12,14 +12,15 @@ var DefaultContext common.IContext
 type Service struct{}
 
 func init() {
-	sessid := os.Getenv("PIXIV_PHPSESSID")
+	sessId := os.Getenv("PIXIV_PHPSESSID")
+	proxyUrl := os.Getenv("PROXY_URL")
 
 	// inti default context
-	DefaultContext = Pixivlee.NewContext(sessid)
+	DefaultContext = Pixivlee.NewContext(sessId)
 
 	// init proxy
-	if c, err := Pixivlee.Pool().Get(os.Getenv("PIXIV_PHPSESSID")); err == nil {
-		if err = c.SetProxy(os.Getenv("PROXY_URL")); err != nil {
+	if c, err := Pixivlee.Pool().Get(sessId); err == nil && len(proxyUrl) > 0 {
+		if err = c.SetProxy(proxyUrl); err != nil {
 			panic(err.Error())
 		}
 	}
