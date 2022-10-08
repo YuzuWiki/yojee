@@ -86,7 +86,7 @@ func SyncArtWork(artType string, artId int64) (err error) {
 			ViewCount:     artwork.ViewCount,
 			LikeCount:     artwork.LikeCount,
 			BookmarkCount: artwork.BookmarkCount,
-			CreateDate:    &artwork.CreateDate,
+			CreateDate:    artwork.CreateDate.Unix(),
 		},
 	).FirstOrCreate(&row).Error; err != nil {
 		return err

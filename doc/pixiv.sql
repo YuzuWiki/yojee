@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS pixiv_artwork
     view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
     like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
     bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
-    create_date    TIMESTAMP NOT NULL  COMMENT '创建时间',
+    create_date    BIGINT    NOT NULL  COMMENT '创建时间',
 
     UNIQUE INDEX idx_illust (pid, art_type, art_id),
     INDEX idx_art (art_type, art_id)
