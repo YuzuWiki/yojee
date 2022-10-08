@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS pixiv_account
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted BOOL         DEFAULT FALSE COMMENT '是否删除',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     pid             BIGINT       NOT NULL    COMMENT 'pixiv user id',
     name            VARCHAR(256) NOT NULL    COMMENT 'pixiv user name',
@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS pixiv_account
 CREATE TABLE IF NOT EXISTS pixiv_follow
 (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted   BOOL      DEFAULT FALSE COMMENT '是否删除',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     pid          BIGINT    NOT NULL COMMENT 'user id',
     followed_pid BIGINT    NOT NULL COMMENT '被关注者的 uid id',
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS pixiv_follow
 CREATE TABLE IF NOT EXISTS pixiv_tag
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     tag_id      BIGINT       NOT NULl COMMENT 'tag id',
@@ -58,9 +58,9 @@ CREATE TABLE IF NOT EXISTS pixiv_tag_tree
 (
     # 日语tag标签层级关系
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted BOOL      DEFAULT FALSE  COMMENT '是否删除',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     parent_id  BIGINT          NOT NULL    COMMENT 'parent tag, id',
     parent_jp  VARCHAR(512)    NOT NULL    COMMENT 'parent tag, jp (name)',
@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS pixiv_tag_tree
 
 CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at       TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted       BOOL       DEFAULT FALSE COMMENT '是否删除',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     pid             BIGINT      NOT NULL    COMMENT 'pixiv user id',
     art_id          BIGINT      NOT NULL    COMMENT 'artwork id',
@@ -91,9 +91,9 @@ CREATE TABLE IF  NOT EXISTS pixiv_artwork_tag (
 CREATE TABLE IF NOT EXISTS pixiv_artwork
 (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    created_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-    is_deleted     BOOL         DEFAULT FALSE COMMENT '是否删除',
+    created_at BIGINT    NOT NULL COMMENT '创建时间',
+    updated_at BIGINT    NOT NULL COMMENT '创建时间',
+    is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     # 作品信息
     pid            BIGINT       NOT NULL COMMENT 'pixiv user id',

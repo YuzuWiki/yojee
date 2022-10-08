@@ -8,10 +8,10 @@ import (
 )
 
 type PixivArtworkMod struct {
-	ID        uint64     `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
-	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
-	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
-	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
+	ID        int64 `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
+	CreatedAt int64 `gorm:"type:bigint;autoCreateTime:milli;column:created_at" json:"created_at"`
+	UpdatedAt int64 `gorm:"type:bigint;autoUpdateTime:milli;column:updated_at" json:"updated_at"`
+	IsDeleted bool  `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	Pid     int64  `gorm:"type:bigint;column:pid" json:"pid"`
 	ArtId   int64  `gorm:"type:bigint;column:art_id" json:"art_id"`

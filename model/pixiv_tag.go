@@ -2,18 +2,15 @@ package model
 
 import (
 	"strings"
-	"time"
 
 	"github.com/YuzuWiki/yojee/global"
 )
 
-const _TagIdKey = "pixiv:tag:id:"
-
 type PixivTagMod struct {
-	ID        uint64     `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
-	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
-	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
-	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
+	ID        int64 `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
+	CreatedAt int64 `gorm:"type:bigint;autoCreateTime:milli;column:created_at" json:"created_at"`
+	UpdatedAt int64 `gorm:"type:bigint;autoUpdateTime:milli;column:updated_at" json:"updated_at"`
+	IsDeleted bool  `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	TagId  int64  `gorm:"type:bigint;column:tag_id" json:"tag_id"`
 	Image  string `gorm:"type:varchar(512);column:image" json:"image"`
@@ -29,10 +26,10 @@ func (PixivTagMod) TableName() string {
 }
 
 type PixivTagTreeMod struct {
-	ID        uint64     `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
-	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
-	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
-	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
+	ID        int64 `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
+	CreatedAt int64 `gorm:"type:bigint;autoCreateTime:milli;column:created_at" json:"created_at"`
+	UpdatedAt int64 `gorm:"type:bigint;autoUpdateTime:milli;column:updated_at" json:"updated_at"`
+	IsDeleted bool  `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	ParentId int64  `gorm:"type:bigint;column:parent_id" json:"parent_id"`
 	ParentJp string `gorm:"type:VARCHAR(512);column:parent_jp" json:"parent_jp"`
@@ -46,10 +43,10 @@ func (PixivTagTreeMod) TableName() string {
 }
 
 type PixivArtworkTagMod struct {
-	ID        uint64     `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
-	CreatedAt *time.Time `gorm:"type:timestamp;autoCreateTime:milli;column:created_at" json:"created_at"`
-	UpdatedAt *time.Time `gorm:"type:timestamp;autoUpdateTime:milli;column:updated_at"  json:"updated_at"`
-	IsDeleted bool       `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
+	ID        int64 `gorm:"type:bigint;primaryKey;autoIncrement;column:id" json:"id"`
+	CreatedAt int64 `gorm:"type:bigint;autoCreateTime:milli;column:created_at" json:"created_at"`
+	UpdatedAt int64 `gorm:"type:bigint;autoUpdateTime:milli;column:updated_at" json:"updated_at"`
+	IsDeleted bool  `gorm:"type:bool;default:false;column:is_deleted" json:"is_deleted"`
 
 	Pid     int64  `gorm:"type:bigint;column:pid" json:"pid"`
 	ArtId   int64  `gorm:"type:bigint;column:art_id" json:"art_id"`

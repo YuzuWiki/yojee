@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	//// run service
+	// run service
 	service.Start()
 }
