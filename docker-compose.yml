@@ -1,0 +1,10 @@
+version: "0.1.1"
+services:
+  yojee:
+    image: yuzuwiki/yojee
+    container_name: yojee
+    build:
+      dockerfile: dockerfile
+    ports:
+      - 27100:27100
+    restart: always
