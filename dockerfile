@@ -1,7 +1,5 @@
 FROM golang:1.19.2 AS BUILD
 
-ENV VERSION 0.1.1
-
 # build
 ADD . /build
 WORKDIR /build
