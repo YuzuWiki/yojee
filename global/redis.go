@@ -2,10 +2,11 @@ package global
 
 import (
 	"fmt"
-	"github.com/go-redis/redis"
 	"os"
 	"strconv"
 	"sync"
+
+	"github.com/go-redis/redis"
 )
 
 var (
