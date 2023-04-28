@@ -2,12 +2,17 @@ package global
 
 import (
 	_cron "github.com/robfig/cron/v3"
+	"sync"
 )
 
-var Crontab *_cron.Cron
+var (
+	Crontab *_cron.Cron
+
+	crontabOnce sync.Once
+)
 
 func InitCron() {
-	if Crontab == nil {
+	crontabOnce.Do(func() {
 		Crontab = _cron.New()
-	}
+	})
 }

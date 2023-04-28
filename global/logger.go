@@ -4,14 +4,19 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/rs/zerolog"
 )
 
-var Logger *zerolog.Logger = nil
+var (
+	Logger *zerolog.Logger
 
-func InitLogger() *zerolog.Logger {
-	if Logger == nil {
+	loggerOnce sync.Once
+)
+
+func InitLogger() {
+	loggerOnce.Do(func() {
 		zerolog.TimeFieldFormat = "2006-01-02 15:04:05.000"
 
 		output := zerolog.ConsoleWriter{Out: os.Stdout}
@@ -30,9 +35,7 @@ func InitLogger() *zerolog.Logger {
 
 		logger := zerolog.New(output).With().Timestamp().Logger()
 		Logger = &logger
-	}
-
-	return Logger
+	})
 }
 
 func CloseLogger() error {

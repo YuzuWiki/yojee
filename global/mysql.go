@@ -2,16 +2,21 @@ package global
 
 import (
 	"fmt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm/logger"
 	"os"
+	"sync"
 	"time"
 
 	mysql2 "github.com/go-sql-driver/mysql"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var (
+	db *gorm.DB
+
+	dbOnce sync.Once
+)
 
 var DATABASE = func() (database string) {
 	database = os.Getenv("MYSQL_DATABASE")
@@ -30,32 +35,6 @@ func dns() string {
 		os.Getenv("MYSQL_PORT"),
 		DATABASE(),
 	)
-}
-
-func InitDB() *gorm.DB {
-	if db == nil {
-
-		_db, err := gorm.Open(
-			mysql.New(mysql.Config{
-				DSN:                       dns(),
-				SkipInitializeWithVersion: false,
-			}),
-			&gorm.Config{
-				Logger: logger.Default.LogMode(logger.Error), // 日志输出级别
-			},
-		)
-		if err != nil {
-			panic(fmt.Sprintf("MySQL: init db fail ... dns=%s", dns()))
-		}
-		db = _db
-
-		setConnectionPool()
-	}
-	return db
-}
-
-func DB() *gorm.DB {
-	return db
 }
 
 func setConnectionPool() {
@@ -78,4 +57,28 @@ func IsDuplicateEntry(err error) bool {
 	errCode, _ := err.(*mysql2.MySQLError)
 
 	return errCode.Number == 1062
+}
+
+func DB() *gorm.DB {
+	return db
+}
+
+func InitDB() {
+	dbOnce.Do(func() {
+		_db, err := gorm.Open(
+			mysql.New(mysql.Config{
+				DSN:                       dns(),
+				SkipInitializeWithVersion: false,
+			}),
+			&gorm.Config{
+				Logger: logger.Default.LogMode(logger.Error), // 日志输出级别
+			},
+		)
+		if err != nil {
+			panic(fmt.Sprintf("MySQL: init db fail ... dns=%s", dns()))
+		}
+		db = _db
+
+		setConnectionPool()
+	})
 }

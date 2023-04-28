@@ -5,20 +5,26 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+// init, load config from .env (file name)
 func init() {
 	_ = godotenv.Load(".env")
 }
 
+// init global (outside) services
 func init() {
-	// init some service
-
 	InitLogger()
+	Logger.Debug().Msg("[init] Debug: global services initializing")
 
-	Logger.Debug().Msg("global init.....")
 	initRedis()
 	InitDB()
+
+	Logger.Debug().Msg("[init] Debug: global services done")
+}
+
+// init global (internal) components
+func init() {
+	Logger.Debug().Msg("[init] Debug: global components initializing")
 	InitCron()
 	initPool()
-
-	Logger.Debug().Msg("global init finish")
+	Logger.Debug().Msg("[init] Debug: global components done ")
 }

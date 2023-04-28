@@ -3,6 +3,7 @@ package global
 import (
 	"os"
 	"strconv"
+	"sync"
 
 	"go.uber.org/ratelimit"
 )
@@ -27,15 +28,19 @@ func (p *pool) Submit(fn TaskFunc) {
 	fn()
 }
 
-var JobPool IPool
+var (
+	JobPool IPool
+
+	jobOnce sync.Once
+)
 
 func initPool() {
-	if JobPool == nil {
+	jobOnce.Do(func() {
 		rate, err := strconv.Atoi(os.Getenv("POOL_RATE"))
 		if err != nil {
 			panic(err.Error())
 		}
 
 		JobPool = New(rate)
-	}
+	})
 }
