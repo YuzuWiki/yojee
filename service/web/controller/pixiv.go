@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/YuzuWiki/Pixivlee/apis"
@@ -16,7 +17,7 @@ type PixivController struct {
 }
 
 func (ctr *PixivController) GetPid(ctx *gin.Context) {
-	phpsessid := ctx.Query("phpsessid")
+	phpsessid := os.Getenv("PIXIV_PHPSESSID")
 	if len(phpsessid) == 0 {
 		ctx.JSON(400, fail(400, "invalid phpsessid"))
 		return
@@ -70,7 +71,7 @@ func (ctr *PixivController) FlushAccount(ctx *gin.Context) {
 func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 	pid, err := strconv.ParseInt(ctx.Param("pid"), 10, 64)
 	if err != nil {
-		ctx.JSON(400, fail(400, err.Error()))
+		ctx.JSON(400, fail(400, "invalid pid"))
 		return
 	}
 
@@ -83,14 +84,14 @@ func (ctr *PixivController) GetFollowing(ctx *gin.Context) {
 		Limit:  24,
 		Offset: 0,
 	}
-	if err = ctx.ShouldBindJSON(&params); err != nil {
-		ctx.JSON(400, fail(400, err.Error()))
+	if err = ctx.ShouldBind(&params); err != nil {
+		ctx.JSON(400, fail(400, fmt.Sprintf("params error, %s", err.Error())))
 		return
 	}
 
 	follows, err := ctr.srv.GetFollowing(params.Pid, params.Limit, params.Offset)
 	if err != nil {
-		ctx.JSON(400, fail(400, err.Error()))
+		ctx.JSON(400, fail(400, fmt.Sprintf("get following error, %s", err.Error())))
 		return
 	}
 

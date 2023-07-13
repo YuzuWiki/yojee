@@ -96,17 +96,17 @@ CREATE TABLE IF NOT EXISTS pixiv_artwork
     is_deleted BOOL      DEFAULT FALSE COMMENT '是否删除',
 
     # 作品信息
-    pid            BIGINT       NOT NULL COMMENT 'pixiv user id',
-    art_id         BIGINT       NOT NULL COMMENT 'pixiv art_id',
-    art_type       VARCHAR(64)  NOT NULL  COMMENT 'pixiv art_type',
+    pid            BIGINT       NOT NULL    COMMENT 'pixiv user id',
+    art_id         BIGINT       NOT NULL    COMMENT 'pixiv art_id',
+    art_type       VARCHAR(64)  NOT NULL    COMMENT 'pixiv art_type',
 
-    title          TEXT                COMMENT 'pixiv title',
-    description    TEXT                COMMENT 'pixiv illust desc',
-    page_count     BIGINT    DEFAULT 0 COMMENT '页数',
-    view_count     BIGINT    DEFAULT 0 COMMENT '浏览数量',
-    like_count     BIGINT    DEFAULT 0 COMMENT '喜欢数',
-    bookmark_count BIGINT    DEFAULT 0 COMMENT '收藏欢数',
-    create_date    BIGINT    NOT NULL  COMMENT '创建时间',
+    title          VARCHAR(512) DEFAULT ''  COMMENT 'pixiv title',
+    description    TEXT                     COMMENT 'pixiv illust desc',
+    page_count     BIGINT       DEFAULT 0   COMMENT '页数',
+    view_count     BIGINT       DEFAULT 0   COMMENT '浏览数量',
+    like_count     BIGINT       DEFAULT 0   COMMENT '喜欢数',
+    bookmark_count BIGINT       DEFAULT 0   COMMENT '收藏欢数',
+    create_date    BIGINT       NOT NULL    COMMENT '创建时间',
 
     UNIQUE INDEX idx_illust (pid, art_type, art_id),
     INDEX idx_art (art_type, art_id)
